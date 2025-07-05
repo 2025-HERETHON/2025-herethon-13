@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="{% static 'css/api.css' %}">
+</head>
+<body>
+    <header class="top-right-logo">
+        <span>Secret</span>
+    </header>
+    <form method="post">
+        <h2>Welcome to Secret</h2>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="error-message">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+
+        <button type="submit">Log in</button>
+        <p>
+            Don’t have an account? 
+            <a href="{% url 'api:signup' %}"><strong>Sign up</strong></a>
+        </p>
+    </form>
+</body>
+</html>
