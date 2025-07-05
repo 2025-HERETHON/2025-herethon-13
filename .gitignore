@@ -1,0 +1,23 @@
+### Django
+
+_.log
+_.pot
+\*.pyc
+**pycache**/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
+
+### Environments
+
+.env
+.venv
+.newvenv
+env/
+venv/
+newvenv/
+ENV/
+env.bak/
+venv.bak/
+newvenv.bak/
