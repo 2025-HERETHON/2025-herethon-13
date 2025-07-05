@@ -2,4 +2,4 @@ from django.shortcuts import render
 
 # Create your views here.
 
-# pr 확인
+# pr 재재확인
