@@ -1,9 +1,17 @@
 from django.db import models
-from api.models import User
+# from api.models import User 
 from .views import *
+    
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    # color_code = models.CharField(max_length=50) 잠시 삭제
 
+    def __str__(self):
+        return self.name
+    
 class Challenge(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
+    user = models.ForeignKey("api.User", on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     goal = models.CharField(max_length=200)
     start_date = models.DateTimeField()
@@ -14,16 +22,9 @@ class Challenge(models.Model):
 
     def __str__(self):
         return self.title
-class Category(models.Model):
-    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-    color_code = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
     
 class Badge(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey("api.User", on_delete=models.CASCADE)
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
 
     def __str__(self):
