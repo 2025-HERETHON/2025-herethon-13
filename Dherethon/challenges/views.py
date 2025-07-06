@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import formset_factory
 from django.contrib.auth.decorators import login_required
 from .forms import ChallengeForm, GoalForm
@@ -11,8 +11,13 @@ def list(request):
     return render(request, 'challenges/list.html', {'challenges': challenges, 'goals': goals})
 
 @login_required
+def detail(request, pk):
+    challenge = get_object_or_404(Challenge, pk=pk)
+    return render(request, 'challenges/detail.html', {'challenge': challenge})
+
+@login_required
 def create_challenge(request):
-    GoalFormSet = formset_factory(GoalForm, extra=1) # 현재는 세부목표 1개만 추가 가능 -> extra를 수정해서 늘릴 수는 있는데 JS 사용이 나을 것 같습니다
+    GoalFormSet = formset_factory(GoalForm, extra=3) # 현재는 세부목표 1개만 추가 가능 -> extra를 수정해서 늘릴 수는 있는데 JS 사용이 나을 것 같습니다
 
     if request.method == 'POST':
         form = ChallengeForm(request.POST, request.FILES)
