@@ -81,9 +81,20 @@ def my_challenges(request):
 def detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
     goals = Goal.objects.filter(challenge=challenge)
+
+    today = timezone.now().date()
+
+    end_date = challenge.end_date.date() if hasattr(challenge.end_date, "date") else challenge.end_date
+    d_day = (end_date - today).days
+    challenge.d_day_value = abs(d_day)
+    challenge.d_day_prefix = "D-" if d_day >= 0 else "D+"
+
+    start_date = challenge.start_date.date() if hasattr(challenge.start_date, "date") else challenge.start_date
+    challenge.d_plus = (today - start_date).days
+
     return render(request, 'challenges/detail.html', {
         'challenge': challenge,
-        'goals': goals
+        'goals': goals,
     })
 
 @login_required
