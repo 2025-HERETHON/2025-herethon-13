@@ -16,12 +16,23 @@
     <h4>세부 목표</h4>
     <ul>
         {% for goal in challenge.goals.all %}
-            <li>{{ goal.content }}</li>
+            <li>
+                {{ goal.date|default:"날짜 없음" }} - {{ goal.content }}
+                <a href="{% url 'challenges:goal_detail' goal.id %}">[자세히 보기]</a>
+            </li>
         {% empty %}
             <li>등록된 세부 목표가 없습니다.</li>
         {% endfor %}
     </ul>
+
+    <!-- ✅ 세부 목표 추가 버튼 -->
+    <p>
+        <a href="{% url 'challenges:create_goal' challenge.id %}">
+            ➕ 세부 목표 추가하기
+        </a>
+    </p>
 </div>
 
 <a href="{% url 'challenges:list' %}">← 목록으로</a>
 {% endblock %}
+

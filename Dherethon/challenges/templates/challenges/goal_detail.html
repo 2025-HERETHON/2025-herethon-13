@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+  <div class="goal-detail">
+    <h2>세부 목표 상세</h2>
+
+    <p><strong>도전 이름:</strong> {{ goal.challenge.title }}</p>
+    <p><strong>날짜:</strong> {{ goal.date }}</p>
+    <p><strong>내용:</strong> {{ goal.content }}</p>
+
+    {% if goal.image %}
+      <p><strong>인증 이미지:</strong></p>
+      <img src="{{ goal.image.url }}" alt="인증 이미지" style="max-width: 400px;">
+    {% endif %}
+
+    <!-- 인증 완료 버튼 -->
+    <form method="POST" action="{% url 'challenges:complete_goal' goal.id %}">
+      {% csrf_token %}
+      <button type="submit">인증 완료하기</button>
+    </form>
+
+    
+
+    <br>
+   <a href="{% url 'challenges:edit_goal' goal.challenge.id goal.id %}">
+  [수정하기]
+</a>
+  </div>
+{% endblock %}
+</body>
+</html>

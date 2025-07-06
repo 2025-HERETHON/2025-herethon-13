@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <label>내용</label>
+  <input type="text" name="content" value="{{ goal.content|default_if_none:'' }}"><br><br>
+
+  <label>날짜</label>
+  <input type="date" name="date" value="{{ goal.date|date:'Y-m-d' }}"><br><br>
+
+  {% if goal.image %}
+    <p>기존 이미지:</p>
+    <img src="{{ goal.image.url }}" width="100"><br>
+  {% endif %}
+
+  <label>이미지</label>
+  <input type="file" name="image"><br><br>
+
+  <button type="submit">{% if goal %}수정{% else %}생성{% endif %}</button>
+</form>
+
+
+
+</body>
+</html>
