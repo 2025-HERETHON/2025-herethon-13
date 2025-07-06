@@ -101,7 +101,7 @@ def create_challenge(request):
                 if content.strip():
                     Goal.objects.create(challenge=challenge, content=content)
 
-            return redirect('challenges:list')
+            return redirect('challenges:my_challenges')
     
     else:
         form = ChallengeForm()

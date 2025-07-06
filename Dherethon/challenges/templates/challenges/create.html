@@ -1,40 +1,70 @@
 {% load static %}
 {% block content %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
+<div>
 
-    <h3>어떤 걸 도전하시나요?</h3>
-    {{ form.title }}
+    <!-- 왼쪽 사이드바 -->
+    <div>
+        <!-- 프로필 -->
+        {% if request.user.profile_image %}
+            <img src="{{ request.user.profile_image.url }}" alt="프로필 이미지">
+        {% else %}
+            <p>[프로필 이미지 없음]</p>
+        {% endif %}
 
-    <h3>카테고리 선택</h3>
-    {{ form.category }}
+        <p>{{ request.user.nickname }}</p>
 
-    <h3>대표 이미지</h3>
-    {{ form.image }}
+        <!-- 메뉴 -->
+        <nav>
+            <p><a href="{% url 'home:main' %}">홈</a></p>
+            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+            <p><a href="#">커뮤니티</a></p>
+            <p><a href="#">뱃지</a></p>
+        </nav>
 
-    <h3>목표 기간</h3>
-    {{ form.start_date }} ~ {{ form.end_date }}
-
-    <h3>공개 여부</h3>
-    {{ form.is_public }}
-
-    <h3>인증 주기</h3>
-    {{ form.frequency }}
-
-    <h3>세부 목표</h3>
-    <div id="goal-container">
-        <div class="goal-input-wrapper">
-            <input type="text" name="goals" placeholder="세부 목표를 입력해주세요." class="goal-input">
-        </div>
+        <!-- 로그아웃 -->
+        <p><a href="{% url 'api:logout' %}">로그아웃</a></p>
     </div>
-    <button type="button" id="add-goal-btn">➕ 목표 추가</button>
 
-    <br><br>
-    <button type="submit">등록하기</button>
-</form>
+    <!-- 오른쪽 메인 콘텐츠 -->
+    <div>
 
-<!-- JS 파일 연결 -->
-<script src="{% static 'js/create.js' %}"></script>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <h3>어떤 걸 도전하시나요?</h3>
+            {{ form.title }}
+
+            <h3>카테고리 선택</h3>
+            {{ form.category }}
+
+            <h3>대표 이미지</h3>
+            {{ form.image }}
+
+            <h3>목표 기간</h3>
+            {{ form.start_date }} ~ {{ form.end_date }}
+
+            <h3>공개 여부</h3>
+            {{ form.is_public }}
+
+            <h3>인증 주기</h3>
+            {{ form.frequency }}
+
+            <h3>세부 목표</h3>
+            <div id="goal-container">
+                <div class="goal-input-wrapper">
+                    <input type="text" name="goals" placeholder="세부 목표를 입력해주세요." class="goal-input">
+                </div>
+            </div>
+            <button type="button" id="add-goal-btn">➕ 목표 추가</button>
+
+            <br><br>
+            <button type="submit">등록하기</button>
+        </form>
+
+        <script src="{% static 'js/create.js' %}"></script>
+    </div>
+
+</div>
 
 {% endblock %}
