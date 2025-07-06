@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from challenges.models import *
 
 class User(AbstractUser):
+
     CATEGORY_CHOICES = [
         ('학습 / 공부', '학습 / 공부'),
         ('커리어 / 직무', '커리어 / 직무'),
@@ -12,6 +13,7 @@ class User(AbstractUser):
         ('취미', '취미'),
         ('기타', '기타'),
     ]
+
     nickname = models.CharField(max_length=100, unique=True)
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     interest_categories = models.CharField(
@@ -19,6 +21,8 @@ class User(AbstractUser):
         choices=CATEGORY_CHOICES,
         default='학습 / 공부'
     )
+
+    REQUIRED_FIELDS = ['nickname']
 
     REQUIRED_FIELDS = ['nickname']
 
