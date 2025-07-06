@@ -15,4 +15,7 @@ urlpatterns = [
     path('list/', list, name='list'),
     path('detail/<int:pk>/', detail, name='detail'),
     path('create/', create_challenge, name='create'),
+
+    path('', my_challenges, name='my_challenges'),
+
 ]
