@@ -1,0 +1,27 @@
+{% block content %}
+<h2>도전 상세</h2>
+
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+    <h3>{{ challenge.title }}</h3>
+
+    <p>카테고리: {{ challenge.category.name }}</p>
+    <p>기간: {{ challenge.start_date|date:"Y-m-d" }} ~ {{ challenge.end_date|date:"Y-m-d" }}</p>
+    <p>인증 주기: {{ challenge.get_frequency_display }}</p>
+    <p>공개 여부: {% if challenge.is_public %}공개{% else %}비공개{% endif %}</p>
+
+    {% if challenge.image %}
+        <img src="{{ challenge.image.url }}" width="150">
+    {% endif %}
+
+    <h4>세부 목표</h4>
+    <ul>
+        {% for goal in challenge.goals.all %}
+            <li>{{ goal.content }}</li>
+        {% empty %}
+            <li>등록된 세부 목표가 없습니다.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<a href="{% url 'challenges:list' %}">← 목록으로</a>
+{% endblock %}
