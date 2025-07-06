@@ -1,0 +1,32 @@
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <h3>어떤 걸 도전하시나요?</h3>
+    {{ form.title }}
+
+    <h3>카테고리 선택</h3>
+    {{ form.category }}
+
+    <h3>대표 이미지</h3>
+    {{ form.image }}
+
+    <h3>목표 기간</h3>
+    {{ form.start_date }} ~ {{ form.end_date }}
+
+    <h3>공개 여부</h3>
+    {{ form.is_public }}
+
+    <h3>인증 주기</h3>
+    {{ form.frequency }}
+
+    <h3>세부 목표</h3>
+    {{ formset.management_form }}
+    {% for goal_form in formset %}
+        <div>
+            {{ goal_form.content }}
+        </div>
+    {% endfor %}
+
+    <br>
+    <button type="submit">등록하기</button>
+</form>
