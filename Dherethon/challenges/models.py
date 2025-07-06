@@ -45,6 +45,8 @@ class Challenge(models.Model):
 class Goal(models.Model):
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE, related_name='goals')
     content = models.CharField(max_length=200)
+    date = models.DateField(null=True, blank=True)
+    image = models.ImageField(upload_to='goals_image/', null= True, blank= True)
 
     def __str__(self):
         return f"{self.challenge.title} - {self.content}"

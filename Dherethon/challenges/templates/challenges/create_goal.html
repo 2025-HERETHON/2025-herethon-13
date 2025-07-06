@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <label>내용</label>
+        <input type="text" name="content" required><br>
+        
+        <label>날짜</label>
+        <input type="date" name="date"><br>
+        
+        <label>인증 이미지</label>
+        <input type="file" name="image"><br>
+        
+        <button type="submit">등록하기</button>
+    </form>
+
+
+</body>
+</html>
