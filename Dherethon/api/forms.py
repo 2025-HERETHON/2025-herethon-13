@@ -27,8 +27,8 @@ class RegisterForm(UserCreationForm):
         label='비밀번호 확인',
         widget=forms.PasswordInput(attrs={'placeholder': '비밀번호를 다시 입력하세요.'}),
     )
-    interest_category = forms.ModelChoiceField(
-        queryset=Category.objects.all(),
+    interest_category = forms.ChoiceField(
+        choices=User.CATEGORY_CHOICES,
         widget=forms.RadioSelect,
         required=True,
         label="관심 있는 카테고리",

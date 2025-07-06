@@ -1,9 +1,18 @@
 from django.db import models
-# from api.models import User -> "api.User" 문자열 형식으로 변경
-from .views import *
+# from api.models import User 
     
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    CATEGORY_CHOICES = [
+        ('학습 / 공부', '학습 / 공부'),
+        ('커리어 / 직무', '커리어 / 직무'),
+        ('운동 / 건강', '운동 / 건강'),
+        ('마음 / 루틴', '마음 / 루틴'),
+        ('정리 / 관리', '정리 / 관리'),
+        ('취미', '취미'),
+        ('기타', '기타'),
+    ]
+    name = models.CharField(max_length=50, unique=True, choices=CATEGORY_CHOICES, default='학습 / 공부')
+    # color_code = models.CharField(max_length=50) 잠시 삭제
 
     def __str__(self):
         return self.name
@@ -22,6 +31,7 @@ class Challenge(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
     user = models.ForeignKey("api.User", on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='challenge_images/', blank=True, null=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='daily')
