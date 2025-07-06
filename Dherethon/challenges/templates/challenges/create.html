@@ -1,3 +1,6 @@
+{% load static %}
+{% block content %}
+
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
@@ -20,13 +23,18 @@
     {{ form.frequency }}
 
     <h3>세부 목표</h3>
-    {{ formset.management_form }}
-    {% for goal_form in formset %}
-        <div>
-            {{ goal_form.content }}
+    <div id="goal-container">
+        <div class="goal-input-wrapper">
+            <input type="text" name="goals" placeholder="세부 목표를 입력해주세요." class="goal-input">
         </div>
-    {% endfor %}
+    </div>
+    <button type="button" id="add-goal-btn">➕ 목표 추가</button>
 
-    <br>
+    <br><br>
     <button type="submit">등록하기</button>
 </form>
+
+<!-- JS 파일 연결 -->
+<script src="{% static 'js/create.js' %}"></script>
+
+{% endblock %}

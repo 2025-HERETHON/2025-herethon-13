@@ -1,14 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.forms import formset_factory
 from django.contrib.auth.decorators import login_required
-from .forms import ChallengeForm, GoalForm
+from .forms import ChallengeForm
 from .models import *
 
 @login_required
 def list(request):
     challenges = Challenge.objects.all()
     goals = Goal.objects.all()
-    return render(request, 'challenges/list.html', {'challenges': challenges, 'goals': goals})
+
+    challenge_progress = {}
+    for challenge in challenges:
+        total = challenge.goals.count()
+        completed = GoalProgress.objects.filter(user=request.user, goal__challenge=challenge, is_completed=True).count()
+        percent = int(completed / total * 100) if total > 0 else 0
+        challenge_progress[challenge.id] = percent
+
+    return render(request, 'challenges/list.html', {'challenges': challenges, 'goals': goals, 'challenge_progress': challenge_progress})
 
 @login_required
 def detail(request, pk):
@@ -17,33 +24,25 @@ def detail(request, pk):
 
 @login_required
 def create_challenge(request):
-    GoalFormSet = formset_factory(GoalForm, extra=3) # 현재는 세부목표 1개만 추가 가능 -> extra를 수정해서 늘릴 수는 있는데 JS 사용이 나을 것 같습니다
-
     if request.method == 'POST':
         form = ChallengeForm(request.POST, request.FILES)
-        formset = GoalFormSet(request.POST)
 
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid():
             challenge = form.save(commit=False)
             challenge.user = request.user
             challenge.save()
 
-            for goal_form in formset:
-                content = goal_form.cleaned_data.get('content')
-                if content:
-                    Goal.objects.create(
-                        challenge=challenge,
-                        content=content
-                    )
+            goals = request.POST.getlist('goals')
+            for content in goals:
+                if content.strip():
+                    Goal.objects.create(challenge=challenge, content=content)
 
             return redirect('challenges:list')
     
     else:
         form = ChallengeForm()
-        formset = GoalFormSet()
 
     return render(request, 'challenges/create.html', {
         'form': form,
-        'formset': formset
     })
 
