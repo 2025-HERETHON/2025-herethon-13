@@ -17,6 +17,47 @@ def list(request):
 
     return render(request, 'challenges/list.html', {'challenges': challenges, 'goals': goals, 'challenge_progress': challenge_progress})
 
+# 로그인한 사용자 기준 list view
+@login_required
+def my_challenges(request):
+    category_name = request.GET.get('category')
+    challenges = Challenge.objects.filter(user=request.user).select_related('category') # 현재 로그인한 사용자의 챌린지만 가져오기
+
+    if category_name and category_name != '전체':
+        challenges = challenges.filter(category__name=category_name)
+
+    challenge_progress = {}
+    next_goals = {}
+
+    for challenge in challenges:
+        total = challenge.goals.count()
+        completed = GoalProgress.objects.filter(user=request.user, goal__challenge=challenge, is_completed=True).count()
+        percent = int(completed / total * 100) if total > 0 else 0
+        challenge_progress[challenge.id] = percent
+
+        next_goal = Goal.objects.filter(
+            challenge=challenge
+        ).exclude(
+            goalprogress__user=request.user,
+            goalprogress__is_completed=True
+        ).order_by('date', 'id').first()
+        next_goals[challenge.id] = next_goal
+
+    incomplete_goals = Goal.objects.filter(
+        challenge__user=request.user
+    ).exclude(
+        goalprogress__user=request.user,
+        goalprogress__is_completed=True
+    ).order_by('date')
+
+    return render(request, 'challenges/my_challenges.html', {
+        'challenges': challenges,
+        'challenge_progress': challenge_progress,
+        'next_goals': next_goals,
+        'incomplete_goals': incomplete_goals,
+        'selected_category': category_name or '전체',
+    })
+
 @login_required
 def detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
