@@ -1,4 +1,3 @@
-<!-- 확인용, 추후 변경 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,31 +5,60 @@
     <title>Main</title>
 </head>
 <body>
-    <h1>메인 페이지입니다</h1>
-    <p>로그인 성공 후 이 페이지로 리다이렉트됩니다.</p>
 
-    <h2>{{ user.nickname }}님의 회원 정보</h2>
-    <ul>
-        <li><strong>아이디:</strong> {{ user.username }}</li>
-        <li><strong>닉네임:</strong> {{ user.nickname }}</li>
-        <li><strong>관심 카테고리:</strong>
-            {% if user.interest_categories.exists %}
-                <ul>
-                    {% for category in user.interest_categories.all %}
-                        <li>{{ category.name }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                없음
-            {% endif %}
-        </li>
-        <li><strong>프로필 사진:</strong><br>
-            {% if user.profile_image %}
-                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width:150px; height:150px; border-radius:50%;">
-            {% else %}
-                <p>기본 이미지가 설정되어 있습니다.</p>
-            {% endif %}
-        </li>
-    </ul>
+<div>
+
+    <!-- 왼쪽 사이드바 -->
+    <div>
+        {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
+        {% else %}
+            <p>[프로필 이미지 없음]</p>
+        {% endif %}
+
+        <p>{{ user.nickname }}</p>
+
+        <nav>
+            <p><a href="{% url 'home:main' %}">홈</a></p>
+            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+            <p><a href="#">커뮤니티</a></p>
+            <p><a href="#">뱃지</a></p>
+        </nav>
+
+        <p><a href="{% url 'api:logout' %}">로그아웃</a></p>
+    </div>
+
+    <!-- 오른쪽 메인 콘텐츠 -->
+    <div>
+        <h1>메인 페이지입니다</h1>
+        <p>로그인 성공 후 이 페이지로 리다이렉트됩니다.</p>
+
+        <h2>{{ user.nickname }}님의 회원 정보</h2>
+        <ul>
+            <li><strong>아이디:</strong> {{ user.username }}</li>
+            <li><strong>닉네임:</strong> {{ user.nickname }}</li>
+            <li><strong>관심 카테고리:</strong>
+                {% if user.interest_categories.exists %}
+                    <ul>
+                        {% for category in user.interest_categories.all %}
+                            <li>{{ category.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    없음
+                {% endif %}
+            </li>
+            <li><strong>프로필 사진:</strong><br>
+                {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
+                {% else %}
+                    <p>기본 이미지가 설정되어 있습니다.</p>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+</div>
+
 </body>
 </html>
