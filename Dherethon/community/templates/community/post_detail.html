@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+  <h2>{{ post.user.nickname }}님의 인증글</h2>
+
+  <p>{{ post.content }}</p>
+  {% if post.image %}
+    <img src="{{ post.image.url }}" width="250"><br>
+  {% endif %}
+
+  <p><strong>도전:</strong> {{ post.goal.challenge.title }}</p>
+  <p><strong>세부 목표:</strong> {{ post.goal.content }}</p>
+  <p>🕒 {{ post.created_at|date:"Y-m-d H:i" }}</p>
+
+  <!-- 좋아요 -->
+  <form method="POST" action="{% url 'community:toggle_like' post.id %}">
+    {% csrf_token %}
+    <button type="submit">
+      {% if liked %}❤️ 좋아요 취소{% else %}🤍 좋아요{% endif %}
+    </button>
+    <span>{{ like_count }}명이 좋아했어요</span>
+  </form>
+
+  <hr>
+
+  <!-- 댓글 영역 -->
+  <h4>💬 댓글 ({{ comment_count }}개)</h4>
+  <form method="POST" action="{% url 'community:add_comment' post.id %}">
+    {% csrf_token %}
+    <input type="text" name="content" placeholder="댓글을 입력하세요" required>
+    <button type="submit">작성</button>
+  </form>
+
+  <ul>
+    {% for comment in comments %}
+      <li style="margin-top:10px;">
+        <strong>{{ comment.user.nickname }}</strong>: {{ comment.content }}<br>
+        <small>{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+
+        {% if comment.user == request.user %}
+          <!-- 삭제 버튼 -->
+          <form method="POST" action="{% url 'community:delete_comment' comment.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" style="color:red; background:none; border:none;">삭제</button>
+          </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <br>
+  <a href="{% url 'community:post_list' %}">← 커뮤니티로 돌아가기</a>
+{% endblock %}
+
+</body>
+</html>
+

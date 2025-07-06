@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+<h2>📝 인증 글 게시하기</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <!-- 도전 선택 -->
+  <label for="challenge-select">도전 선택:</label><br>
+  <select id="challenge-select" name="challenge">
+    <option value="">도전을 선택하세요</option>
+    {% for challenge in challenges %}
+      <option value="{{ challenge.id }}">{{ challenge.title }}</option>
+    {% endfor %}
+  </select><br><br>
+
+  <!-- 세부 목표 선택 -->
+  <label for="goal-select">세부 목표 선택:</label><br>
+  <select id="goal-select" name="goal">
+    <option value="">세부 목표를 선택하세요</option>
+  </select><br><br>
+
+  <!-- 내용 -->
+  <label for="content">내용:</label><br>
+  <textarea name="content" id="content" rows="5" cols="50" placeholder="도전 인증 내용을 입력하세요"></textarea><br><br>
+
+  <!-- 이미지 업로드 -->
+  <label for="image">이미지 업로드 (선택):</label><br>
+  <input type="file" name="image" id="image"><br><br>
+
+  <button type="submit">게시하기</button>
+</form>
+
+<!-- AJAX 스크립트 -->
+<script>
+  document.getElementById('challenge-select').addEventListener('change', function () {
+    const challengeId = this.value;
+
+    fetch(`/community/load-goals/?challenge_id=${challengeId}`)
+      .then(response => response.json())
+      .then(data => {
+        const goalSelect = document.getElementById('goal-select');
+        goalSelect.innerHTML = '<option value="">세부 목표를 선택하세요</option>';
+        data.forEach(goal => {
+          const option = document.createElement('option');
+          option.value = goal.id;
+          option.textContent = goal.content;
+          goalSelect.appendChild(option);
+        });
+      });
+  });
+</script>
+
+</body>
+</html>
