@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+    <h2>회원가입</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div>
+            <label for="id_username">아이디</label>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label for="id_nickname">닉네임</label>
+            {{ form.nickname }}
+            {% for error in form.nickname.errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label for="id_profile_image">프로필 사진</label>
+            {{ form.profile_image }}
+            {% for error in form.profile_image.errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label for="id_password1">비밀번호</label>
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label for="id_password2">비밀번호 확인</label>
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div>
+            <label>관심 있는 카테고리</label>
+            {% for radio in form.interest_category %}
+                <div>
+                    <label>{{ radio.tag }} {{ radio.choice_label }}</label>
+                </div>
+            {% endfor %}
+            {% for error in form.interest_category.errors %}
+                <p style="color: red;">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <button type="submit">회원가입</button>
+    </form>
+</body>
+</html>
