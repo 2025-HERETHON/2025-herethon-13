@@ -1,16 +1,15 @@
 from django.db import models
 # from api.models import User 
-from .views import *
     
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     # color_code = models.CharField(max_length=50) 잠시 삭제
 
     def __str__(self):
         return self.name
     
 class Challenge(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey("api.User", on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     goal = models.CharField(max_length=200)
