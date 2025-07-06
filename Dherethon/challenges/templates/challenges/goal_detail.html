@@ -25,8 +25,12 @@
       <button type="submit">인증 완료하기</button>
     </form>
 
+    
+
     <br>
-   
+   <a href="{% url 'challenges:edit_goal' goal.challenge.id goal.id %}">
+  [수정하기]
+</a>
   </div>
 {% endblock %}
 </body>
