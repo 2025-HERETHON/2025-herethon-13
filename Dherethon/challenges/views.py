@@ -4,6 +4,7 @@ from .forms import ChallengeForm, GoalForm
 from .models import *
 from datetime import date
 from django.utils import timezone
+from django.db.models import Q
 
 @login_required
 def list(request):
@@ -80,7 +81,7 @@ def my_challenges(request):
 @login_required
 def detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-    goals = Goal.objects.filter(challenge=challenge)
+    all_goals = Goal.objects.filter(challenge=challenge)
 
     today = timezone.now().date()
 
@@ -92,9 +93,19 @@ def detail(request, pk):
     start_date = challenge.start_date.date() if hasattr(challenge.start_date, "date") else challenge.start_date
     challenge.d_plus = (today - start_date).days
 
+    # 완료한 세부 목표: GoalProgress에서 is_completed=True
+    completed_goal_ids = GoalProgress.objects.filter(
+        user=request.user, is_completed=True
+    ).values_list('goal_id', flat=True)
+
+    completed_goals = all_goals.filter(id__in=completed_goal_ids)
+    ongoing_goals = all_goals.exclude(id__in=completed_goal_ids)
+
     return render(request, 'challenges/detail.html', {
         'challenge': challenge,
-        'goals': goals,
+        'completed_goals': completed_goals,
+        'ongoing_goals': ongoing_goals,
+        'today': today,
     })
 
 # 도전 생성
@@ -143,7 +154,7 @@ def update_challenge(request, pk):
         'challenge': challenge,
     })
 
-#세부목표 생성/수정
+#세부목표 게시글 생성/수정
 @login_required
 def create_goal(request, challenge_id, goal_id=None):
     challenge = get_object_or_404(Challenge, id=challenge_id)
@@ -158,20 +169,33 @@ def create_goal(request, challenge_id, goal_id=None):
         selected_goal_id = request.POST.get('goal')
         selected_goal = get_object_or_404(Goal, id=selected_goal_id)
 
+        title = request.POST.get('title')
         content = request.POST.get('content')
         date = request.POST.get('date')
         image = request.FILES.get('image') if 'image' in request.FILES else (goal.image if goal else None)
 
         if goal:
-            # 수정
+            # 수정: goal_id로 들어온 인증글 수정
+            goal.title = title
             goal.content = content
             goal.date = date
             goal.image = image
             goal.save()
         else:
-            # 생성
-            Goal.objects.create(challenge=challenge, content=content, date=date, image=image)
+            # 생성: 선택한 세부 목표(Goal)에 인증 내용 저장
+            selected_goal.title = title
+            selected_goal.content = content
+            selected_goal.date = date
+            selected_goal.image = image
+            selected_goal.save()
 
+            # 인증 완료
+            GoalProgress.objects.update_or_create(
+                user=request.user,
+                goal=selected_goal,
+                defaults={'is_completed': True}
+            )
+            
         return redirect('challenges:detail', pk=challenge.id)
 
     return render(request, 'challenges/create_goal.html', {

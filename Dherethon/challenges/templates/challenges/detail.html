@@ -49,24 +49,20 @@
             <!-- 완료된 목표 -->
             <h4>완료한 세부 목표</h4>
             <ul>
-                {% for goal in challenge.goals.all %}
-                    {% if goal.is_completed %}
-                        <li>
-                            ✅ {{ goal.content }}
-                        </li>
-                    {% endif %}
+                {% for goal in completed_goals %}
+                    <li>✅ {{ goal.content }}</li>
+                {% empty %}
+                    <li>완료한 세부 목표가 없습니다.</li>
                 {% endfor %}
             </ul>
 
             <!-- 진행 중인 목표 -->
             <h4>진행 중인 세부 목표</h4>
             <ul>
-                {% for goal in challenge.goals.all %}
-                    {% if not goal.is_completed %}
-                        <li>
-                            ☐ {{ goal.content }}
-                        </li>
-                    {% endif %}
+                {% for goal in ongoing_goals %}
+                    <li>☐ {{ goal.content }}</li>
+                {% empty %}
+                    <li>진행 중인 세부 목표가 없습니다.</li>
                 {% endfor %}
             </ul>
 

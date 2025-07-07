@@ -56,6 +56,10 @@
             {% endif %}
             <input type="file" name="image" id="image"><br><br>
 
+            <!-- 제목 입력 -->
+            <label for="title">제목</label><br>
+            <input type="text" name="title" id="title" value="{{ goal.title|default_if_none:'' }}"><br><br>
+
             <!-- 내용 -->
             <label for="content">내용</label><br>
             <textarea name="content" id="content" rows="6" cols="50" placeholder="내용을 입력하세요.">{{ goal.content|default_if_none:'' }}</textarea><br><br>
