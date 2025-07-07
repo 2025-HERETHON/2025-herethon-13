@@ -10,5 +10,5 @@ urlpatterns = [
     path('<int:post_id>/comment/', add_comment, name='add_comment'),
     path('<int:post_id>/like/', toggle_like, name='toggle_like'),
     path('comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
-    path('load-goals/', load_goals, name='load_goals'),
+    path('load_goal_progresses/', load_goal_progresses, name='load_goal_progresses'),
 ]

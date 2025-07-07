@@ -5,6 +5,7 @@ from .models import *
 from datetime import date
 from django.utils import timezone
 from django.db.models import Q
+from datetime import datetime
 
 @login_required
 def list(request):
@@ -218,11 +219,17 @@ def create_goal(request, challenge_id, record_id=None):
                 image = image
             )
 
+        
         # 진행 상태 갱신
         GoalProgress.objects.update_or_create(
             user=request.user,
             goal=goal,
-            defaults={'is_completed': True}
+            defaults={
+                'is_completed': True,
+                'content': content,
+                'image': image,
+                'date': datetime.strptime(date, "%Y-%m-%d").date()
+            }
         )
             
         return redirect('challenges:detail', pk=challenge.id)
@@ -240,3 +247,13 @@ def goal_detail(request, record_id):
     return render(request, 'challenges/goal_detail.html', {
         'record': record
     })
+
+@login_required
+def delete_goal_record(request, record_id):
+    record = get_object_or_404(GoalRecord, id=record_id, user=request.user)
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('challenges:my_challenges')  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지)
+
+    return redirect('challenges:record_detail', record_id=record_id)  # 직접 접근은 리디렉트

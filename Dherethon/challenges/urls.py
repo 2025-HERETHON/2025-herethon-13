@@ -22,6 +22,7 @@ urlpatterns = [
     # 챌린지 생성
     path('challenge/create/', create_challenge, name='create'),
     path('challenge/<int:pk>/edit/', create_challenge, name='update_challenge'),
+    path('record/delete/<int:record_id>/', delete_goal_record, name='delete_goal_record'),
 
     path('', my_challenges, name='my_challenges'),
 
