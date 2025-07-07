@@ -320,12 +320,26 @@ def goal_detail(request, record_id):
 #             awarded_at=now()
 #         )
 #     return redirect('challenges:my_challenges')
+
+# 챌린지 삭제
+@login_required
+def delete_challenge(request, pk):
+    challenge = get_object_or_404(Challenge, id=pk, user=request.user)
+
+    if request.method == 'POST':
+        challenge.delete()
+        return redirect('challenges:my_challenges')  # 삭제 후 이동할 곳 설정
+    
+    return redirect('challenges:detail', pk=pk)
+
+# 세부목표 인증글 삭제
 @login_required
 def delete_goal_record(request, record_id):
     record = get_object_or_404(GoalRecord, id=record_id, user=request.user)
+    challenge_id = record.goal.challenge.id
 
     if request.method == 'POST':
         record.delete()
-        return redirect('challenges:my_challenges')  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지)
+        return redirect('challenges:detail', pk=challenge_id)  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지) -> 도전 상세 페이지로 변경
 
     return redirect('challenges:record_detail', record_id=record_id)  # 직접 접근은 리디렉트

@@ -82,6 +82,16 @@
         </div>
         {% endif %}
 
+        <!-- 삭제하기 버튼 -->
+        {% if progress < 100 %}
+        <div style="margin-top: 10px;">
+            <form method="post" action="{% url 'challenges:delete_challenge' pk=challenge.id %}">
+                {% csrf_token %}
+                <button type="submit" onclick="return confirm('정말 이 챌린지를 삭제하시겠습니까?')">삭제하기</button>
+            </form>
+        </div>
+        {% endif %}
+
     </div>
 
     <!-- 오른쪽 인증 영역 -->
