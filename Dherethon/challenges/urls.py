@@ -13,6 +13,7 @@ urlpatterns = [
     # 챌린지 생성
     path('challenge/create/', create_challenge, name='create'),
     path('challenge/<int:pk>/edit/', create_challenge, name='update_challenge'),
+    path('record/delete/<int:record_id>/', delete_goal_record, name='delete_goal_record'),
 
     # 세부목표 생성 및 수정
     path('challenge/<int:challenge_id>/goals/create/', create_goal, name='create_goal'),  # 생성

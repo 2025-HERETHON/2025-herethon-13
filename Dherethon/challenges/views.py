@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.db.models import Q
 from home.models import Badge
 from django.utils.timezone import now
+from datetime import datetime
 
 # 로그인한 사용자 기준 list view
 @login_required
@@ -219,11 +220,17 @@ def create_goal(request, challenge_id, record_id=None):
                 image = image
             )
 
+        
         # 진행 상태 갱신
         GoalProgress.objects.update_or_create(
             user=request.user,
             goal=goal,
-            defaults={'is_completed': True}
+            defaults={
+                'is_completed': True,
+                'content': content,
+                'image': image,
+                'date': datetime.strptime(date, "%Y-%m-%d").date()
+            }
         )
 
         # 진행률 계산
@@ -289,7 +296,6 @@ def goal_detail(request, record_id):
         'record': record
     })
 
-
 # @login_required
 # def complete_challenge(request, pk):
 #     challenge = get_object_or_404(Challenge, pk=pk, user=request.user)
@@ -312,3 +318,12 @@ def goal_detail(request, record_id):
 #             awarded_at=now()
 #         )
 #     return redirect('challenges:my_challenges')
+@login_required
+def delete_goal_record(request, record_id):
+    record = get_object_or_404(GoalRecord, id=record_id, user=request.user)
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('challenges:my_challenges')  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지)
+
+    return redirect('challenges:record_detail', record_id=record_id)  # 직접 접근은 리디렉트
