@@ -47,7 +47,7 @@
                 <p>[진행률바 영역]</p>
             </div>
             {% if progress == 100 %}
-                <p style="color: green; font-weight: bold;">🎉 모든 세부 목표를 완료했어요! 뱃지가 자동으로 지급되었습니다.</p>
+                <p style="color: green; font-weight: bold;">🎉 모든 세부 목표를 완료했어요! 뱃지가 지급되었습니다.</p>
             {% endif %}
         </div>
 
@@ -76,9 +76,11 @@
         </div>
 
         <!-- 수정하기 버튼 -->
+        {% if progress < 100 %}
         <div style="margin-top: 20px;">
-            <a href="{% url 'challenges:update_challenge' challenge.id %}" style="background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">수정하기</a>
+            <a href="{% url 'challenges:update_challenge' challenge.id %}">수정하기</a>
         </div>
+        {% endif %}
 
     </div>
 
@@ -118,9 +120,12 @@
         </div>
 
         <!-- 인증하기 버튼 -->
+        {% if progress < 100 %}
         <div style="margin-top: 20px;">
-            <a href="{% url 'challenges:create_goal' challenge.id %}" style="background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">인증하기</a>
+            <a href="{% url 'challenges:create_goal' challenge.id %}">인증하기</a>
         </div>
+        {% endif %}
+
     </div>
 
 </div>
