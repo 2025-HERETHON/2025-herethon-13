@@ -44,6 +44,7 @@ class Challenge(models.Model):
 # 세부 목표
 class Goal(models.Model):
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE, related_name='goals')
+    title = models.CharField(max_length=100, null=True, blank=True) # 제목 추가
     content = models.CharField(max_length=200)
     date = models.DateField(null=True, blank=True)
     image = models.ImageField(upload_to='goals_image/', null= True, blank= True)
@@ -51,6 +52,19 @@ class Goal(models.Model):
     def __str__(self):
         return f"{self.challenge.title} - {self.content}"
     
+# 인증 기록용 모델 추가
+class GoalRecord(models.Model):
+    user = models.ForeignKey("api.User", on_delete=models.CASCADE)
+    goal = models.ForeignKey(Goal, on_delete=models.CASCADE, related_name='records')
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    image = models.ImageField(upload_to='goal_records/', null=True, blank=True)
+    date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.nickname} - {self.goal.content} 인증"
+
 # 사용자의 도전 참여 기록
 class UserChallenge(models.Model):
     user = models.ForeignKey("api.User", on_delete=models.CASCADE)
