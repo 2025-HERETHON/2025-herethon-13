@@ -1,20 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <title>인증 글 게시하기</title>
+  <style>
+    .card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .card.selected {
+      border: 2px solid #5A3FFF;
+      background-color: #eae6ff;
+    }
+    img.preview-img {
+      max-width: 300px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-
 <h2>📝 인증 글 게시하기</h2>
 
-<form method="POST" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" action="{% url 'community:create_post' %}">
   {% csrf_token %}
 
-  <!-- 도전 선택 -->
-  <label for="challenge-select">도전 선택:</label><br>
+  <label for="challenge-select"><strong>도전 선택:</strong></label><br>
   <select id="challenge-select" name="challenge">
     <option value="">도전을 선택하세요</option>
     {% for challenge in challenges %}
@@ -22,40 +37,87 @@
     {% endfor %}
   </select><br><br>
 
-  <!-- 세부 목표 선택 -->
-  <label for="goal-select">세부 목표 선택:</label><br>
-  <select id="goal-select" name="goal">
-    <option value="">세부 목표를 선택하세요</option>
-  </select><br><br>
+  <!-- 인증 기록 목록 -->
+  <div id="progress-list" style="display:none;">
+    <h4>인증 기록 목록</h4>
+    <div id="progress-cards"></div>
+  </div>
 
-  <!-- 내용 -->
-  <label for="content">내용:</label><br>
-  <textarea name="content" id="content" rows="5" cols="50" placeholder="도전 인증 내용을 입력하세요"></textarea><br><br>
+  <!-- 선택된 goal_progress id -->
+  <input type="hidden" name="goal_progress" id="selected-progress-id">
 
-  <!-- 이미지 업로드 -->
-  <label for="image">이미지 업로드 (선택):</label><br>
-  <input type="file" name="image" id="image"><br><br>
+  <!-- 선택한 인증 내용 미리보기 -->
+  <div id="preview-container" style="display:none; margin-top:20px;">
+    <h4>선택한 인증 미리보기</h4>
+    <p><strong>인증 내용:</strong></p>
+    <p id="preview-content" style="white-space: pre-line;"></p>
+    <div>
+      <p><strong>이미지:</strong></p>
+      <img id="preview-image" class="preview-img" src="" alt="인증 이미지" style="display:none;">
+    </div>
+  </div>
 
   <button type="submit">게시하기</button>
 </form>
 
-<!-- AJAX 스크립트 -->
 <script>
-  document.getElementById('challenge-select').addEventListener('change', function () {
-    const challengeId = this.value;
+  const challengeSelect = document.getElementById('challenge-select');
+  const cardContainer = document.getElementById('progress-cards');
+  const progressList = document.getElementById('progress-list');
+  const previewContainer = document.getElementById('preview-container');
+  const previewContent = document.getElementById('preview-content');
+  const previewImage = document.getElementById('preview-image');
+  const hiddenInput = document.getElementById('selected-progress-id');
 
-    fetch(`/community/load-goals/?challenge_id=${challengeId}`)
-      .then(response => response.json())
+  challengeSelect.addEventListener('change', function () {
+    const challengeId = this.value;
+    cardContainer.innerHTML = '';
+    progressList.style.display = 'none';
+    previewContainer.style.display = 'none';
+    hiddenInput.value = '';
+
+    if (!challengeId) return;
+
+    fetch(`/community/load_goal_progresses/?challenge_id=${challengeId}`)
+      .then(res => res.json())
       .then(data => {
-        const goalSelect = document.getElementById('goal-select');
-        goalSelect.innerHTML = '<option value="">세부 목표를 선택하세요</option>';
-        data.forEach(goal => {
-          const option = document.createElement('option');
-          option.value = goal.id;
-          option.textContent = goal.content;
-          goalSelect.appendChild(option);
+        if (data.length === 0) {
+          alert("게시할 수 있는 인증 기록이 없습니다.");
+          return;
+        }
+
+        data.forEach(progress => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <strong>${progress.goal_title}</strong><br>
+            <small>${progress.date}</small><br>
+            <p>${progress.content}</p>
+            ${progress.image_url ? `<img src="${progress.image_url}" class="preview-img">` : ''}
+          `;
+
+          // 클릭하면 선택되도록
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            hiddenInput.value = progress.id;
+
+            previewContent.textContent = progress.content;
+            if (progress.image_url) {
+              previewImage.src = progress.image_url;
+              previewImage.style.display = 'block';
+            } else {
+              previewImage.style.display = 'none';
+            }
+            previewContainer.style.display = 'block';
+          });
+
+          cardContainer.appendChild(card);
         });
-      });
+
+        progressList.style.display = 'block';
+      })
+      .catch(() => alert("인증 기록을 불러오지 못했습니다."));
   });
 </script>
 

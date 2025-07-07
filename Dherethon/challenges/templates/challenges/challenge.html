@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>나의 도전</title>
+</head>
+<body>
+
+    <div>
+
+        <!-- 왼쪽 사이드바 -->
+        <div>
+            <!-- 프로필 -->
+            {% if request.user.profile_image %}
+                <img src="{{ request.user.profile_image.url }}" alt="프로필 이미지"><br>
+            {% else %}
+                <p>[프로필 이미지 없음]</p>
+            {% endif %}
+
+            <p>{{ request.user.nickname }}</p>
+
+            <!-- 메뉴 -->
+            <nav>
+                <p><a href="{% url 'home:main' %}">홈</a></p>
+                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+                <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+                <p>뱃지</p>
+            </nav>
+
+            <!-- 로그아웃 -->
+            <p><a href="{% url 'api:logout' %}">Log out</a></p>
+        </div>
+
+        <!-- 오른쪽 메인 콘텐츠 -->
+        <div>
+
+            <h2>{{ request.user.nickname }} 님의 Challenges</h2>
+
+            <!-- 카테고리 탭 -->
+            <div>
+                {% for name in category_list %}
+                    <a href="?category={{ name }}">
+                        {% if selected_category == name %}
+                            [{{ name }}]
+                        {% else %}
+                            {{ name }}
+                        {% endif %}
+                    </a>
+                    {% if not forloop.last %}|{% endif %}
+                {% endfor %}
+            </div>
+
+            <!-- 헤더 -->
+            <p>도전리스트 / 진행률 / 다음 세부 목표</p>
+            <hr>
+
+            <!-- 도전 리스트 -->
+            {% for challenge in challenges %}
+                <div>
+                    <p>
+                        {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}
+                        {{ challenge.category.name }}<br>
+                        {{ challenge.title }}<br>
+                        진행률: {{ challenge.progress_percent }}%
+                    </p>
+                    {% if challenge.next_goal %}
+                        <p>다음 세부 목표: {{ challenge.next_goal.content }}</p>
+                    {% else %}
+                        <p>다음 세부 목표 없음</p>
+                    {% endif %}
+                    <hr>
+                </div>
+            {% empty %}
+                <p>참여 중인 도전이 없습니다.</p>
+            {% endfor %}
+
+            <!-- 인증 카드 리스트 -->
+            {% for goal in incomplete_goals %}
+                <div>
+                    {% if goal.challenge.image %}
+                        <img src="{{ goal.challenge.image.url }}" alt="도전 이미지">
+                    {% endif %}
+                    <p>{{ goal.challenge.category.name }}</p>
+                    <p>{{ goal.challenge.title }}</p>
+                    <a href="{% url 'challenges:detail' goal.challenge.id %}">인증하러 가기 →</a>
+                    <hr>
+                </div>
+            {% endfor %}
+
+            <!-- 도전 추가하기 -->
+            <p><a href="{% url 'challenges:create' %}">[도전 추가하기]</a></p>
+
+        </div>
+    </div>
+
+</body>
+</html>

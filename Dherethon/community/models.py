@@ -1,9 +1,10 @@
 from django.db import models
 from api.models import User
-from challenges.models import Challenge, Goal
+from challenges.models import Challenge, Goal,GoalProgress
 
 class Post(models.Model):
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE, null=True)
+    goal_progress = models.OneToOneField(GoalProgress, on_delete=models.CASCADE, null=True)
     goal = models.ForeignKey(Goal, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()

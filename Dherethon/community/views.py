@@ -1,40 +1,61 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse, HttpResponseForbidden
 from community.models import Post, Comment, Like
-from challenges.models import Goal, GoalProgress, Challenge
-from django.http import HttpResponseForbidden,JsonResponse
-from .views import *
+from challenges.models import Category, GoalProgress, Challenge, GoalRecord
 
+# 인증 완료된 세부목표 목록 중에서 선택하여 게시글 작성
 @login_required
 def create_post(request):
     if request.method == 'POST':
-        goal_id = request.POST.get('goal')
-        goal = get_object_or_404(Goal, id=goal_id)
+        progress_id = request.POST.get('goal_progress')
+        progress = get_object_or_404(GoalProgress, id=progress_id, user=request.user, is_completed=True)
 
-        # 인증 완료된 세부목표인지 확인
-        if not GoalProgress.objects.filter(user=request.user, goal=goal, is_completed=True).exists():
+        # 이미 게시된 인증 기록이면 중복 방지
+        if Post.objects.filter(goal_progress=progress).exists():
             return redirect('community:post_list')
 
-        content = request.POST.get('content')
-        image = request.FILES.get('image')
+        # ✅ GoalRecord에서 content, image 가져오기
+        record = GoalRecord.objects.filter(user=request.user, goal=progress.goal, date=progress.date).first()
+        if not record:
+            return redirect('community:create_post')  # 혹은 에러 메시지 띄우기
 
         Post.objects.create(
             user=request.user,
-            goal=goal,
-            challenge=goal.challenge,
-            content=content,
-            image=image
+            goal=progress.goal,
+            challenge=progress.goal.challenge,
+            goal_progress=progress,
+            content=record.content,
+            image=record.image
         )
         return redirect('community:post_list')
 
-    # 도전 전체 목록 넘김 (사용자가 만든 도전만)
     challenges = Challenge.objects.filter(user=request.user)
     return render(request, 'community/create_post.html', {'challenges': challenges})
 
 @login_required
 def post_list(request):
-    posts = Post.objects.select_related('user', 'goal', 'goal__challenge').order_by('-created_at')
-    return render(request, 'community/post_list.html', {'posts': posts})
+    query = request.GET.get('q')
+    category = request.GET.get('category')
+
+    posts = Post.objects.select_related('user', 'goal__challenge__category').order_by('-created_at')
+
+    if query:
+        posts = posts.filter(content__icontains=query)
+
+    if category and category != '전체':
+        posts = posts.filter(goal__challenge__category__name=category)
+
+    # 카테고리 목록을 보내줌 (전체 포함)
+    from challenges.models import Category
+    categories = Category.objects.all()
+
+    return render(request, 'community/post_list.html', {
+        'posts': posts,
+        'query': query or '',
+        'selected_category': category or '전체',
+        'categories': categories,
+    })
 
 @login_required
 def post_detail(request, post_id):
@@ -81,14 +102,28 @@ def delete_comment(request, comment_id):
     return redirect('community:post_detail', post_id=post_id)
 
 @login_required
-def load_goals(request):
+def load_goal_progresses(request):
     challenge_id = request.GET.get('challenge_id')
-    completed_goals = GoalProgress.objects.filter(
-        user=request.user,
-        is_completed=True,
-        goal__challenge_id=challenge_id
-    ).values_list('goal_id', flat=True)
 
-    goals = Goal.objects.filter(id__in=completed_goals)
-    data = [{'id': g.id, 'content': g.content} for g in goals]
-    return JsonResponse(data, safe=False)
+    if not challenge_id:
+        return JsonResponse({'error': 'challenge_id가 없습니다.'}, status=400)
+
+    progresses = GoalProgress.objects.filter(
+        user=request.user,
+        goal__challenge_id=challenge_id,
+        is_completed=True
+    ).select_related('goal').order_by('-date')
+
+    results = []
+    for progress in progresses:
+        record = GoalRecord.objects.filter(user=request.user, goal=progress.goal, date=progress.date).first()
+
+        results.append({
+            'id': progress.id,
+            'goalTitle': progress.goal.title,
+            'date': progress.date.strftime('%Y.%m.%d'),
+            'content': record.content if record else '내용 없음',
+            'image_url': record.image.url if record and record.image else '',
+        })
+
+    return JsonResponse({'progresses': results})
