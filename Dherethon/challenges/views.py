@@ -29,17 +29,8 @@ def my_challenges(request):
             user=request.user, goal__challenge=challenge, is_completed=True
         ).count()
         challenge.progress_percent = int(completed / total * 100) if total > 0 else 0
+        challenge.badge_received = Badge.objects.filter(user=request.user, challenge=challenge).exists()
 
-        # 진행률 100%일 때 누락된 뱃지 자동 발급
-        if challenge.progress_percent == 100:
-            already_awarded = Badge.objects.filter(user=request.user, challenge=challenge).exists()
-            if not already_awarded:
-                Badge.objects.create(
-                    user=request.user,
-                    category=challenge.category,
-                    challenge=challenge,
-                    awarded_at=now()
-                )
                 
         # 다음 세부 목표
         challenge.next_goal = Goal.objects.filter(
@@ -57,6 +48,7 @@ def my_challenges(request):
 
     # 인증 필요 목표 목록
     incomplete_challenges = []
+    awarded_challenge_ids = Badge.objects.filter(user=request.user).values_list('challenge_id', flat=True)
 
     valid_challenges = Challenge.objects.annotate(
         start_date_only=TruncDate('start_date'),
@@ -65,6 +57,8 @@ def my_challenges(request):
         user=request.user,
         start_date_only__lte=today,
         end_date_only__gte=today
+    ).exclude(
+        id__in=awarded_challenge_ids  # 뱃지 받은 도전 제외
     ).order_by('end_date')
 
     incomplete_challenges = list(valid_challenges[:3])

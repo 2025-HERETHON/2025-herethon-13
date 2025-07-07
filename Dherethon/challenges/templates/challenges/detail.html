@@ -53,7 +53,7 @@
                         {% csrf_token %}
                         <p style="font-weight: bold;">🥇 모든 세부 목표를 완료했어요!<br>뱃지를 받으시겠습니까?</p>
                         <button type="submit" style="display: inline-block; background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">예</button>
-                        <a href="{% url 'challenges:my_challenges' %}" style="margin-left: 10px; display: inline-block; background-color: #e5e7eb; color: #111827; padding: 10px 20px; border-radius: 5px; text-decoration: none;">아니오</a>
+                        <a href="{% url 'challenges:detail' challenge.id %}" style="margin-left: 10px; display: inline-block; background-color: #e5e7eb; color: #111827; padding: 10px 20px; border-radius: 5px; text-decoration: none;">아니오</a>
                     </form>
                 </div>
             {% endif %}

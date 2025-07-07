@@ -57,7 +57,7 @@
 
             <!-- 도전 리스트 -->
             {% for challenge in challenges %}
-                {% if challenge.progress_percent < 100 %}
+                {% if not challenge.badge_received %}
                     <div>
                         <p>
                             {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}
