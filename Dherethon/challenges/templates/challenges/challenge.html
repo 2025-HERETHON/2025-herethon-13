@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,10 +12,10 @@
         <!-- 왼쪽 사이드바 -->
         <div>
             <!-- 프로필 -->
-            {% if request.user.profile_image %}
-                <img src="{{ request.user.profile_image.url }}" alt="프로필 이미지"><br>
+            {% if user.profile_image and user.profile_image.url %}
+                <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
             {% else %}
-                <p>[프로필 이미지 없음]</p>
+                <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
             {% endif %}
 
             <p>{{ request.user.nickname }}</p>
@@ -23,8 +24,8 @@
             <nav>
                 <p><a href="{% url 'home:main' %}">홈</a></p>
                 <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
-                <p>커뮤니티</p>
-                <p>뱃지</p>
+                <p><a href="#">커뮤니티</a></p>
+                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
             </nav>
 
             <!-- 로그아웃 -->
@@ -39,7 +40,7 @@
             <!-- 카테고리 탭 -->
             <div>
                 {% for name in category_list %}
-                    <a href="?category={{ name }}">
+                    <a href="?category={{ name|urlencode }}">
                         {% if selected_category == name %}
                             [{{ name }}]
                         {% else %}
@@ -74,6 +75,7 @@
                 <p>참여 중인 도전이 없습니다.</p>
             {% endfor %}
 
+            <h3>오늘의 도전</h3>
             <!-- 인증 카드 리스트 -->
             {% for goal in incomplete_goals %}
                 <div>

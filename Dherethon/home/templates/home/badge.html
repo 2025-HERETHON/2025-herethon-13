@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>뱃지 목록</title>
+</head>
+<body>
+
+    <div style="display:flex;">
+
+        <!-- 좌측 사이드바 -->
+        <div style="width:200px; padding:10px;">
+            <p><strong>{{ request.user.nickname }}</strong></p>
+            <!-- 프로필 -->
+            {% if user.profile_image and user.profile_image.url %}
+                <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
+            {% else %}
+                <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
+            {% endif %}
+            <ul>
+                <p><a href="{% url 'home:main' %}">홈</a></p>
+                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+                <p><a href="#">커뮤니티</a></p>
+                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
+            </ul>
+            <p><a href="{% url 'api:logout' %}">Log out</a></p>
+        </div>
+
+        <!-- 메인 콘텐츠 영역 -->
+        <div style="flex-grow:1; padding:20px;">
+
+            <!-- 카테고리 탭 -->
+            <ul style="list-style:none; padding:0;">
+                <li style="display:inline; margin-right:10px;">
+                    <a href="?category=전체"{% if selected_category == '전체' %} style="font-weight:bold;"{% endif %}>전체</a>
+                </li>
+                {% for category in categories %}
+                    <li style="display:inline; margin-right:10px;">
+                        <a href="?category={{ category.name|urlencode }}"{% if selected_category == category.name %} style="font-weight:bold;"{% endif %}>
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <!-- 뱃지 개수 요약 -->
+            <p style="margin-top:20px;">
+                {{ request.user.nickname }} 님이 달성한 "{{ selected_category }}" 도전 뱃지 <strong>{{ badge_count }}</strong>개
+            </p>
+
+            <!-- 뱃지 리스트 -->
+            <div>
+                {% for badge in badges %}
+                    <div style="border:1px solid #ddd; padding:10px; margin:10px 0;">
+                        <div>
+                            <img src="{% static 'images/book-icon.png' %}" alt="뱃지 아이콘" width="40" height="40">
+                        </div>
+                        <div>
+                            <p><strong>{{ badge.challenge.title }}</strong></p>
+                            <p>{{ badge.challenge.start_date|date:"Y.m.d" }} - {{ badge.challenge.end_date|date:"Y.m.d" }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>획득한 뱃지가 없습니다.</p>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

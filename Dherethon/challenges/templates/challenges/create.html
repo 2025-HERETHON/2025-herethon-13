@@ -6,10 +6,10 @@
     <!-- 왼쪽 사이드바 -->
     <div>
         <!-- 프로필 -->
-        {% if request.user.profile_image %}
-            <img src="{{ request.user.profile_image.url }}" alt="프로필 이미지">
+        {% if user.profile_image and user.profile_image.url %}
+            <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
         {% else %}
-            <p>[프로필 이미지 없음]</p>
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
         {% endif %}
 
         <p>{{ request.user.nickname }}</p>
@@ -19,7 +19,7 @@
             <p><a href="{% url 'home:main' %}">홈</a></p>
             <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
             <p><a href="#">커뮤니티</a></p>
-            <p><a href="#">뱃지</a></p>
+            <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
         </nav>
 
         <!-- 로그아웃 -->
