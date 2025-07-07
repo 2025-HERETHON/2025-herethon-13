@@ -40,7 +40,7 @@
             <!-- 카테고리 탭 -->
             <div>
                 {% for name in category_list %}
-                    <a href="?category={{ name }}">
+                    <a href="?category={{ name|urlencode }}">
                         {% if selected_category == name %}
                             [{{ name }}]
                         {% else %}

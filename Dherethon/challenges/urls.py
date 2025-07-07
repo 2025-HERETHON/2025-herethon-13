@@ -10,11 +10,6 @@ urlpatterns = [
 
     # 세부목표 상세
     path('record/<int:record_id>/', goal_detail, name='goal_detail'),
-    
-    # 세부목표 인증 완료 처리
-    # path('goals/<int:goal_id>/complete/', complete_goal, name='complete_goal'),
-
-    path('list/', list, name='list'), # 아마 삭제될 url
 
     # 챌린지 상세
     path('detail/<int:pk>/', detail, name='detail'),
@@ -23,6 +18,7 @@ urlpatterns = [
     path('challenge/create/', create_challenge, name='create'),
     path('challenge/<int:pk>/edit/', create_challenge, name='update_challenge'),
 
+    # 챌린지 메인 페이지
     path('', my_challenges, name='my_challenges'),
 
 ]

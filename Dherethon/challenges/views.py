@@ -6,20 +6,6 @@ from datetime import date
 from django.utils import timezone
 from django.db.models import Q
 
-@login_required
-def list(request):
-    challenges = Challenge.objects.all()
-    goals = Goal.objects.all()
-
-    challenge_progress = {}
-    for challenge in challenges:
-        total = challenge.goals.count()
-        completed = GoalProgress.objects.filter(user=request.user, goal__challenge=challenge, is_completed=True).count()
-        percent = int(completed / total * 100) if total > 0 else 0
-        challenge_progress[challenge.id] = percent
-
-    return render(request, 'challenges/list.html', {'challenges': challenges, 'goals': goals, 'challenge_progress': challenge_progress})
-
 # 로그인한 사용자 기준 list view
 @login_required
 def my_challenges(request):
@@ -69,8 +55,8 @@ def my_challenges(request):
             incomplete_goals.append(goal)
             seen_challenges.add(goal.challenge_id)
 
-    category_list = "전체,학습 / 공부,커리어 / 직무,운동 / 건강,마음 / 루틴,정리 / 관리,취미,기타".split(',')
-
+    category_list = ['전체'] + list(Category.objects.values_list('name', flat=True))
+    
     return render(request, 'challenges/challenge.html', {
         'challenges': challenges,
         'incomplete_goals': incomplete_goals,
