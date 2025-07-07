@@ -3,12 +3,12 @@
 
 <div style="display: flex;">
 
-    <!-- 왼쪽 프로필 사이드바 -->
+    <!-- 왼쪽 프로필 -->
     <div style="width: 200px; margin-right: 20px;">
         <p><strong>{{ request.user.nickname }}</strong></p>
 
         {% if request.user.profile_image %}
-            <img src="{{ request.user.profile_image.url }}" alt="프로필 이미지" width="100">
+            <img src="{{ request.user.profile_image.url }}" width="100">
         {% else %}
             <p>[프로필 이미지 없음]</p>
         {% endif %}
@@ -21,13 +21,11 @@
                 <li><a href="#">뱃지</a></li>
             </ul>
         </nav>
-
         <p><a href="{% url 'api:logout' %}">Log out</a></p>
     </div>
 
-    <!-- 중앙 인증 작성 폼 -->
+    <!-- 인증글 폼 -->
     <div style="flex: 2;">
-
         <p>[{{ challenge.category.name }}]</p>
         <h3>{{ challenge.title }}</h3>
 
@@ -39,7 +37,7 @@
             <select name="goal" id="goal" required>
                 <option value="">-- 세부 목표 선택 --</option>
                 {% for g in all_goals %}
-                    <option value="{{ g.id }}" {% if goal and goal.id == g.id %}selected{% endif %}>
+                    <option value="{{ g.id }}" {% if record and record.goal.id == g.id %}selected{% endif %}>
                         {{ g.content }}
                     </option>
                 {% endfor %}
@@ -47,27 +45,26 @@
 
             <!-- 날짜 -->
             <label for="date">날짜</label><br>
-            <input type="date" name="date" id="date" value="{{ goal.date|date:'Y-m-d' }}"><br><br>
+            <input type="date" name="date" id="date" value="{{ record.date|date:'Y-m-d' }}"><br><br>
 
             <!-- 이미지 -->
             <label for="image">인증 이미지</label><br>
-            {% if goal and goal.image %}
-                <img src="{{ goal.image.url }}" alt="기존 이미지" width="200"><br>
+            {% if record and record.image %}
+                <img src="{{ record.image.url }}" width="200"><br>
             {% endif %}
             <input type="file" name="image" id="image"><br><br>
 
-            <!-- 제목 입력 -->
+            <!-- 제목 -->
             <label for="title">제목</label><br>
-            <input type="text" name="title" id="title" value="{{ goal.title|default_if_none:'' }}"><br><br>
+            <input type="text" name="title" id="title" value="{{ record.title|default_if_none:'' }}"><br><br>
 
             <!-- 내용 -->
             <label for="content">내용</label><br>
-            <textarea name="content" id="content" rows="6" cols="50" placeholder="내용을 입력하세요.">{{ goal.content|default_if_none:'' }}</textarea><br><br>
+            <textarea name="content" id="content" rows="6" cols="50">{{ record.content|default_if_none:'' }}</textarea><br><br>
 
             <!-- 버튼 -->
-            <button type="submit">{% if goal %}수정하기{% else %}등록하기{% endif %}</button>
+            <button type="submit">{% if record %}수정하기{% else %}등록하기{% endif %}</button>
         </form>
-
     </div>
 </div>
 

@@ -1,18 +1,16 @@
 {% block content %}
-<h2>나의 도전</h2>
+<h2 style="display: none;">나의 도전</h2>
 
-<div style="display: flex;">
+<div style="display: flex; gap: 24px;">
 
-    <!-- 왼쪽 프로필 사이드바 -->
-    <div style="width: 200px; margin-right: 20px;">
+    <!-- 왼쪽 사이드바 -->
+    <div style="width: 200px;">
         <p><strong>{{ request.user.nickname }}</strong></p>
-
         {% if request.user.profile_image %}
             <img src="{{ request.user.profile_image.url }}" alt="프로필 이미지" width="100">
         {% else %}
             <p>[프로필 이미지 없음]</p>
         {% endif %}
-
         <nav>
             <ul>
                 <li><a href="{% url 'home:main' %}">홈</a></li>
@@ -21,74 +19,86 @@
                 <li><a href="#">뱃지</a></li>
             </ul>
         </nav>
-
         <p><a href="{% url 'api:logout' %}">Log out</a></p>
     </div>
 
-    <!-- 중앙 도전 상세 -->
-    <div style="flex: 2; margin-right: 20px;">
+    <!-- 가운데 메인 콘텐츠 -->
+    <div style="flex: 2;">
 
-        <!-- 도전 요약 정보 -->
+        <!-- 도전 정보 -->
         <div>
             <p>[{{ challenge.category.name }}]</p>
             <h3>{{ challenge.title }}</h3>
             <p>{{ challenge.start_date|date:"Y.m.d" }} - {{ challenge.end_date|date:"Y.m.d" }}</p>
             <p>이 도전을 시작한 지 D+{{ challenge.d_plus }}</p>
             <p>종료까지 {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}</p>
-            <p>공개 여부: {% if challenge.is_public %}공개{% else %}비공개{% endif %}</p>
-
+            <p>공개 여부: {{ challenge.is_public|yesno:"공개,비공개" }}</p>
             {% if challenge.image %}
                 <img src="{{ challenge.image.url }}" width="200">
             {% endif %}
         </div>
 
-        <!-- 진행률 및 세부 목표 -->
-        <div>
-            <p><strong>진행률 {{ challenge.progress }}% ({{ challenge.completed_goals }}/{{ challenge.total_goals }})</strong></p>
+        <!-- 진행률 -->
+        <div style="margin-top: 20px;">
+            <p><strong>진행률 {{ progress }}% ({{ completed_count }}/{{ total_goals }})</strong></p>
+            <div style="height: 50px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <span>[진행률 바 영역]</span>
+            </div>
+        </div>
 
-            <!-- 완료된 목표 -->
+        <!-- 완료한 세부 목표 -->
+        <div style="margin-top: 20px;">
             <h4>완료한 세부 목표</h4>
             <ul>
                 {% for goal in completed_goals %}
-                    <li>✅ {{ goal.content }}</li>
+                    <li>
+                        {{ goal.content }}
+                    </li>
                 {% empty %}
                     <li>완료한 세부 목표가 없습니다.</li>
                 {% endfor %}
             </ul>
+        </div>
 
-            <!-- 진행 중인 목표 -->
+        <!-- 진행 중 세부 목표 -->
+        <div style="margin-top: 20px;">
             <h4>진행 중인 세부 목표</h4>
             <ul>
                 {% for goal in ongoing_goals %}
-                    <li>☐ {{ goal.content }}</li>
+                    <li>{{ goal.content }}</li>
                 {% empty %}
                     <li>진행 중인 세부 목표가 없습니다.</li>
                 {% endfor %}
             </ul>
-
-            <p><a href="{% url 'challenges:update_challenge' challenge.id %}">수정하기</a></p>
         </div>
+
+        <!-- 수정하기 버튼 -->
+        <div style="margin-top: 20px;">
+            <a href="{% url 'challenges:update_challenge' challenge.id %}" style="background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">수정하기</a>
+        </div>
+
     </div>
 
-    <!-- 오른쪽 달력과 인증 기록 -->
+    <!-- 오른쪽 인증 영역 -->
     <div style="flex: 1;">
         <h4>인증 기록</h4>
-
         <p>{{ today|date:"Y년 m월 d일" }}</p>
 
-        <!-- 인증 달력: 실제 구현 시에는 JS 또는 라이브러리 필요 -->
-        <div>
-            <p>[달력 영역]</p>
+        <!-- 달력 자리 (향후 JS 적용 예정) -->
+        <div style="margin-bottom: 10px;">
+            <div style="height: 200px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <span>[달력 영역]</span>
+            </div>
         </div>
 
-        <!-- 오늘 인증한 기록 예시 -->
+        <!-- 오늘 인증한 기록 -->
         <div>
             <p>{{ today|date:"Y.m.d" }}</p>
             <ul>
                 {% for record in challenge.records.all %}
                     {% if record.date == today %}
                         <li>
-                            {{ record.title }} <br>
+                            <strong>{{ record.title }}</strong><br>
                             {{ record.content|truncatewords:10 }}
                         </li>
                     {% endif %}
@@ -96,9 +106,14 @@
             </ul>
         </div>
 
-        <p><a href="{% url 'challenges:create_goal' challenge.id %}">인증하기</a></p>
+        <!-- 인증하기 버튼 -->
+        <div style="margin-top: 20px;">
+            <a href="{% url 'challenges:create_goal' challenge.id %}" style="background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">인증하기</a>
+        </div>
     </div>
+
 </div>
 
-<p><a href="{% url 'challenges:list' %}">← 목록으로</a></p>
+<!-- 목록으로 돌아가기 -->
+<p style="margin-top: 40px;"><a href="{% url 'challenges:list' %}">← 목록으로</a></p>
 {% endblock %}

@@ -85,27 +85,44 @@ def detail(request, pk):
 
     today = timezone.now().date()
 
+    # D-Day 계산
     end_date = challenge.end_date.date() if hasattr(challenge.end_date, "date") else challenge.end_date
     d_day = (end_date - today).days
     challenge.d_day_value = abs(d_day)
     challenge.d_day_prefix = "D-" if d_day >= 0 else "D+"
 
+    # D+ 계산
     start_date = challenge.start_date.date() if hasattr(challenge.start_date, "date") else challenge.start_date
     challenge.d_plus = (today - start_date).days
 
     # 완료한 세부 목표: GoalProgress에서 is_completed=True
     completed_goal_ids = GoalProgress.objects.filter(
-        user=request.user, is_completed=True
+        user=request.user,
+        goal__challenge=challenge,
+        is_completed=True
     ).values_list('goal_id', flat=True)
 
+    # 완료한 목표와 진행 중 목표 나누기
     completed_goals = all_goals.filter(id__in=completed_goal_ids)
     ongoing_goals = all_goals.exclude(id__in=completed_goal_ids)
+
+    # 진행률 계산
+    total_goals = all_goals.count()
+    completed_count = completed_goals.count()
+    if total_goals > 0:
+        progress = int((completed_count / total_goals) * 100)
+    else:
+        progress = 0
+
 
     return render(request, 'challenges/detail.html', {
         'challenge': challenge,
         'completed_goals': completed_goals,
         'ongoing_goals': ongoing_goals,
         'today': today,
+        'progress': progress,
+        'completed_count': completed_count,
+        'total_goals': total_goals
     })
 
 # 도전 생성
@@ -156,52 +173,55 @@ def update_challenge(request, pk):
 
 #세부목표 게시글 생성/수정
 @login_required
-def create_goal(request, challenge_id, goal_id=None):
-    challenge = get_object_or_404(Challenge, id=challenge_id)
+def create_goal(request, challenge_id, record_id=None):
+    challenge = get_object_or_404(Challenge, pk=challenge_id)
     all_goals = challenge.goals.all()
+
+    record = None
     
-    if goal_id:
-        goal = get_object_or_404(Goal, id=goal_id)
-    else:
-        goal = None
+    if record_id:
+        record = get_object_or_404(GoalRecord, pk=record_id, user=request.user)
 
     if request.method == 'POST':
-        selected_goal_id = request.POST.get('goal')
-        selected_goal = get_object_or_404(Goal, id=selected_goal_id)
+        goal_id = request.POST.get('goal')
+        goal = get_object_or_404(Goal, pk=goal_id, challenge=challenge)
 
         title = request.POST.get('title')
         content = request.POST.get('content')
         date = request.POST.get('date')
-        image = request.FILES.get('image') if 'image' in request.FILES else (goal.image if goal else None)
+        image = request.FILES.get('image')
 
-        if goal:
-            # 수정: goal_id로 들어온 인증글 수정
-            goal.title = title
-            goal.content = content
-            goal.date = date
-            goal.image = image
-            goal.save()
+        if record:
+            # 수정
+            record.title = title
+            record.content = content
+            record.date = date
+            if image:
+                record.image = image
+            record.save()
         else:
-            # 생성: 선택한 세부 목표(Goal)에 인증 내용 저장
-            selected_goal.title = title
-            selected_goal.content = content
-            selected_goal.date = date
-            selected_goal.image = image
-            selected_goal.save()
-
-            # 인증 완료
-            GoalProgress.objects.update_or_create(
-                user=request.user,
-                goal=selected_goal,
-                defaults={'is_completed': True}
+            # 생성
+            GoalRecord.objects.create(
+                user = request.user,
+                goal = goal,
+                title = title,
+                content = content,
+                date = date,
+                image = image
             )
+
+        # 진행 상태 갱신
+        GoalProgress.objects.update_or_create(
+            user=request.user,
+            goal=goal,
+            defaults={'is_completed': True}
+        )
             
         return redirect('challenges:detail', pk=challenge.id)
 
     return render(request, 'challenges/create_goal.html', {
         'challenge': challenge,
-        'challenge_id': challenge_id,
-        'goal': goal,
+        'record': record,
         'all_goals': all_goals,
     })
 
