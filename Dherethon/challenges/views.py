@@ -211,14 +211,31 @@ def create_goal(request, challenge_id, record_id=None):
             record.save()
         else:
             # 생성
-            GoalRecord.objects.create(
-                user = request.user,
-                goal = goal,
-                title = title,
-                content = content,
-                date = date,
-                image = image
-            )
+            progress, _ = GoalProgress.objects.update_or_create(
+            user=request.user,
+            goal=goal,
+            defaults={
+                'is_completed': True,
+                'content': content,
+                'image': image,
+                'date': datetime.strptime(date, "%Y-%m-%d").date()
+            }
+        )
+
+        # GoalRecord 생성 후 연결
+        record = GoalRecord.objects.create(
+            user=request.user,
+            goal=goal,
+            goal_progress=progress,
+            title=title,
+            content=content,
+            date=date,
+            image=image
+        )
+
+        # 🔥 이게 누락되었음 → 반드시 연결 필요!
+        progress.record = record
+        progress.save()
 
         
         # 진행 상태 갱신
@@ -229,7 +246,7 @@ def create_goal(request, challenge_id, record_id=None):
                 'is_completed': True,
                 'content': content,
                 'image': image,
-                'date': datetime.strptime(date, "%Y-%m-%d").date()
+                'date': datetime.strptime(date, "%Y-%m-%d").date()  # ✅ 여기 꼭 날짜 저장되게!
             }
         )
 
