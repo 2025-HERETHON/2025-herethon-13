@@ -4,7 +4,7 @@ from .views import *
 app_name = 'challenges'
 
 urlpatterns = [
-    # 세부목표 생성
+    # 세부목표 생성 및 수정
     path('challenge/<int:challenge_id>/goals/create/', create_goal, name='create_goal'),  # 생성
     path('challenge/<int:challenge_id>/goals/<int:goal_id>/edit/', create_goal, name='edit_goal'),  # 수정
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('list/', list, name='list'),
     path('detail/<int:pk>/', detail, name='detail'),
     path('create/', create_challenge, name='create'),
+    path('update/<int:pk>/', update_challenge, name='update_challenge'),
 
     path('', my_challenges, name='my_challenges'),
 

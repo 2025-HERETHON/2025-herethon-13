@@ -44,6 +44,7 @@ class Challenge(models.Model):
 # 세부 목표
 class Goal(models.Model):
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE, related_name='goals')
+    title = models.CharField(max_length=100, null=True, blank=True) # 제목 추가
     content = models.CharField(max_length=200)
     date = models.DateField(null=True, blank=True)
     image = models.ImageField(upload_to='goals_image/', null= True, blank= True)

@@ -97,6 +97,7 @@ def detail(request, pk):
         'goals': goals,
     })
 
+# 도전 생성
 @login_required
 def create_challenge(request):
     if request.method == 'POST':
@@ -121,10 +122,32 @@ def create_challenge(request):
         'form': form,
     })
 
-#세부목표 생성
+# 도전 수정
+@login_required
+def update_challenge(request, pk):
+    challenge = get_object_or_404(Challenge, pk=pk)
+
+    if challenge.user != request.user:
+        return redirect('challenges:my_challenges')  # 본인 도전만 수정 가능
+
+    if request.method == 'POST':
+        form = ChallengeForm(request.POST, request.FILES, instance=challenge)
+        if form.is_valid():
+            form.save()
+            return redirect('challenges:detail', pk=challenge.pk)
+    else:
+        form = ChallengeForm(instance=challenge)
+
+    return render(request, 'challenges/update.html', {
+        'form': form,
+        'challenge': challenge,
+    })
+
+#세부목표 생성/수정
 @login_required
 def create_goal(request, challenge_id, goal_id=None):
     challenge = get_object_or_404(Challenge, id=challenge_id)
+    all_goals = challenge.goals.all()
     
     if goal_id:
         goal = get_object_or_404(Goal, id=goal_id)
@@ -132,6 +155,9 @@ def create_goal(request, challenge_id, goal_id=None):
         goal = None
 
     if request.method == 'POST':
+        selected_goal_id = request.POST.get('goal')
+        selected_goal = get_object_or_404(Goal, id=selected_goal_id)
+
         content = request.POST.get('content')
         date = request.POST.get('date')
         image = request.FILES.get('image') if 'image' in request.FILES else (goal.image if goal else None)
@@ -149,8 +175,10 @@ def create_goal(request, challenge_id, goal_id=None):
         return redirect('challenges:detail', pk=challenge.id)
 
     return render(request, 'challenges/create_goal.html', {
+        'challenge': challenge,
         'challenge_id': challenge_id,
         'goal': goal,
+        'all_goals': all_goals,
     })
 
 #세부목표 인증 완료 여부

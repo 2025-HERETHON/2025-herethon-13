@@ -70,8 +70,7 @@
                 {% endfor %}
             </ul>
 
-            <p><a href="{% url 'challenges:create_goal' challenge.id %}">➕ 세부 목표 추가하기</a></p>
-            <p><a href="#">수정하기</a></p>
+            <p><a href="{% url 'challenges:update_challenge' challenge.id %}">수정하기</a></p>
         </div>
     </div>
 
@@ -101,7 +100,7 @@
             </ul>
         </div>
 
-        <p><a href="#">인증하기</a></p>
+        <p><a href="{% url 'challenges:create_goal' challenge.id %}">인증하기</a></p>
     </div>
 </div>
 
