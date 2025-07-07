@@ -85,6 +85,13 @@ def detail(request, pk):
 
     today = timezone.now().date()
 
+    # 오늘 날짜 인증글 (Challenge에 속한 Goal → GoalRecord)
+    today_records = GoalRecord.objects.filter(
+        goal__challenge=challenge,
+        user=request.user,
+        date=today
+    )
+
     # D-Day 계산
     end_date = challenge.end_date.date() if hasattr(challenge.end_date, "date") else challenge.end_date
     d_day = (end_date - today).days
@@ -122,53 +129,54 @@ def detail(request, pk):
         'today': today,
         'progress': progress,
         'completed_count': completed_count,
-        'total_goals': total_goals
+        'total_goals': total_goals,
+        'today': today,
+        'today_records': today_records,
     })
 
 # 도전 생성
 @login_required
-def create_challenge(request):
-    if request.method == 'POST':
-        form = ChallengeForm(request.POST, request.FILES)
+def create_challenge(request, pk=None):
+    challenge = None
+    goals = []
 
-        if form.is_valid():
-            challenge = form.save(commit=False)
-            challenge.user = request.user
-            challenge.save()
-
-            goals = request.POST.getlist('goals')
-            for content in goals:
-                if content.strip():
-                    Goal.objects.create(challenge=challenge, content=content)
-
+    if pk:
+        challenge = get_object_or_404(Challenge, pk=pk)
+        goals = Goal.objects.filter(challenge=challenge)
+        if challenge.user != request.user:
             return redirect('challenges:my_challenges')
-    
-    else:
-        form = ChallengeForm()
-
-    return render(request, 'challenges/create.html', {
-        'form': form,
-    })
-
-# 도전 수정
-@login_required
-def update_challenge(request, pk):
-    challenge = get_object_or_404(Challenge, pk=pk)
-
-    if challenge.user != request.user:
-        return redirect('challenges:my_challenges')  # 본인 도전만 수정 가능
 
     if request.method == 'POST':
         form = ChallengeForm(request.POST, request.FILES, instance=challenge)
+
         if form.is_valid():
-            form.save()
-            return redirect('challenges:detail', pk=challenge.pk)
+            saved = form.save(commit=False)
+            saved.user = request.user
+            saved.save()
+
+            # 기존 세부 목표 업데이트
+            if pk:
+                for goal in Goal.objects.filter(challenge=saved):
+                    key = f"goal_{goal.id}"
+                    if key in request.POST:
+                        goal.content = request.POST[key]
+                        goal.save()
+
+            # 새 세부 목표 추가
+            new_goals = request.POST.getlist('goals')
+            for content in new_goals:
+                if content.strip():
+                    Goal.objects.create(challenge=saved, content=content)
+
+            return redirect('challenges:detail', pk=saved.pk)
+
     else:
         form = ChallengeForm(instance=challenge)
 
-    return render(request, 'challenges/update.html', {
+    return render(request, 'challenges/create.html', {
         'form': form,
         'challenge': challenge,
+        'goals': goals,
     })
 
 #세부목표 게시글 생성/수정
@@ -225,20 +233,10 @@ def create_goal(request, challenge_id, record_id=None):
         'all_goals': all_goals,
     })
 
-#세부목표 인증 완료 여부
 @login_required
-def complete_goal(request, goal_id):
-    if request.method == 'POST':
-        goal = Goal.objects.get(id=goal_id)
-        GoalProgress.objects.update_or_create(
-            user=request.user,
-            goal=goal,
-            defaults={'is_completed': True}
-        )
-        return redirect('challenges:goal_detail', goal_id=goal_id)
-    
+def goal_detail(request, record_id):
+    record = get_object_or_404(GoalRecord, id=record_id)
 
-
-def goal_detail(request, goal_id):
-    goal = get_object_or_404(Goal, id=goal_id)
-    return render(request, 'challenges/goal_detail.html', {'goal': goal})
+    return render(request, 'challenges/goal_detail.html', {
+        'record': record
+    })

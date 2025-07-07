@@ -41,8 +41,8 @@
         <!-- 진행률 -->
         <div style="margin-top: 20px;">
             <p><strong>진행률 {{ progress }}% ({{ completed_count }}/{{ total_goals }})</strong></p>
-            <div style="height: 50px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <span>[진행률 바 영역]</span>
+            <div style="margin-bottom: 10px;">
+                <p>[진행률바 영역]</p>
             </div>
         </div>
 
@@ -51,9 +51,7 @@
             <h4>완료한 세부 목표</h4>
             <ul>
                 {% for goal in completed_goals %}
-                    <li>
-                        {{ goal.content }}
-                    </li>
+                    <li>✅ {{ goal.content }}</li>
                 {% empty %}
                     <li>완료한 세부 목표가 없습니다.</li>
                 {% endfor %}
@@ -65,7 +63,7 @@
             <h4>진행 중인 세부 목표</h4>
             <ul>
                 {% for goal in ongoing_goals %}
-                    <li>{{ goal.content }}</li>
+                    <li>☐ {{ goal.content }}</li>
                 {% empty %}
                     <li>진행 중인 세부 목표가 없습니다.</li>
                 {% endfor %}
@@ -84,24 +82,32 @@
         <h4>인증 기록</h4>
         <p>{{ today|date:"Y년 m월 d일" }}</p>
 
-        <!-- 달력 자리 (향후 JS 적용 예정) -->
         <div style="margin-bottom: 10px;">
-            <div style="height: 200px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                <span>[달력 영역]</span>
-            </div>
+            <p>[달력 영역]</p>
         </div>
 
-        <!-- 오늘 인증한 기록 -->
         <div>
             <p>{{ today|date:"Y.m.d" }}</p>
-            <ul>
-                {% for record in challenge.records.all %}
-                    {% if record.date == today %}
-                        <li>
-                            <strong>{{ record.title }}</strong><br>
-                            {{ record.content|truncatewords:10 }}
-                        </li>
-                    {% endif %}
+            <ul style="list-style: none; padding: 0;">
+                {% for record in today_records %}
+                    <li style="margin-bottom: 16px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; background-color: #fef9c3;">
+                        <a href="{% url 'challenges:goal_detail' record.id %}" style="text-decoration: none; color: inherit;">
+                            <div style="display: flex; gap: 16px;">
+                                {% if record.image %}
+                                    <img src="{{ record.image.url }}" alt="썸네일" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px;">
+                                {% else %}
+                                    <div style="width: 64px; height: 64px; background-color: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px;">이미지 없음</div>
+                                {% endif %}
+
+                                <div style="flex: 1;">
+                                    <p style="font-weight: bold; margin: 0 0 4px 0;">{{ record.goal.content }}</p>
+                                    <p style="margin: 0; font-size: 14px; color: #333;">{{ record.content|truncatewords:10 }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>오늘 작성한 인증글이 없습니다.</li>
                 {% endfor %}
             </ul>
         </div>
@@ -114,6 +120,4 @@
 
 </div>
 
-<!-- 목록으로 돌아가기 -->
-<p style="margin-top: 40px;"><a href="{% url 'challenges:list' %}">← 목록으로</a></p>
 {% endblock %}
