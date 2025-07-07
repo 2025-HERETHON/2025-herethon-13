@@ -14,10 +14,10 @@
         {% endif %}
         <nav>
             <ul>
-                <li><a href="{% url 'home:main' %}">홈</a></li>
-                <li><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></li>
-                <li><a href="#">커뮤니티</a></li>
-                <li><a href="#">뱃지</a></li>
+                <p><a href="{% url 'home:main' %}">홈</a></p>
+                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+                <p><a href="#">커뮤니티</a></p>
+                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
             </ul>
         </nav>
         <p><a href="{% url 'api:logout' %}">Log out</a></p>

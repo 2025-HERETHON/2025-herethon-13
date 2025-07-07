@@ -5,6 +5,8 @@ from .models import *
 from datetime import date
 from django.utils import timezone
 from django.db.models import Q
+from home.models import Badge
+from django.utils.timezone import now
 
 # 로그인한 사용자 기준 list view
 @login_required
@@ -25,6 +27,17 @@ def my_challenges(request):
         ).count()
         challenge.progress_percent = int(completed / total * 100) if total > 0 else 0
 
+        # 진행률 100%일 때 누락된 뱃지 자동 발급
+        if challenge.progress_percent == 100:
+            already_awarded = Badge.objects.filter(user=request.user, challenge=challenge).exists()
+            if not already_awarded:
+                Badge.objects.create(
+                    user=request.user,
+                    category=challenge.category,
+                    challenge=challenge,
+                    awarded_at=now()
+                )
+                
         # 다음 세부 목표
         challenge.next_goal = Goal.objects.filter(
             challenge=challenge
@@ -221,20 +234,46 @@ def create_goal(request, challenge_id, record_id=None):
             is_completed=True
         ).count()
         progress = int((completed_goals / total_goals) * 100) if total_goals > 0 else 0
-        show_modal = (progress == 100)
+
+        if progress == 100:
+            already_awarded = Badge.objects.filter(
+                user=request.user,
+                challenge=challenge
+            ).exists()
+
+            if not already_awarded:
+                Badge.objects.create(
+                    user=request.user,
+                    category=challenge.category,
+                    challenge=challenge,
+                    awarded_at=now()
+                )
 
         # 진행률이 100%라면 detail.html에서 모달 띄우도록 context 넘김
         return render(request, 'challenges/detail.html', {
             'challenge': challenge,
-            'completed_goals': challenge.goals.filter(id__in=GoalProgress.objects.filter(user=request.user, is_completed=True).values_list('goal_id', flat=True)),
-            'ongoing_goals': challenge.goals.exclude(id__in=GoalProgress.objects.filter(user=request.user, is_completed=True).values_list('goal_id', flat=True)),
+            'completed_goals': challenge.goals.filter(
+                id__in=GoalProgress.objects.filter(
+                    user=request.user,
+                    is_completed=True
+                ).values_list('goal_id', flat=True)
+            ),
+            'ongoing_goals': challenge.goals.exclude(
+                id__in=GoalProgress.objects.filter(
+                    user=request.user,
+                    is_completed=True
+                ).values_list('goal_id', flat=True)
+            ),
             'today': timezone.now().date(),
             'progress': progress,
             'completed_count': completed_goals,
             'total_goals': total_goals,
-            'show_modal': show_modal,
-            'today_records': GoalRecord.objects.filter(goal__challenge=challenge, user=request.user, date=timezone.now().date()),
-        })       
+            'today_records': GoalRecord.objects.filter(
+                goal__challenge=challenge,
+                user=request.user,
+                date=timezone.now().date()
+            ),
+        })    
 
     return render(request, 'challenges/create_goal.html', {
         'challenge': challenge,
@@ -250,9 +289,26 @@ def goal_detail(request, record_id):
         'record': record
     })
 
-@login_required
-def complete_challenge(request, pk):
-    challenge = get_object_or_404(Challenge, pk=pk, user=request.user)
-    challenge.is_completed = True
-    challenge.save()
-    return redirect('challenges:my_challenges')
+
+# @login_required
+# def complete_challenge(request, pk):
+#     challenge = get_object_or_404(Challenge, pk=pk, user=request.user)
+
+#     # 완료 처리
+#     challenge.is_completed = True
+#     challenge.save()
+
+#     # 뱃지 발급
+#     already_awarded = Badge.objects.filter(
+#         user = request.user,
+#         challenge = challenge
+#     ).exists()
+
+#     if not already_awarded:
+#         Badge.objects.create(
+#             user=request.user,
+#             category=challenge.category,
+#             challenge=challenge,
+#             awarded_at=now()
+#         )
+#     return redirect('challenges:my_challenges')
