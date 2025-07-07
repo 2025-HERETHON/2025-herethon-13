@@ -25,5 +25,5 @@ urlpatterns = [
     path('record/<int:record_id>/', goal_detail, name='goal_detail'),
 
     # 도전 완료 처리
-    # path('complete/<int:pk>/', complete_challenge, name='complete_challenge'),
+    path('<int:challenge_id>/complete/', complete_challenge, name='complete_challenge'),
 ]

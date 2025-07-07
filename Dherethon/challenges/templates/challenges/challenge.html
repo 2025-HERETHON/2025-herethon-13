@@ -79,19 +79,19 @@
                 <p>참여 중인 도전이 없습니다.</p>
             {% endfor %}
 
-
             <h3>오늘의 도전</h3>
-            <!-- 인증 카드 리스트 -->
-            {% for goal in incomplete_goals %}
+            {% for challenge in incomplete_challenges %}
                 <div>
-                    {% if goal.challenge.image %}
-                        <img src="{{ goal.challenge.image.url }}" alt="도전 이미지">
+                    {% if challenge.image %}
+                        <img src="{{ challenge.image.url }}" alt="도전 이미지">
                     {% endif %}
-                    <p>{{ goal.challenge.category.name }}</p>
-                    <p>{{ goal.challenge.title }}</p>
-                    <a href="{% url 'challenges:detail' goal.challenge.id %}">인증하러 가기 →</a>
+                    <p>{{ challenge.category.name }}</p>
+                    <p>{{ challenge.title }}</p>
+                    <a href="{% url 'challenges:detail' challenge.id %}">인증하러 가기 →</a>
                     <hr>
                 </div>
+            {% empty %}
+                <p>오늘 인증할 도전이 없습니다.</p>
             {% endfor %}
 
             <!-- 도전 추가하기 -->

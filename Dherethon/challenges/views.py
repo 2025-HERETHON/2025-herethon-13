@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import ChallengeForm, GoalForm
 from .models import *
-from datetime import date
 from django.utils import timezone
-from django.db.models import Q
 from home.models import Badge
 from django.utils.timezone import now
 from datetime import datetime
+from django.views.decorators.http import require_POST
+from django.http import HttpResponseForbidden
+from django.db.models.functions import TruncDate
+from django.utils.timezone import localdate
 
 # 로그인한 사용자 기준 list view
 @login_required
@@ -18,7 +20,7 @@ def my_challenges(request):
     if category_name and category_name != '전체':
         challenges = challenges.filter(category__name=category_name)
 
-    today = timezone.now().date()
+    today = localdate()
 
     for challenge in challenges:
         # 진행률 계산
@@ -54,32 +56,26 @@ def my_challenges(request):
         challenge.d_day_prefix = "D-" if d_day >= 0 else "D+"
 
     # 인증 필요 목표 목록
-    incomplete_goals = []
-    seen_challenges = set()
+    incomplete_challenges = []
 
-    all_goals = Goal.objects.filter(
-        challenge__user=request.user,
-        challenge__start_date__lte=today,
-        challenge__end_date__gte=today
-    ).exclude(
-        goalprogress__user=request.user,
-        goalprogress__is_completed=True
-    ).order_by('challenge__end_date', 'date', 'id')
+    valid_challenges = Challenge.objects.annotate(
+        start_date_only=TruncDate('start_date'),
+        end_date_only=TruncDate('end_date')
+    ).filter(
+        user=request.user,
+        start_date_only__lte=today,
+        end_date_only__gte=today
+    ).order_by('end_date')
 
-    for goal in all_goals:
-        if goal.challenge_id not in seen_challenges:
-            incomplete_goals.append(goal)
-            seen_challenges.add(goal.challenge_id)
-        if len(incomplete_goals) == 3:
-            break
+    incomplete_challenges = list(valid_challenges[:3])
 
     category_list = ['전체'] + list(Category.objects.values_list('name', flat=True))
 
     return render(request, 'challenges/challenge.html', {
         'challenges': challenges,
-        'incomplete_goals': incomplete_goals,
+        'incomplete_challenges': incomplete_challenges,
         'selected_category': category_name or '전체',
-        'category_list': category_list, 
+        'category_list': category_list,
     })
 
 @login_required
@@ -87,7 +83,7 @@ def detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
     all_goals = Goal.objects.filter(challenge=challenge)
 
-    today = timezone.now().date()
+    today = localdate()
 
     # 오늘 날짜 인증글 (Challenge에 속한 Goal → GoalRecord)
     today_records = GoalRecord.objects.filter(
@@ -125,6 +121,10 @@ def detail(request, pk):
     else:
         progress = 0
 
+    # 뱃지 받은 여부
+    badge_received = Badge.objects.filter(user=request.user, challenge=challenge).exists()
+    # 뱃지를 받을 수 있는 상태인지 확인
+    show_badge_prompt = (progress == 100 and not badge_received)
 
     return render(request, 'challenges/detail.html', {
         'challenge': challenge,
@@ -136,6 +136,8 @@ def detail(request, pk):
         'total_goals': total_goals,
         'today': today,
         'today_records': today_records,
+        'badge_received': badge_received,
+        'show_badge_prompt': show_badge_prompt,
     })
 
 # 도전 생성
@@ -189,6 +191,10 @@ def create_goal(request, challenge_id, record_id=None):
     challenge = get_object_or_404(Challenge, pk=challenge_id)
     all_goals = challenge.goals.all()
 
+    # 뱃지를 받은 경우: 인증글 작성/수정 금지
+    if Badge.objects.filter(user=request.user, challenge=challenge).exists():
+        return redirect('challenges:detail', pk=challenge.id)
+
     record = None
     
     if record_id:
@@ -235,54 +241,7 @@ def create_goal(request, challenge_id, record_id=None):
             }
         )
 
-        # 진행률 계산
-        total_goals = challenge.goals.count()
-        completed_goals = GoalProgress.objects.filter(
-            user=request.user,
-            goal__challenge=challenge,
-            is_completed=True
-        ).count()
-        progress = int((completed_goals / total_goals) * 100) if total_goals > 0 else 0
-
-        if progress == 100:
-            already_awarded = Badge.objects.filter(
-                user=request.user,
-                challenge=challenge
-            ).exists()
-
-            if not already_awarded:
-                Badge.objects.create(
-                    user=request.user,
-                    category=challenge.category,
-                    challenge=challenge,
-                    awarded_at=now()
-                )
-
-        # 진행률이 100%라면 detail.html에서 모달 띄우도록 context 넘김
-        return render(request, 'challenges/detail.html', {
-            'challenge': challenge,
-            'completed_goals': challenge.goals.filter(
-                id__in=GoalProgress.objects.filter(
-                    user=request.user,
-                    is_completed=True
-                ).values_list('goal_id', flat=True)
-            ),
-            'ongoing_goals': challenge.goals.exclude(
-                id__in=GoalProgress.objects.filter(
-                    user=request.user,
-                    is_completed=True
-                ).values_list('goal_id', flat=True)
-            ),
-            'today': timezone.now().date(),
-            'progress': progress,
-            'completed_count': completed_goals,
-            'total_goals': total_goals,
-            'today_records': GoalRecord.objects.filter(
-                goal__challenge=challenge,
-                user=request.user,
-                date=timezone.now().date()
-            ),
-        })    
+        return redirect('challenges:detail', pk=challenge.id)
 
     return render(request, 'challenges/create_goal.html', {
         'challenge': challenge,
@@ -292,39 +251,54 @@ def create_goal(request, challenge_id, record_id=None):
 
 @login_required
 def goal_detail(request, record_id):
-    record = get_object_or_404(GoalRecord, id=record_id)
+    record = get_object_or_404(GoalRecord, id=record_id, user=request.user)
+    challenge = record.goal.challenge
+
+    badge_received = Badge.objects.filter(user=request.user, challenge=challenge).exists()
 
     return render(request, 'challenges/goal_detail.html', {
-        'record': record
+        'record': record,
+        'badge_received': badge_received,
     })
 
-# @login_required
-# def complete_challenge(request, pk):
-#     challenge = get_object_or_404(Challenge, pk=pk, user=request.user)
+@login_required
+@require_POST
+def complete_challenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id, user=request.user)
 
-#     # 완료 처리
-#     challenge.is_completed = True
-#     challenge.save()
+    # 전체 목표 수
+    total_goals = Goal.objects.filter(challenge=challenge).count()
 
-#     # 뱃지 발급
-#     already_awarded = Badge.objects.filter(
-#         user = request.user,
-#         challenge = challenge
-#     ).exists()
+    # 완료한 목표 수
+    completed_goals = GoalProgress.objects.filter(
+        user=request.user,
+        goal__challenge=challenge,
+        is_completed=True
+    ).count()
 
-#     if not already_awarded:
-#         Badge.objects.create(
-#             user=request.user,
-#             category=challenge.category,
-#             challenge=challenge,
-#             awarded_at=now()
-#         )
-#     return redirect('challenges:my_challenges')
+    # 모든 세부 목표 완료 여부
+    if total_goals == 0 or completed_goals < total_goals:
+        return HttpResponseForbidden("모든 세부 목표를 완료하지 않았습니다.")
+
+    # 이미 뱃지를 받은 경우 중복 지급 방지
+    badge_exists = Badge.objects.filter(user=request.user, challenge=challenge).exists()
+    if not badge_exists:
+        Badge.objects.create(
+            user=request.user,
+            category=challenge.category,
+            challenge=challenge
+        )
+
+    return redirect('challenges:detail', pk=challenge.id)
 
 # 챌린지 삭제
 @login_required
 def delete_challenge(request, pk):
     challenge = get_object_or_404(Challenge, id=pk, user=request.user)
+
+    # 뱃지 받은 경우 삭제 금지
+    if Badge.objects.filter(user=request.user, challenge=challenge).exists():
+        return redirect('challenges:detail', pk=pk)
 
     if request.method == 'POST':
         challenge.delete()
@@ -336,10 +310,17 @@ def delete_challenge(request, pk):
 @login_required
 def delete_goal_record(request, record_id):
     record = get_object_or_404(GoalRecord, id=record_id, user=request.user)
-    challenge_id = record.goal.challenge.id
+    challenge = record.goal.challenge
+
+    if Badge.objects.filter(user=request.user, challenge=challenge).exists():
+        return redirect('challenges:detail', pk=challenge.id)
 
     if request.method == 'POST':
+        # 인증글 삭제
         record.delete()
-        return redirect('challenges:detail', pk=challenge_id)  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지) -> 도전 상세 페이지로 변경
+        # 관련 GoalProgress도 함께 삭제(상태 복구)
+        GoalProgress.objects.filter(user=request.user, goal=record.goal).delete()
 
-    return redirect('challenges:record_detail', record_id=record_id)  # 직접 접근은 리디렉트
+        return redirect('challenges:detail', pk=challenge.id)  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지) -> 도전 상세 페이지로 변경
+
+    return redirect('challenges:goal_detail', record_id=record_id)  # 직접 접근은 리디렉트

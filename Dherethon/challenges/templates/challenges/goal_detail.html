@@ -56,19 +56,24 @@
             {{ record.content }}
         </p>
 
+        {% if not badge_received %}
         <div style="margin-top: 20px;">
-            <a href="{% url 'challenges:edit_goal' record.goal.challenge.id record.id %}" style="display: inline-block; background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-bottom: 10px;">수정하기</a><br>
-           
+            <a href="{% url 'challenges:edit_goal' record.goal.challenge.id record.id %}" 
+            style="display: inline-block; background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; margin-bottom: 10px;">
+            수정하기
+            </a>
         </div>
+
         <form method="post" action="{% url 'challenges:delete_goal_record' record.id %}">
-        {% csrf_token %}
+            {% csrf_token %}
             <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')"
-                style="display: inline-block; background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
+                    style="display: inline-block; background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">
                 삭제하기
             </button>
         </form>
-                
+        {% endif %}
     </div>
+
 
 </div>
 
