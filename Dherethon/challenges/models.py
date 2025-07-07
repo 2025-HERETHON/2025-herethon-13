@@ -37,6 +37,7 @@ class Challenge(models.Model):
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='daily')
     is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

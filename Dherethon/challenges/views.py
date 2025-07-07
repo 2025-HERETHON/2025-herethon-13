@@ -212,8 +212,29 @@ def create_goal(request, challenge_id, record_id=None):
             goal=goal,
             defaults={'is_completed': True}
         )
-            
-        return redirect('challenges:detail', pk=challenge.id)
+
+        # 진행률 계산
+        total_goals = challenge.goals.count()
+        completed_goals = GoalProgress.objects.filter(
+            user=request.user,
+            goal__challenge=challenge,
+            is_completed=True
+        ).count()
+        progress = int((completed_goals / total_goals) * 100) if total_goals > 0 else 0
+        show_modal = (progress == 100)
+
+        # 진행률이 100%라면 detail.html에서 모달 띄우도록 context 넘김
+        return render(request, 'challenges/detail.html', {
+            'challenge': challenge,
+            'completed_goals': challenge.goals.filter(id__in=GoalProgress.objects.filter(user=request.user, is_completed=True).values_list('goal_id', flat=True)),
+            'ongoing_goals': challenge.goals.exclude(id__in=GoalProgress.objects.filter(user=request.user, is_completed=True).values_list('goal_id', flat=True)),
+            'today': timezone.now().date(),
+            'progress': progress,
+            'completed_count': completed_goals,
+            'total_goals': total_goals,
+            'show_modal': show_modal,
+            'today_records': GoalRecord.objects.filter(goal__challenge=challenge, user=request.user, date=timezone.now().date()),
+        })       
 
     return render(request, 'challenges/create_goal.html', {
         'challenge': challenge,
@@ -228,3 +249,10 @@ def goal_detail(request, record_id):
     return render(request, 'challenges/goal_detail.html', {
         'record': record
     })
+
+@login_required
+def complete_challenge(request, pk):
+    challenge = get_object_or_404(Challenge, pk=pk, user=request.user)
+    challenge.is_completed = True
+    challenge.save()
+    return redirect('challenges:my_challenges')

@@ -123,3 +123,16 @@
 </div>
 
 {% endblock %}
+
+{% if show_modal %}
+<div id="completionModal">
+    <div class="modal-content">
+        <h2>도전 완료</h2>
+        <p>모든 세부 목표를 완료했어요.<br>이 도전을 완료 처리하시겠습니까?</p>
+        <div class="modal-buttons">
+            <a href="{% url 'challenges:complete_challenge' challenge.id %}">예</a>
+            <button type="button" onclick="document.getElementById('completionModal').style.display='none'">아니오</button>
+        </div>
+    </div>
+</div>
+{% endif %}
