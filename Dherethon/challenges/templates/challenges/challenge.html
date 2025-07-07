@@ -26,7 +26,6 @@
                 <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
                 <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
                 <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
-                <p>뱃지</p>
             </nav>
 
             <!-- 로그아웃 -->
@@ -58,23 +57,28 @@
 
             <!-- 도전 리스트 -->
             {% for challenge in challenges %}
-                <div>
-                    <p>
-                        {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}
-                        {{ challenge.category.name }}<br>
-                        {{ challenge.title }}<br>
-                        진행률: {{ challenge.progress_percent }}%
-                    </p>
-                    {% if challenge.next_goal %}
-                        <p>다음 세부 목표: {{ challenge.next_goal.content }}</p>
-                    {% else %}
-                        <p>다음 세부 목표 없음</p>
-                    {% endif %}
-                    <hr>
-                </div>
+                {% if challenge.progress_percent < 100 %}
+                    <div>
+                        <p>
+                            {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}
+                            {{ challenge.category.name }}<br>
+                            <a href="{% url 'challenges:detail' challenge.id %}">
+                                {{ challenge.title }}
+                            </a><br>
+                            진행률: {{ challenge.progress_percent }}%
+                        </p>
+                        {% if challenge.next_goal %}
+                            <p>다음 세부 목표: {{ challenge.next_goal.content }}</p>
+                        {% else %}
+                            <p>다음 세부 목표 없음</p>
+                        {% endif %}
+                        <hr>
+                    </div>
+                {% endif %}
             {% empty %}
                 <p>참여 중인 도전이 없습니다.</p>
             {% endfor %}
+
 
             <h3>오늘의 도전</h3>
             <!-- 인증 카드 리스트 -->

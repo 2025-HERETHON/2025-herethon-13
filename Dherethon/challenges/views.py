@@ -59,17 +59,19 @@ def my_challenges(request):
 
     all_goals = Goal.objects.filter(
         challenge__user=request.user,
-        challenge__start_date__lte = today,
-        challenge__end_date__gte = today
+        challenge__start_date__lte=today,
+        challenge__end_date__gte=today
     ).exclude(
         goalprogress__user=request.user,
         goalprogress__is_completed=True
-    ).order_by('challenge', 'date', 'id')
+    ).order_by('challenge__end_date', 'date', 'id')
 
     for goal in all_goals:
         if goal.challenge_id not in seen_challenges:
             incomplete_goals.append(goal)
             seen_challenges.add(goal.challenge_id)
+        if len(incomplete_goals) == 3:
+            break
 
     category_list = ['전체'] + list(Category.objects.values_list('name', flat=True))
 
