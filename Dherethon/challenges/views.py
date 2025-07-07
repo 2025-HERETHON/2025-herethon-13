@@ -44,7 +44,9 @@ def my_challenges(request):
     seen_challenges = set()
 
     all_goals = Goal.objects.filter(
-        challenge__user=request.user
+        challenge__user=request.user,
+        challenge__start_date__lte = today,
+        challenge__end_date__gte = today
     ).exclude(
         goalprogress__user=request.user,
         goalprogress__is_completed=True
@@ -56,7 +58,7 @@ def my_challenges(request):
             seen_challenges.add(goal.challenge_id)
 
     category_list = ['전체'] + list(Category.objects.values_list('name', flat=True))
-    
+
     return render(request, 'challenges/challenge.html', {
         'challenges': challenges,
         'incomplete_goals': incomplete_goals,
