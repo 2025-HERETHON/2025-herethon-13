@@ -12,11 +12,12 @@
 
     <!-- 왼쪽 사이드바 -->
     <div>
-        {% if user.profile_image %}
+        {% if user.profile_image and user.profile_image.url %}
             <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
         {% else %}
-            <p>[프로필 이미지 없음]</p>
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
         {% endif %}
+
 
         <p>{{ user.nickname }}</p>
 
