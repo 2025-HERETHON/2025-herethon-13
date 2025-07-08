@@ -1,0 +1,103 @@
+<div class="challenge-detail-outer">
+  <!-- 페이지 최상단 오른쪽 X버튼 -->
+  <button class="global-close-btn" id="globalCloseBtn" aria-label="닫기">
+    <img src="../../assets/Cancel.svg" alt="닫기" width="28" height="28" />
+  </button>
+  <div class="challenge-detail-layout">
+    <!-- 왼쪽: 도전 상세 정보 -->
+    <section class="challenge-detail-left">
+      <div class="challenge-detail-header">
+        <div class="challenge-detail-thumb"></div>
+        <div class="challenge-detail-info">
+          <div class="challenge-detail-category">학습 / 공부</div>
+          <div class="challenge-detail-title">14일 영어 회화 루틴 챌린지</div>
+          <div class="challenge-detail-date">2025.07.01 - 2025.08.23</div>
+          <div class="challenge-detail-dday">이 도전을 시작한 지 D+1</div>
+          <div class="challenge-detail-dday">종료까지 D-50</div>
+          <div class="challenge-detail-public">공개</div>
+        </div>
+      </div>
+      <!-- 진행률/진행바 -->
+      <div class="challenge-detail-progress-box">
+        <div class="challenge-detail-progress-label">진행률 34% (2/6)</div>
+        <div class="progress-bar-bg"><div id="progressBar"></div></div>
+      </div>
+      <!-- 세부목표 영역 -->
+      <div class="challenge-detail-goals-row">
+        <div class="goals-block">
+          <span class="completed">완료한 세부 목표</span>
+          <ul id="completedGoalList"></ul>
+        </div>
+        <div class="goals-block">
+          <span class="inprogress">진행할 세부 목표</span>
+          <ul id="inprogressGoalList"></ul>
+        </div>
+      </div>
+      <!-- 수정/삭제 버튼 -->
+      <div class="challenge-detail-btns">
+        <button class="challenge-btn challenge-detail-edit-btn" id="editBtn">수정하기</button>
+        <button class="challenge-btn challenge-detail-delete-btn" id="deleteBtn">삭제하기</button>
+      </div>
+    </section>
+
+    <!-- 구분선 -->
+    <div class="challenge-detail-divider"></div>
+
+    <!-- 오른쪽: 달력 + 인증기록 카드 영역 -->
+    <section class="challenge-detail-right">
+      <div class="challenge-records-card-bg">
+        <!-- 인증 기록 타이틀 -->
+        <div class="challenge-records-header-bar">인증 기록</div>
+        <!-- 달력 영역 -->
+        <div class="challenge-records-calendar" id="calendar">
+          <div class="calendar">
+            <div class="calendar-header">
+              <button class="calendar-prev-btn" aria-label="이전 달">&lt;</button>
+              <span>2025 07</span>
+              <button class="calendar-next-btn" aria-label="다음 달">&gt;</button>
+            </div>            
+            <div class="calendar-grid"></div>
+          </div>
+        </div>
+        <!-- 인증 기록 카드 리스트 -->
+        <div class="challenge-records-list" id="recordList"></div>
+        <!-- 인증하기 버튼 -->
+        <button class="challenge-btn challenge-detail-cert-btn" id="certBtn">인증하기</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- 도전 삭제 모달 -->
+<div id="deleteModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content delete-modal-content">
+    <div class="delete-modal-head">
+      <span class="modal-challenge-category" id="modalCategory">학습 / 공부</span>
+      <span class="modal-challenge-title" id="modalTitle">14일 영어 회화 루틴 챌린지</span>
+    </div>
+    <div class="delete-modal-message">
+      <b>이 도전을 삭제하시겠습니까?</b>
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-confirm" id="modalDeleteYes">예</button>
+      <button class="modal-btn modal-btn-cancel" id="modalDeleteNo">아니요</button>
+    </div>
+  </div>
+</div>
+
+<!-- 도전 완료 뱃지 모달 -->
+<div id="badgeModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content delete-modal-content">
+    <div class="delete-modal-head">
+      <span class="modal-challenge-category" id="badgeModalCategory">학습 / 공부</span>
+      <span class="modal-challenge-title" id="badgeModalTitle">14일 영어 회화 루틴 챌린지</span>
+    </div>
+    <div class="delete-modal-message">
+      <b>모든 세부 목표를 완료했어요!<br>도전 완료 뱃지를 받을까요?</b>
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-confirm" id="badgeModalYes">예</button>
+      <button class="modal-btn modal-btn-cancel" id="badgeModalNo">아니요</button>
+    </div>
+  </div>
+</div>

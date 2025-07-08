@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>도전</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="home/home.css" />
+    <link rel="stylesheet" href="my-challenge/myChallenge.css" />
+    <link rel="stylesheet" href="my-challenge/challengeAdd.css" />
+    <link rel="stylesheet" href="my-challenge/challengeDetail.css" />
+    <link rel="stylesheet" href="my-challenge/certAdd.css" />
+    <link rel="stylesheet" href="my-challenge/certDetail.css" />
+    <link rel="stylesheet" href="community/community.css" />
+</head>
+
+<body>
+    <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <!-- 상단: 프로필 + 메뉴 -->
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg"></div>
+                        <div class="sideBar_profileName">김수정</div>
+                    </div>
+
+                    <div class="sideBar_menu">
+                        <button class="sideBar_Box active" data-page="home">
+                            <img src="../assets/Home.svg" class="sideBar_icon" />
+                            <span class="sideBar_text">홈</span>
+                        </button>
+                        <button class="sideBar_Box" data-page="myChallenge">
+                            <img src="../assets/Challenge.svg" class="sideBar_icon" />
+                            <span class="sideBar_text">나의 도전</span>
+                        </button>
+                        <button class="sideBar_Box" data-page="community">
+                            <img src="../assets/Community.svg" class="sideBar_icon" />
+                            <span class="sideBar_text">커뮤니티</span>
+                        </button>
+                        <button class="sideBar_Box" data-page="badge">
+                            <img src="../assets/Badge.svg" class="sideBar_icon" />
+                            <span class="sideBar_text">뱃지</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 하단: 로그아웃 버튼 -->
+                <button class="sideBar_logoutBox">
+                    <img src="../assets/Logout.svg" class="sideBar_icon" />
+                    <span class="sideBar_logoutText">Log out</span>
+                </button>
+            </div>
+
+            <!-- SPA 메인 영역 -->
+            <div id="mainArea" class="challenge-content-wrap">
+                <!-- 동적으로 콘텐츠 로딩 -->
+            </div>
+        </div>
+    </div>
+    <script src="index.js"></script>
+</body>
+
+</html>

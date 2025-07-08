@@ -1,0 +1,602 @@
+body {
+    margin: 0;
+    background: #F0F0F0;
+    font-family: 'Noto Sans KR', sans-serif;
+
+}
+
+.home-topBox {
+    position: relative;
+    width: 768px;
+    height: 348px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: #FFF;
+    margin-top: 32px;
+    margin-left: 50px;
+    margin-right: 32px;
+    padding-top: 18px;
+}
+
+.home-titleBox {
+    height: 30px;
+    width: 768px;
+    display: flex;
+    display: flex;
+    align-items: center;
+}
+
+.home-challengeTitle {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-left: 32px;
+    width: 152px;
+
+}
+
+.home-plusImg {
+    width: 24px;
+}
+
+.home-addChallengeBtn {
+    width: 112px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #605BFF;
+    margin-left: 7px;
+    border: none;
+    color: #FFF;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+
+}
+
+/*드롭다운메뉴*/
+.dropdown {
+    position: relative;
+    display: inline-block;
+    display: flex;
+    margin-left: 328px;
+}
+
+.home-Polygon {
+    width: 10px;
+    position: absolute;
+    right: 12px;
+}
+
+.dropbtn {
+    background-color: #605BFF;
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 112px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 13px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    background-color: white;
+    min-width: 160px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    list-style: none;
+    padding: 8px 0;
+    max-height: 150px;
+    overflow-y: auto;
+
+}
+
+.dropdown-content::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.dropdown-content li {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.dropdown-content li:hover {
+    background-color: #f2f2f2;
+}
+
+.dropdown.active .dropdown-content {
+    display: block;
+}
+
+/*도전리스트 */
+.challenge-list-header {
+    display: flex;
+    width: 100%;
+    color: #666;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    line-height: normal;
+    margin: 22px 32px 20px 32px;
+    align-items: center;
+}
+
+.challenge-list-header>div:first-child {
+    width: 210px;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-list-header>div:nth-child(2) {
+    width: 128px;
+    text-align: left;
+    padding: 0;
+    margin-left: 30px;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-list-header>div:last-child {
+    width: 290px;
+    text-align: left;
+    padding: 0;
+    margin-left: 46px;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+
+.home-listBox {
+    width: 760px;
+    height: 250px;
+    background-color: transparent;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.challenge-list {
+    flex: 1;
+    min-height: 0;
+    max-height: 650px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 32px;
+}
+
+.home-listBox::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-listBox::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+
+.challenge-row {
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+}
+
+.challenge-info {
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
+    display: flex;
+    align-items: center;
+}
+
+.challenge-icon {
+    width: 35px;
+    height: 35px;
+    background: #dadada;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+
+.challenge-info-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.challenge-date {
+    color: #757575;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.challenge-title {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.challenge-progress {
+    width: 128px;
+    min-width: 128px;
+    max-width: 128px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 0;
+    margin-left: 30px;
+}
+
+.progress-percent {
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    min-width: 0;
+    height: 4px;
+    background: #D9D9D9;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 0;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #605BFF;
+    border-radius: 5px;
+}
+
+.challenge-goal {
+    width: 290px;
+    min-width: 290px;
+    max-width: 290px;
+    height: 30px;
+    border-radius: 5px;
+    background: rgba(255, 222, 91, 0.18);
+    padding-left: 10px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    margin-left: 46px;
+}
+
+/*==========사이드바 CSS =========*/
+
+.home-side-wrapper {
+    background: #F7F7F7;
+    border-radius: 10px;
+    width: 322px;
+    height: 918px;
+    margin-top: 32px;
+    margin-right: 58px;
+}
+
+.home-sideChallengeTitle {
+    color: #1B1B1B;
+    font-family: "Segoe UI";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-left: 22px;
+    margin-top: 20px;
+}
+
+.home-suggestBtn {
+    width: 112px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #605BFF;
+    margin-top: 7px;
+    margin-left: 25px;
+    color: #FFF;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    border: none;
+}
+
+.home-suggestBox {
+    width: 274px;
+    height: 375px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #FFF;
+    margin-left: 25px;
+    margin-top: 9px;
+    padding-top: 16px;
+}
+
+.home-suggestTitle {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-left: 17px;
+}
+
+
+/*====중간 챌린지 카드=======*/
+.home-middleBox {
+    width: 768px;
+    height: 275px;
+    background-color: transparent;
+    margin-left: 49px;
+}
+
+.home-side-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 26px;
+    padding: 20px 0;
+}
+
+.home-side-cards::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-side-cards::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.home-cert-card {
+    flex-shrink: 0;
+    /* 줄어들지 않게 고정 */
+    width: 233px;
+    height: 273px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 1px 8px #ededed;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+    margin: 0;
+    /* 여백은 gap으로 */
+}
+
+
+.home-cert-img {
+    width: 190px;
+    height: 128px;
+    background: #d9d9d9;
+    border-radius: 12px;
+    margin-top: 28px;
+    margin-left: 22px;
+    margin-bottom: 20px;
+    align-self: flex-start;
+}
+
+.home-cert-category {
+    color: #757575;
+    font-family: "Segoe UI";
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 22px;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.home-cert-title {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 18px;
+    font-weight: 700;
+    margin-left: 22px;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.home-cert-link {
+    margin-top: auto;
+    margin-bottom: 22px;
+    margin-left: 22px;
+    color: #605BFF;
+    font-family: "Segoe UI";
+    font-size: 17px;
+    font-weight: 600;
+    text-decoration: none;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+}
+
+.home-cert-link:hover {
+    text-decoration: underline;
+}
+
+/*====== 밑 박스 ======*/
+.home-bottomBox {
+    width: 768px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    margin-top: 35px;
+    margin-left: 50px;
+    position: absolute
+}
+
+.home-bottomLeft {
+    width: 209.957px;
+    height: 244px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 2px solid #A7A7A7;
+    background: #FFF;
+    flex-direction: row;
+    position: relative;
+    z-index: 2;
+}
+
+.home-leftTitle {
+    margin-top: 15px;
+    margin-left: 28px;
+    width: 151px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.home-categoryBox {
+    margin-left: 22px;
+    margin-top: 16px;
+    width: 178px;
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.home-categoryBtn {
+    width: 162.643px;
+    height: 53px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: black;
+    font-family: Lato;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+    border: none;
+}
+
+.home-categoryBtn.selected,
+.home-categoryBtn:hover {
+    background: #605BFF;
+    color: #fff;
+}
+
+.home-categoryBox::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-categoryBox::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+/*인기POST*/
+.home-bottomRight {
+    position: absolute;
+    top: 0px;
+    width: 559.886px;
+    height: 244px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: white;
+    margin-left: 209px;
+    z-index: 1;
+}
+
+.post-card {
+    width: 518px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(117, 117, 117, 0.50);
+    background: #FFF;
+}
+
+.post-card-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.post-texts {
+    flex: 1;
+}
+
+.post-title {
+    color: #000;
+    font-family: Lato;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.post-content {
+    color: #757575;
+    font-family: Lato;
+    font-size: 9px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.post-likes {
+    color: #000;
+    font-family: Pretendard;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16.667px;
+}
