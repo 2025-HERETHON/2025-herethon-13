@@ -39,6 +39,7 @@ class Challenge(models.Model):
     frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, default='daily')
     is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    is_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -91,16 +92,8 @@ class GoalProgress(models.Model):
     is_completed = models.BooleanField(default=False)
     content = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='goal_progress_images/', null=True, blank=True)
-    date = models.DateField(auto_now_add=True)
-
-# 뱃지 부여
-class Badge(models.Model):
-    user = models.ForeignKey("api.User", on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1) # default=1 임시 설정, 추후 수정 필요
-    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
-    awarded_at = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.user.nickname} - {self.challenge.title}"
-
+        return f"{self.user.nickname} - {self.goal.content} - {'완료' if self.is_completed else '미완료'}"
 

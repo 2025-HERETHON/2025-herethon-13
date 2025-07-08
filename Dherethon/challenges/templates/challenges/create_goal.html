@@ -1,3 +1,4 @@
+{% load static %}
 {% block content %}
 <h2>인증글 작성</h2>
 
@@ -6,19 +7,19 @@
     <!-- 왼쪽 프로필 -->
     <div style="width: 200px; margin-right: 20px;">
         <p><strong>{{ request.user.nickname }}</strong></p>
-
-        {% if request.user.profile_image %}
-            <img src="{{ request.user.profile_image.url }}" width="100">
+        <!-- 프로필 -->
+        {% if user.profile_image and user.profile_image.url %}
+            <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
         {% else %}
-            <p>[프로필 이미지 없음]</p>
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
         {% endif %}
 
         <nav>
             <ul>
-                <li><a href="{% url 'home:main' %}">홈</a></li>
-                <li><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></li>
-                <li><a href="#">커뮤니티</a></li>
-                <li><a href="#">뱃지</a></li>
+                <p><a href="{% url 'home:main' %}">홈</a></p>
+                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+                <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
             </ul>
         </nav>
         <p><a href="{% url 'api:logout' %}">Log out</a></p>

@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>인증 글 게시하기</title>
+  <nav>
+            <p><a href="{% url 'home:main' %}">홈</a></p>
+            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+            <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+            <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
+        </nav>
   <style>
     .card {
       border: 1px solid #ccc;
@@ -90,7 +96,7 @@
           const card = document.createElement('div');
           card.className = 'card';
           card.innerHTML = `
-            <strong>${progress.goal_title}</strong><br>
+            <strong>${progress.goalTitle}</strong><br>
             <small>${progress.date}</small><br>
             <p>${progress.content}</p>
             ${progress.image_url ? `<img src="${progress.image_url}" class="preview-img">` : ''}

@@ -18,7 +18,9 @@ def signup_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST, request.FILES)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.profile_image = form.cleaned_data.get('profile_image')
+            user.save()
             return redirect('api:login')
     else:
         form = RegisterForm()
