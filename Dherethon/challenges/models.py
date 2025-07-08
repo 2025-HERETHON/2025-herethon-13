@@ -92,7 +92,7 @@ class GoalProgress(models.Model):
     is_completed = models.BooleanField(default=False)
     content = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='goal_progress_images/', null=True, blank=True)
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return f"{self.user.nickname} - {self.goal.content} - {'완료' if self.is_completed else '미완료'}"

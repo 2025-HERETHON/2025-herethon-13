@@ -202,7 +202,7 @@ def create_goal(request, challenge_id, record_id=None):
 
         title = request.POST.get('title')
         content = request.POST.get('content')
-        date = request.POST.get('date')
+        date = parse_date(request.POST.get('date'))
         image = request.FILES.get('image')
 
         if record:
@@ -215,27 +215,31 @@ def create_goal(request, challenge_id, record_id=None):
             record.save()
         else:
             # 생성
-            GoalRecord.objects.create(
-                user = request.user,
-                goal = goal,
-                title = title,
-                content = content,
-                date = date,
-                image = image
-            )
-
-        
-        # 진행 상태 갱신
-        GoalProgress.objects.update_or_create(
+            progress, _ = GoalProgress.objects.update_or_create(
             user=request.user,
             goal=goal,
             defaults={
                 'is_completed': True,
                 'content': content,
                 'image': image,
-                'date': datetime.strptime(date, "%Y-%m-%d").date()
+                'date': date
             }
         )
+
+        # GoalRecord 생성 후 연결
+        record = GoalRecord.objects.create(
+            user=request.user,
+            goal=goal,
+            goal_progress=progress,
+            title=title,
+            content=content,
+            date=date,
+            image=image
+        )
+
+        # 🔥 이게 누락되었음 → 반드시 연결 필요!
+        progress.record = record
+        progress.save()
 
         return redirect('challenges:detail', pk=challenge.id)
 
@@ -326,27 +330,30 @@ def delete_goal_record(request, record_id):
 def goal_records_by_date(request, challenge_id):
     date_str = request.GET.get('date')
     
-    try:
-        date = datetime.strptime(date_str, "%Y-%m-%d").date()
-    except (TypeError, ValueError):
-        return JsonResponse({'error': '날짜가 유효하지 않습니다.'}, status=400)
+    if not date_str:
+        return JsonResponse({'records': []})
 
+    selected_date = parse_date(date_str)
+    if not selected_date:
+        return JsonResponse({'records': []})
+    
+    # 인증글 필터링: 로그인 사용자 + 챌린지에 속한 + 날짜 일치
     records = GoalRecord.objects.filter(
-        goal__challenge_id=challenge_id,
         user=request.user,
-        date=date  
+        goal__challenge_id=challenge_id,
+        date=selected_date
     ).select_related('goal')
 
-    data = []
+    result = []
     for record in records:
-        data.append({
+        result.append({
             'id': record.id,
-            'goal_content': record.goal.content,
             'title': record.title,
-            'content': record.content[:60],
+            'content': record.content,
+            'date': record.date.strftime('%Y-%m-%d'),
+            'goal_content': record.goal.content,
             'image_url': record.image.url if record.image else None,
-            'date': record.date.strftime('%Y.%m.%d'),
         })
 
-    return JsonResponse({'records': data})
+    return JsonResponse({'records': result})
 
