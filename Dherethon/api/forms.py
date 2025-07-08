@@ -50,8 +50,20 @@ class RegisterForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='아이디', widget=forms.TextInput(attrs={'placeholder': '아이디를 입력하세요.'}))
-    password = forms.CharField(label='비밀번호', widget=forms.PasswordInput(attrs={'placeholder': '비밀번호를 입력하세요.'}))
+    username = forms.CharField(
+        label='아이디',
+        widget=forms.TextInput(attrs={
+            'class': 'inputBox',
+            'placeholder': '아이디를 입력하세요.'
+        })
+    )
+    password = forms.CharField(
+        label='비밀번호',
+        widget=forms.PasswordInput(attrs={
+            'class': 'inputBox',
+            'placeholder': '비밀번호를 입력하세요.'
+        })
+    )
 
     error_messages = {
         'invalid_login': "아이디 또는 비밀번호가 올바르지 않습니다."

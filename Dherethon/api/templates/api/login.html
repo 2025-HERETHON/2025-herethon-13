@@ -1,45 +1,57 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
-    <title>로그인</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>Login</title>
 </head>
+
 <body>
-    <div class="login-container">
-        <div class="login-logo">
-            <!-- 실제 이미지 사용 시 아래 주석 해제 -->
-            <!-- <img src="{% static 'images/logo.png' %}" alt="로고"> -->
-            <h2>logo</h2> <!-- 텍스트 대체용 -->
+    <div class="wrapper">
+        <div class="card">
+            <!-- 왼쪽 로고 영역 -->
+            <div class="left">
+                <img src="{% static 'images/로고3.png' %}" alt="Dotry 로고">
+            </div>
+
+            <!-- 오른쪽 로그인 폼 -->
+            <div class="right">
+                <form method="post">
+                    {% csrf_token %}
+
+                    <!-- 아이디 입력 -->
+                    <div class="subBox">
+                        <div class="mainTxt">아이디</div>
+                        {{ form.username }}
+                    </div>
+
+                    <!-- 비밀번호 입력 -->
+                    <div class="subBox">
+                        <div class="mainTxt">비밀번호</div>
+                        {{ form.password }}
+                    </div>
+
+                    <!-- 에러 메시지 -->
+                    {% if form.non_field_errors %}
+                        <ul>
+                            {% for error in form.non_field_errors %}
+                                <li style="color: red;">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <!-- 버튼 영역 -->
+                    <div class="btnBox">
+                        <button class="joinBtn" type="button" onclick="goSignUp()">회원가입</button>
+                        <button class="loginBtn" type="submit">로그인</button>  
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <form method="post">
-            {% csrf_token %}
-
-            <div>
-                <label for="id_username">아이디</label>
-                {{ form.username }}
-            </div>
-
-            <div>
-                <label for="id_password">비밀번호</label>
-                {{ form.password }}
-            </div>
-
-            {% if form.non_field_errors %}
-                <ul>
-                    {% for error in form.non_field_errors %}
-                        <li style="color: red;">{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            
-            <div>
-                <button type="submit">로그인</button>
-                <a href="{% url 'api:signup' %}">회원가입</a>
-                <!-- 버튼으로 유지하려 했으나, VS Code가 JS 문자열로 인식해서 링크로 변경했습니다. -->
-            </div>
-        </form>
     </div>
 </body>
+<script src="{% static 'js/login.js' %}"></script>
 </html>
