@@ -29,7 +29,14 @@
     <!-- 오른쪽 메인 콘텐츠 -->
     <div>
 
-        <form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data"
+  action="{% if mode == 'copy' %}
+            {% url 'challenges:save_copied_challenge' %}
+         {% elif mode == 'edit' %}
+            {% url 'challenges:edit_challenge' challenge.id %}
+         {% else %}
+            {% url 'challenges:create' %}
+         {% endif %}">
             {% csrf_token %}
 
             <h3>어떤 걸 도전하시나요?</h3>
@@ -51,21 +58,19 @@
             {{ form.frequency }}
 
             <h3>세부 목표</h3>
-            <div id="goal-container">
-                {% if challenge %}
+           <h3>세부 목표</h3>
+                <div id="goal-container">
                     {% for goal in goals %}
                         <div class="goal-input-wrapper">
                             <input type="text" name="goal_{{ goal.id }}" value="{{ goal.content }}" class="goal-input">
                         </div>
                     {% endfor %}
-                    <p style="font-size: 13px; color: gray;">※ 기존 목표 수정이 가능합니다. 아래 입력창으로 새 목표도 추가할 수 있습니다.</p>
-                {% endif %}
-                
-                <!-- 새로운 세부 목표 입력란 -->
-                <div class="goal-input-wrapper">
-                    <input type="text" name="goals" placeholder="세부 목표를 입력해주세요." class="goal-input">
+                    
+                    <!-- 새로운 세부 목표 입력란 -->
+                    <div class="goal-input-wrapper">
+                        <input type="text" name="goals" placeholder="세부 목표를 입력해주세요." class="goal-input">
+                    </div>
                 </div>
-            </div>
             <button type="button" id="add-goal-btn">➕ 목표 추가</button>
 
             <br><br>
@@ -73,7 +78,7 @@
                 {% if challenge %}수정하기{% else %}등록하기{% endif %}
             </button>
         </form>
-
+        <p>goal 개수: {{ goals|length }}</p>
         <script src="{% static 'js/create.js' %}"></script>
 
     </div>

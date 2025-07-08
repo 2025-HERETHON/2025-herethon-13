@@ -3,10 +3,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const recordListContainer = document.getElementById("record-list");
     const challengeId = datePicker.dataset.challengeId;
 
+    // ✅ 최초 로드시에도 기록 불러오기
+    fetchRecords(datePicker.value);
+
+    // ✅ 날짜 변경 시 기록 불러오기
     datePicker.addEventListener("change", function () {
         const selectedDate = this.value;
+        fetchRecords(selectedDate);
+    });
 
-        fetch(`/challenges/${challengeId}/records/?date=${selectedDate}`)
+    // ✅ 인증글 가져오는 함수
+    function fetchRecords(selectedDate) {
+        // ⭐ fetch 경로만 수정됨 ⭐
+        fetch(`/challenges/challenge/${challengeId}/records/?date=${selectedDate}`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("데이터를 불러올 수 없습니다.");
@@ -18,9 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch((error) => {
                 console.error("Error:", error);
+                recordListContainer.innerHTML = "<li>인증글을 불러오지 못했습니다.</li>";
             });
-    });
+    }
 
+    // ✅ 인증글을 HTML로 렌더링
     function renderRecords(records) {
         recordListContainer.innerHTML = "";
 

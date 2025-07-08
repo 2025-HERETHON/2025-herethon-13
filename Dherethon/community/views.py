@@ -34,7 +34,7 @@ def create_post(request):
         user=request.user,
         is_completed=True,
         record__isnull=False  # 🔥 GoalRecord가 연결된 것만
-    ).select_related('goal', 'goal_challenge', 'record').order_by('-date')
+    ).select_related('goal', 'goal__challenge', 'record').order_by('-date')
 
     if not progresses.exists():
         return render(request, 'community/create_post.html', {

@@ -11,14 +11,14 @@ from django.template.loader import render_to_string
 
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-
+from challenges.forms import ChallengeForm, GoalForm
 
 @login_required
 def home_view(request):
     user = request.user
 
     # --- 1. 로그인한 사용자의 도전 리스트 + 진행률 + 다음 세부목표
-    my_challenges = Challenge.objects.filter(user=user)
+    my_challenges = Challenge.objects.filter(user=user, is_deleted=False)
     my_challenges_with_progress = []
 
     for ch in my_challenges:
@@ -49,13 +49,13 @@ def home_view(request):
     ).order_by('-like_count')[:3]
 
     # --- 3. 추천 도전 + 세부목표 (랜덤으로 여러 개)
-    others_challenges = Challenge.objects.exclude(user=request.user).filter(is_public=True, goals__isnull=False).distinct()
+    others_challenges = Challenge.objects.exclude(user=request.user).filter(is_public=True, goals__isnull=False, is_deleted=False).distinct()
 
     recommended_challenges = []
 
     if others_challenges.exists():
         # 최대 3개까지만 랜덤 추출
-        selected_challenges = random.sample(list(others_challenges), min(3, others_challenges.count()))
+        selected_challenges = random.sample(list(others_challenges), min(1, others_challenges.count()))
         for ch in selected_challenges:
             recommended_challenges.append({
                 'challenge': ch,
@@ -93,16 +93,15 @@ def get_random_recommendation(request):
 
     return JsonResponse({'html': html})
 
-@require_POST
 @login_required
 def copy_challenge(request, challenge_id):
     original = get_object_or_404(Challenge, id=challenge_id)
 
-    # 도전 복사
-    new_challenge = Challenge.objects.create(
+    # 1. 복사 생성 (저장은 하지 않음)
+    copied_challenge = Challenge(
         user=request.user,
         category=original.category,
-        title=original.title,
+        title=original.title + " (복사본)",
         image=original.image,
         start_date=original.start_date,
         end_date=original.end_date,
@@ -110,36 +109,95 @@ def copy_challenge(request, challenge_id):
         is_public=False
     )
 
+    # 저장하지 않고 폼으로 넘길 수 있도록 객체만 생성
+
+    # 세부목표도 함께 준비
+    copied_goals = []
     for goal in original.goals.all():
-        Goal.objects.create(
-            challenge=new_challenge,
+        copied_goals.append(Goal(
+            challenge=copied_challenge,  # 아직 저장 안 된 Challenge
             title=goal.title,
             content=goal.content,
             date=goal.date,
-            image=goal.image
+            image=goal.image,
+        ))
+
+    # 2. create.html 렌더 (challenge, goals 넘겨줌)
+    return render(request, 'challenges/create.html', {
+        'challenge': copied_challenge,
+        'goals': copied_goals,
+        'mode': 'copy',  # 복사모드 플래그
+    })
+
+@login_required
+def edit_challenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id, user=request.user)
+
+    if request.method == 'POST':
+        form = ChallengeForm(request.POST, request.FILES, instance=challenge)
+        if form.is_valid():
+            form.save()
+
+            # ✅ 기존 세부 목표 수정
+            for key, value in request.POST.items():
+                if key.startswith('goal_'):
+                    goal_id = key.split('_')[1]
+                    try:
+                        goal = Goal.objects.get(id=goal_id, challenge=challenge)
+                        goal.content = value
+                        goal.save()
+                    except Goal.DoesNotExist:
+                        continue
+
+            # ✅ 새로 추가된 세부 목표
+            new_goal_contents = request.POST.getlist('goals')
+            for content in new_goal_contents:
+                if content.strip():  # 빈칸이 아닐 경우에만 추가
+                    Goal.objects.create(challenge=challenge, content=content)
+
+            return redirect('challenges:my_challenges')
+
+    else:
+        form = ChallengeForm(instance=challenge)
+
+    goals = Goal.objects.filter(challenge=challenge)
+    return render(request, 'challenges/create.html', {
+        'form': form,
+        'edit_mode': True,
+        'challenge': challenge,
+        'goals': goals,  # 👈 템플릿에서 기존 목표 표시용
+    })
+
+
+@login_required
+@require_POST
+@login_required
+def save_copied_challenge(request):
+    if request.method == 'POST':
+        original_id = request.POST.get('original_challenge_id')
+        original = get_object_or_404(Challenge, id=original_id)
+
+        # Challenge 복사
+        copied = Challenge.objects.create(
+            title=original.title,
+            category=original.category,
+            image=original.image,
+            start_date=original.start_date,
+            end_date=original.end_date,
+            frequency=original.frequency,
+            is_public=original.is_public,
+            user=request.user
         )
 
-    # ✅ 복사한 도전에 대한 진행률 및 다음 목표 계산
-    goals = new_challenge.goals.all()
-    total = goals.count()
-    completed = GoalProgress.objects.filter(user=request.user, goal__in=goals, is_completed=True).count()
-    progress = int((completed / total) * 100) if total > 0 else 0
+        # 세부 목표도 함께 복사
+        original_goals = Goal.objects.filter(challenge=original)
+        for goal in original_goals:
+            Goal.objects.create(
+                challenge=copied,
+                content=goal.content
+            )
 
-    next_goal = goals.exclude(
-        id__in=GoalProgress.objects.filter(user=request.user, is_completed=True).values_list('goal_id', flat=True)
-    ).order_by('id').first()
-
-    # ✅ HTML 템플릿 조각 렌더링
-    new_challenge_html = render_to_string('home/_challenge_card.html', {
-        'challenge': {
-            'id': new_challenge.id,
-            'title': new_challenge.title,
-            'progress': progress,
-            'next_goal': next_goal,
-        }
-    }, request=request)
-
-    return JsonResponse({'success': True, 'new_challenge_html': new_challenge_html})
+        return redirect('challenges:edit_challenge', challenge_id=copied.id)
 
 
 @login_required

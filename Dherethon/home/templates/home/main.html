@@ -81,12 +81,31 @@
 <hr>
 
 <div class="recommended-box">
-    <h3>💡 다른 유저의 도전 추천</h3>
-    <button onclick="refreshRecommendation()" class="button">다시 추천받기</button>
-    <div id="recommendation-card">
-        {% include 'home/_recommendation_card.html' with challenge=recommended_challenge challenge_goals=recommended_goals %}
-    </div>
+ <h3>💡 다른 유저의 도전 추천</h3>
+
+{% if recommended_challenges %}
+    {% for item in recommended_challenges %}
+        <div class="recommended-challenge-box">
+            <h4>{{ item.challenge.user.nickname }}님의 Challenge</h4>
+            <p><strong>{{ item.challenge.title }}</strong></p>
+            <ul>
+                {% for goal in item.goals %}
+                    <li>{{ goal.content }}</li>
+                {% endfor %}
+            </ul>
+
+            <!-- ✅ 여기에 이 코드 추가 -->
+            <form method="post" action="{% url 'challenges:copy_challenge' item.challenge.id %}">
+            {% csrf_token %}
+            <button type="submit" class="button">도전 추가하기 ➕</button>
+            </form>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>추천할 도전이 아직 없습니다.</p>
+{% endif %}
 </div>
+
 
 <script>
 function refreshRecommendation() {

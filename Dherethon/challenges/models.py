@@ -40,6 +40,7 @@ class Challenge(models.Model):
     is_public = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     is_completed = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)  # 소프트 삭제용 필드 추가
 
     def __str__(self):
         return self.title

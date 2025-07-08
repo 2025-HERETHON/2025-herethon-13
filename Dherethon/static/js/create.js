@@ -1,18 +1,14 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const addBtn = document.getElementById('add-goal-btn');
-    const container = document.getElementById('goal-container');
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("add-goal-btn").addEventListener("click", function () {
+        const container = document.getElementById("goal-container");
 
-    addBtn.addEventListener('click', function () {
-        const newWrapper = document.createElement('div');
-        newWrapper.classList.add('goal-input-wrapper');
+        const newInputWrapper = document.createElement("div");
+        newInputWrapper.className = "goal-input-wrapper";
 
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.name = 'goals';
-        input.placeholder = '세부 목표를 입력해주세요.';
-        input.classList.add('goal-input');
+        newInputWrapper.innerHTML = `
+            <input type="text" name="goals" placeholder="세부 목표를 입력해주세요." class="goal-input">
+        `;
 
-        newWrapper.appendChild(input);
-        container.appendChild(newWrapper);
+        container.appendChild(newInputWrapper);
     });
 });
