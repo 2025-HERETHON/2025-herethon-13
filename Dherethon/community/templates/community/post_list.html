@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+  <h2>🏡 커뮤니티</h2>
+
+        <nav>
+            <p><a href="{% url 'home:main' %}">홈</a></p>
+            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+            <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+            <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
+        </nav>
+        
+  <a href="{% url 'community:create_post' %}">➕ 인증 글 작성하기</a>
+  <hr>
+            <!-- 검색창 -->
+    <form method="get" action="{% url 'community:post_list' %}">
+      <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ query }}">
+      <button type="submit">검색</button>
+    </form>
+
+    <!-- 🔽 카테고리 필터 nav -->
+    <div style="margin: 10px 0;">
+      <a href="?category=전체{% if query %}&q={{ query }}{% endif %}"
+        {% if selected_category == '전체' %}style="font-weight:bold;"{% endif %}>
+        전체
+      </a>
+      {% for cat in categories %}
+        |
+        <a href="?category={{ cat.name }}{% if query %}&q={{ query }}{% endif %}"
+          {% if selected_category == cat.name %}style="font-weight:bold;"{% endif %}>
+          {{ cat.name }}
+        </a>
+      {% endfor %}
+    </div>
+
+  <hr>
+
+  {% for post in posts %}
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+      <p><strong>{{ post.user.nickname }}</strong>님의 인증글</p>
+      <p>{{ post.content|truncatechars:100 }}</p>
+      <p><strong>도전:</strong> {{ post.goal.challenge.title }}</p>
+      <p>❤️ {{ post.like_count }} / 💬 {{ post.comments.count }}</p>
+      <a href="{% url 'community:post_detail' post.id %}">[자세히 보기]</a>
+    </div>
+  {% empty %}
+    <p>아직 등록된 게시글이 없습니다.</p>
+  {% endfor %}
+{% endblock %}
+</body>
+</html>
+
