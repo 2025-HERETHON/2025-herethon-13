@@ -21,7 +21,8 @@ urlpatterns = [
     path('record/delete/<int:record_id>/', delete_goal_record, name='delete_goal_record'), # 삭제
 
     # 날짜별 세부목표 인증글
-    path('records/<int:challenge_id>/', goal_records_by_date, name='goal_records_by_date'),
+    # 날짜별 세부목표 인증글
+    path('challenge/<int:challenge_id>/records/', goal_records_by_date, name='goal_records_by_date'),
 
     # 세부목표 상세
     path('record/<int:record_id>/', goal_detail, name='goal_detail'),

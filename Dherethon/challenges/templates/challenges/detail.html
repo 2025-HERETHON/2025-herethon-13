@@ -85,43 +85,27 @@
     <!-- 오른쪽 인증글 영역 -->
     <div style="flex: 1;">
         <h4>인증 기록</h4>
-        <div id="calendar">
+
+        <!-- 날짜 선택 + 인증글 리스트 묶음 -->
+        <div id="calendar" style="margin-bottom: 16px;">
             <!-- 날짜 선택 영역 -->
-            <div style="margin-bottom: 10px;">
-                <input type="date" id="record-date-picker" value="{{ today|date:'Y-m-d' }}" data-challenge-id="{{ challenge.id }}">
+            <input
+                type="date"
+                id="record-date-picker"
+                value="{{ today|date:'Y-m-d' }}"
+                data-challenge-id="{{ challenge.id }}"
+                style="margin-bottom: 12px; width: 100%;"
+            >
 
-            </div>
+            <!-- 인증글 출력 영역 (JS로 렌더링됨) -->
+            <ul id="record-list" style="list-style: none; padding: 0;"></ul>
         </div>
-
-        <ul id="record-list" style="list-style: none; padding: 0;">
-            <!-- {% for record in today_records %}
-            <li style="margin-bottom: 16px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; background-color: #fef9c3;">
-                <a href="{% url 'challenges:goal_detail' record.id %}" style="text-decoration: none; color: inherit;">
-                    <div style="display: flex; gap: 16px;">
-                        {% if record.image %}
-                            <img src="{{ record.image.url }}" alt="썸네일" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px;">
-                        {% else %}
-                            <div style="width: 64px; height: 64px; background-color: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px;">이미지 없음</div>
-                        {% endif %}
-
-                        <div style="flex: 1;">
-                            <p style="font-size: 12px; color: #6b7280; margin: 0;">{{ record.date|date:"Y.m.d" }}</p>
-                            <p style="font-size: 13px; background-color: #fef3c7; display: inline-block; padding: 2px 6px; border-radius: 4px; font-weight: 600; margin: 4px 0;">{{ record.goal.content }}</p>
-                            <p style="font-size: 15px; font-weight: bold; margin: 2px 0;">{{ record.title }}</p>
-                            <p style="font-size: 14px; color: #444; margin: 0;">{{ record.content|truncatechars:40 }}</p>
-                        </div>
-                    </div>
-                </a>
-            </li>
-            {% empty %}
-            <li>오늘 인증글 없음</li>
-            {% endfor %} -->
-        </ul>
 
         {% if not badge_received %}
             <a href="{% url 'challenges:create_goal' challenge.id %}">인증하기</a>
         {% endif %}
     </div>
+
 
 </div>
 {% endblock %}

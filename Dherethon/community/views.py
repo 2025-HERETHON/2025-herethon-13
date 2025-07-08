@@ -8,17 +8,16 @@ from challenges.models import Category, GoalProgress, Challenge, GoalRecord
 @login_required
 def create_post(request):
     if request.method == 'POST':
+        # 기존 POST 처리 코드 유지
         progress_id = request.POST.get('goal_progress')
         progress = get_object_or_404(GoalProgress, id=progress_id, user=request.user, is_completed=True)
 
-        # 이미 게시된 인증 기록이면 중복 방지
         if Post.objects.filter(goal_progress=progress).exists():
             return redirect('community:post_list')
 
-        # ✅ GoalRecord에서 content, image 가져오기
         record = GoalRecord.objects.filter(user=request.user, goal=progress.goal, date=progress.date).first()
         if not record:
-            return redirect('community:create_post')  # 혹은 에러 메시지 띄우기
+            return redirect('community:create_post')
 
         Post.objects.create(
             user=request.user,
@@ -30,8 +29,23 @@ def create_post(request):
         )
         return redirect('community:post_list')
 
-    challenges = Challenge.objects.filter(user=request.user)
-    return render(request, 'community/create_post.html', {'challenges': challenges})
+    # ✅ 여기부터 수정: 인증 완료된 GoalProgress 중 GoalRecord가 있는 것만 가져오기
+    progresses = GoalProgress.objects.filter(
+        user=request.user,
+        is_completed=True,
+        record__isnull=False  # 🔥 GoalRecord가 연결된 것만
+    ).select_related('goal', 'goal_challenge', 'record').order_by('-date')
+
+    if not progresses.exists():
+        return render(request, 'community/create_post.html', {
+            'challenges': Challenge.objects.filter(user=request.user),
+            'no_available_records': True,
+        })
+
+    return render(request, 'community/create_post.html', {
+        'challenges': Challenge.objects.filter(user=request.user),
+        'progresses': progresses,
+    })
 
 @login_required
 def post_list(request):
@@ -112,18 +126,21 @@ def load_goal_progresses(request):
         user=request.user,
         goal__challenge_id=challenge_id,
         is_completed=True
-    ).select_related('goal').order_by('-date')
+    ).select_related('goal', 'record').order_by('-date')  # ✅ record도 select_related 추가
 
     results = []
     for progress in progresses:
-        record = GoalRecord.objects.filter(user=request.user, goal=progress.goal, date=progress.date).first()
+        record = getattr(progress, 'record', None)  # ✅ 더 안전하게 OneToOne 역참조
+
+        if not record:
+            continue  # 인증 기록 없는 경우 건너뜀
 
         results.append({
             'id': progress.id,
-            'goalTitle': progress.goal.title,
+            'goalTitle': progress.goal.title or progress.goal.content,  # 둘 중 하나
             'date': progress.date.strftime('%Y.%m.%d'),
-            'content': record.content if record else '내용 없음',
-            'image_url': record.image.url if record and record.image else '',
+            'content': record.content,
+            'image_url': record.image.url if record.image else '',
         })
 
-    return JsonResponse({'progresses': results})
+    return JsonResponse(results, safe=False)
