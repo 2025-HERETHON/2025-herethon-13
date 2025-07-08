@@ -21,7 +21,7 @@
             <ul>
                 <p><a href="{% url 'home:main' %}">홈</a></p>
                 <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
-                <p><a href="#">커뮤니티</a></p>
+                <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
                 <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
             </ul>
             <p><a href="{% url 'api:logout' %}">Log out</a></p>
@@ -57,7 +57,13 @@
                             <img src="{% static 'images/book-icon.png' %}" alt="뱃지 아이콘" width="40" height="40">
                         </div>
                         <div>
-                            <p><strong>{{ badge.challenge.title }}</strong></p>
+                            <p>
+                                <strong>
+                                    <a href="{% url 'challenges:detail' badge.challenge.id %}" style="text-decoration: none; color: inherit;">
+                                        {{ badge.challenge.title }}
+                                    </a>
+                                </strong>
+                            </p>
                             <p>{{ badge.challenge.start_date|date:"Y.m.d" }} - {{ badge.challenge.end_date|date:"Y.m.d" }}</p>
                         </div>
                     </div>

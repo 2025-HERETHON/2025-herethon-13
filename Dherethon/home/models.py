@@ -8,5 +8,8 @@ class Badge(models.Model):
     challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
     awarded_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('user', 'challenge')
+
     def __str__(self):
         return f"{self.user.nickname} - {self.challenge.title}"

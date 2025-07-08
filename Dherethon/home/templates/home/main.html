@@ -1,63 +1,124 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>Main</title>
+  <meta charset="UTF-8">
+  <title>홈</title>
+  <style>
+    .challenge-card, .popular-post, .recommended-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      height: 12px;
+      background: #e0e0e0;
+      border-radius: 6px;
+      margin: 5px 0;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #5A3FFF;
+    }
+    .button {
+      padding: 6px 12px;
+      background: #5A3FFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
+            <!-- 좌측 사이드바 -->
+        <div style="width:200px; padding:10px;">
+            <p><strong>{{ request.user.nickname }}</strong></p>
+            <ul>
+                <p><a href="{% url 'home:main' %}">홈</a></p>
+                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+                <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
+            </ul>
+            <p><a href="{% url 'api:logout' %}">Log out</a></p>
+        </div>
 
-<div>
+<h2>👋 {{ request.user.nickname }} 님의 Challenges</h2>
 
-    <!-- 왼쪽 사이드바 -->
-    <div>
-        {% if user.profile_image and user.profile_image.url %}
-            <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
-        {% else %}
-            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
-        {% endif %}
-
-
-        <p>{{ user.nickname }}</p>
-
-        <nav>
-            <p><a href="{% url 'home:main' %}">홈</a></p>
-            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
-            <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
-            <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
-        </nav>
-
-        <p><a href="{% url 'api:logout' %}">로그아웃</a></p>
+<div id="my-challenges-box">
+{% for challenge in my_challenges %}
+  <div class="challenge-card">
+    <h3>{{ challenge.title }}</h3>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: {{ challenge.progress }}%;"></div>
     </div>
-
-    <!-- 오른쪽 메인 콘텐츠 -->
-    <div>
-        <h1>메인 페이지입니다</h1>
-        <p>로그인 성공 후 이 페이지로 리다이렉트됩니다.</p>
-
-        <h2>{{ user.nickname }}님의 회원 정보</h2>
-        <ul>
-            <li><strong>아이디:</strong> {{ user.username }}</li>
-            <li><strong>닉네임:</strong> {{ user.nickname }}</li>
-            <li><strong>관심 카테고리:</strong>
-                {% if user.interest_categories %}
-                    {{ user.interest_categories }}
-                {% else %}
-                    없음
-                {% endif %}
-            </li>
-            <li><strong>프로필 사진:</strong><br>
-                {% if user.profile_image and user.profile_image.url %}
-                    <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
-                {% else %}
-                    <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
-                {% endif %}
-            </li>
-        </ul>
-    </div>
-
+    <p>진행률: {{ challenge.progress }}%</p>
+    {% if challenge.next_goal %}
+      <p><strong>다음 세부 목표:</strong> {{ challenge.next_goal.content }}</p>
+      <a href="{% url 'challenges:create_goal' challenge.id %}" class="button">인증하러 가기 →</a>
+    {% endif %}
+  </div>
+{% empty %}
+  <p>진행 중인 도전이 없습니다.</p>
+{% endfor %}
 </div>
+
+<hr>
+
+<h2>🔥 인기 POST</h2>
+{% for post in popular_posts %}
+<div class="popular-post">
+  <p>{{ post.content|truncatechars:50 }}</p>
+  <p>❤️ 좋아요 {{ post.like_count }}</p>
+  <a href="{% url 'community:post_detail' post.id %}">자세히 보기</a>
+</div>
+{% empty %}
+<p>아직 게시글이 없습니다.</p>
+{% endfor %}
+
+<hr>
+
+<div class="recommended-box">
+    <h3>💡 다른 유저의 도전 추천</h3>
+    <button onclick="refreshRecommendation()" class="button">다시 추천받기</button>
+    <div id="recommendation-card">
+        {% include 'home/_recommendation_card.html' with challenge=recommended_challenge challenge_goals=recommended_goals %}
+    </div>
+</div>
+
+<script>
+function refreshRecommendation() {
+    fetch("{% url 'home:refresh_recommendation' %}")
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("recommendation-card").innerHTML = data.html;
+        });
+}
+</script>
+</div>
+<script>
+function copyChallenge(challengeId) {
+    fetch(`/copy-challenge/${challengeId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("도전이 내 도전에 추가되었습니다!");
+            // 새 도전 HTML을 my_challenges 영역에 삽입
+            document.getElementById("my-challenges-box").insertAdjacentHTML("beforeend", data.new_challenge_html);
+        } else {
+            alert("추가에 실패했습니다.");
+        }
+    });
+}
+</script>
 
 </body>
 </html>

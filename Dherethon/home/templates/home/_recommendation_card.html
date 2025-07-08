@@ -1,0 +1,15 @@
+{% if challenge %}
+<div class="recommended-challenge-box" id="recommended-challenge-box">
+    <h4>{{ challenge.user.nickname }}님의 Challenge</h4>
+    <p><strong>{{ challenge.title }}</strong></p>
+    <ul>
+        {% for goal in goals %}
+            <li>{{ goal.content }}</li>
+        {% endfor %}
+    </ul>
+
+    <button class="button" onclick="copyChallenge({{ challenge.id }})">도전 추가하기 ➕</button>
+</div>
+{% else %}
+<p>추천할 도전이 없습니다.</p>
+{% endif %}

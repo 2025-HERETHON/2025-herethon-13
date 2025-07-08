@@ -1,0 +1,11 @@
+<div class="challenge-card">
+  <h3>{{ challenge.title }}</h3>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width: {{ challenge.progress }}%;"></div>
+  </div>
+  <p>진행률: {{ challenge.progress }}%</p>
+  {% if challenge.next_goal %}
+    <p><strong>다음 세부 목표:</strong> {{ challenge.next_goal.content }}</p>
+    <a href="{% url 'challenges:create_goal' challenge.id %}" class="button">인증하러 가기 →</a>
+  {% endif %}
+</div>
