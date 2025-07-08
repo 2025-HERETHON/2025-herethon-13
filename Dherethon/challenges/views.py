@@ -10,6 +10,8 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponseForbidden
 from django.db.models.functions import TruncDate
 from django.utils.timezone import localdate
+from django.http import JsonResponse
+from django.utils.dateparse import parse_date
 
 # 로그인한 사용자 기준 list view
 @login_required
@@ -318,3 +320,33 @@ def delete_goal_record(request, record_id):
         return redirect('challenges:detail', pk=challenge.id)  # 삭제 후 이동할 곳 설정 (예: 나의 도전 페이지) -> 도전 상세 페이지로 변경
 
     return redirect('challenges:goal_detail', record_id=record_id)  # 직접 접근은 리디렉트
+
+# 날짜별 인증글
+@login_required
+def goal_records_by_date(request, challenge_id):
+    date_str = request.GET.get('date')
+    
+    try:
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+    except (TypeError, ValueError):
+        return JsonResponse({'error': '날짜가 유효하지 않습니다.'}, status=400)
+
+    records = GoalRecord.objects.filter(
+        goal__challenge_id=challenge_id,
+        user=request.user,
+        date=date  
+    ).select_related('goal')
+
+    data = []
+    for record in records:
+        data.append({
+            'id': record.id,
+            'goal_content': record.goal.content,
+            'title': record.title,
+            'content': record.content[:60],
+            'image_url': record.image.url if record.image else None,
+            'date': record.date.strftime('%Y.%m.%d'),
+        })
+
+    return JsonResponse({'records': data})
+

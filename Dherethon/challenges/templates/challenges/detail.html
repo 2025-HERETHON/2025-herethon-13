@@ -2,16 +2,18 @@
 {% block content %}
 <h2 style="display: none;">나의 도전</h2>
 
+<!-- JS 연결 -->
+<script src="{% static 'js/challenge_detail.js' %}"></script>
+
 <div style="display: flex; gap: 24px;">
 
     <!-- 왼쪽 사이드바 -->
     <div style="width: 200px;">
         <p><strong>{{ request.user.nickname }}</strong></p>
-        <!-- 프로필 -->
         {% if user.profile_image and user.profile_image.url %}
             <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
         {% else %}
-            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
+            <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지">
         {% endif %}
         <nav>
             <ul>
@@ -26,122 +28,100 @@
 
     <!-- 가운데 메인 콘텐츠 -->
     <div style="flex: 2;">
-
-        <!-- 도전 정보 -->
         <div>
             <p>[{{ challenge.category.name }}]</p>
             <h3>{{ challenge.title }}</h3>
             <p>{{ challenge.start_date|date:"Y.m.d" }} - {{ challenge.end_date|date:"Y.m.d" }}</p>
-            <p>이 도전을 시작한 지 D+{{ challenge.d_plus }}</p>
-            <p>종료까지 {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}</p>
+            <p>D+{{ challenge.d_plus }} / {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}</p>
             <p>공개 여부: {{ challenge.is_public|yesno:"공개,비공개" }}</p>
             {% if challenge.image %}
                 <img src="{{ challenge.image.url }}" width="200">
             {% endif %}
         </div>
 
-        <!-- 진행률 -->
         <div style="margin-top: 20px;">
             <p><strong>진행률 {{ progress }}% ({{ completed_count }}/{{ total_goals }})</strong></p>
-            <div style="margin-bottom: 10px;">
-                <p>[진행률바 영역]</p>
-            </div>
-
             {% if show_badge_prompt %}
-                <div style="margin-top: 10px;">
-                    <form method="post" action="{% url 'challenges:complete_challenge' challenge.id %}">
-                        {% csrf_token %}
-                        <p style="font-weight: bold;">🥇 모든 세부 목표를 완료했어요!<br>뱃지를 받으시겠습니까?</p>
-                        <button type="submit" style="display: inline-block; background-color: #6366f1; color: white; padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer;">예</button>
-                        <a href="{% url 'challenges:detail' challenge.id %}" style="margin-left: 10px; display: inline-block; background-color: #e5e7eb; color: #111827; padding: 10px 20px; border-radius: 5px; text-decoration: none;">아니오</a>
-                    </form>
-                </div>
+                <form method="post" action="{% url 'challenges:complete_challenge' challenge.id %}">
+                    {% csrf_token %}
+                    <p><strong>모든 목표를 완료했어요! 뱃지를 받으시겠습니까?</strong></p>
+                    <button type="submit">예</button>
+                    <a href="{% url 'challenges:detail' challenge.id %}">아니오</a>
+                </form>
             {% endif %}
         </div>
 
-        <!-- 완료한 세부 목표 -->
-        <div style="margin-top: 20px;">
+        <div>
             <h4>완료한 세부 목표</h4>
             <ul>
                 {% for goal in completed_goals %}
                     <li>✅ {{ goal.content }}</li>
                 {% empty %}
-                    <li>완료한 세부 목표가 없습니다.</li>
+                    <li>없음</li>
                 {% endfor %}
             </ul>
         </div>
 
-        <!-- 진행 중 세부 목표 -->
-        <div style="margin-top: 20px;">
-            <h4>진행 중인 세부 목표</h4>
+        <div>
+            <h4>진행 중 세부 목표</h4>
             <ul>
                 {% for goal in ongoing_goals %}
                     <li>☐ {{ goal.content }}</li>
                 {% empty %}
-                    <li>진행 중인 세부 목표가 없습니다.</li>
+                    <li>없음</li>
                 {% endfor %}
             </ul>
         </div>
 
-        <!-- 수정 / 삭제 버튼 -->
         {% if not badge_received %}
-        <div style="margin-top: 20px;">
             <a href="{% url 'challenges:update_challenge' challenge.id %}">수정하기</a>
-        </div>
-        <div style="margin-top: 10px;">
-            <form method="post" action="{% url 'challenges:delete_challenge' pk=challenge.id %}">
+            <form method="post" action="{% url 'challenges:delete_challenge' challenge.id %}">
                 {% csrf_token %}
-                <button type="submit" onclick="return confirm('정말 이 챌린지를 삭제하시겠습니까?')">삭제하기</button>
+                <button type="submit">삭제하기</button>
             </form>
-        </div>
         {% endif %}
-
     </div>
 
-    <!-- 오른쪽 인증 영역 -->
+    <!-- 오른쪽 인증글 영역 -->
     <div style="flex: 1;">
         <h4>인증 기록</h4>
-        <p>{{ today|date:"Y년 m월 d일" }}</p>
+        <div id="calendar">
+            <!-- 날짜 선택 영역 -->
+            <div style="margin-bottom: 10px;">
+                <input type="date" id="record-date-picker" value="{{ today|date:'Y-m-d' }}" data-challenge-id="{{ challenge.id }}">
 
-        <div style="margin-bottom: 10px;">
-            <p>[달력 영역]</p>
+            </div>
         </div>
 
-        <div>
-            <p>{{ today|date:"Y.m.d" }}</p>
-            <ul style="list-style: none; padding: 0;">
-                {% for record in today_records %}
-                    <li style="margin-bottom: 16px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; background-color: #fef9c3;">
-                        <a href="{% url 'challenges:goal_detail' record.id %}" style="text-decoration: none; color: inherit;">
-                            <div style="display: flex; gap: 16px;">
-                                {% if record.image %}
-                                    <img src="{{ record.image.url }}" alt="썸네일" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px;">
-                                {% else %}
-                                    <div style="width: 64px; height: 64px; background-color: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px;">이미지 없음</div>
-                                {% endif %}
+        <ul id="record-list" style="list-style: none; padding: 0;">
+            <!-- {% for record in today_records %}
+            <li style="margin-bottom: 16px; border: 1px solid #ccc; border-radius: 8px; padding: 12px; background-color: #fef9c3;">
+                <a href="{% url 'challenges:goal_detail' record.id %}" style="text-decoration: none; color: inherit;">
+                    <div style="display: flex; gap: 16px;">
+                        {% if record.image %}
+                            <img src="{{ record.image.url }}" alt="썸네일" style="width: 64px; height: 64px; object-fit: cover; border-radius: 4px;">
+                        {% else %}
+                            <div style="width: 64px; height: 64px; background-color: #ddd; display: flex; align-items: center; justify-content: center; font-size: 12px;">이미지 없음</div>
+                        {% endif %}
 
-                                <div style="flex: 1;">
-                                    <p style="font-weight: bold; margin: 0 0 4px 0;">{{ record.goal.content }}</p>
-                                    <p style="margin: 0; font-size: 14px; color: #333;">{{ record.content|truncatewords:10 }}</p>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                {% empty %}
-                    <li>오늘 작성한 인증글이 없습니다.</li>
-                {% endfor %}
-            </ul>
-        </div>
+                        <div style="flex: 1;">
+                            <p style="font-size: 12px; color: #6b7280; margin: 0;">{{ record.date|date:"Y.m.d" }}</p>
+                            <p style="font-size: 13px; background-color: #fef3c7; display: inline-block; padding: 2px 6px; border-radius: 4px; font-weight: 600; margin: 4px 0;">{{ record.goal.content }}</p>
+                            <p style="font-size: 15px; font-weight: bold; margin: 2px 0;">{{ record.title }}</p>
+                            <p style="font-size: 14px; color: #444; margin: 0;">{{ record.content|truncatechars:40 }}</p>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% empty %}
+            <li>오늘 인증글 없음</li>
+            {% endfor %} -->
+        </ul>
 
-        <!-- 인증하기 버튼 -->
         {% if not badge_received %}
-        <div style="margin-top: 20px;">
             <a href="{% url 'challenges:create_goal' challenge.id %}">인증하기</a>
-        </div>
         {% endif %}
-
     </div>
 
 </div>
-
 {% endblock %}
