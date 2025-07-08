@@ -1,11 +1,11 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입</title>
+    <title>signUp</title>
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
 </head>
 
@@ -13,6 +13,7 @@
     <div class="spa-bg">
         <div class="app-root">
             <div class="container">
+
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
@@ -39,11 +40,11 @@
                     <!-- 프로필 사진 -->
                     <div class="mainTxt">프로필 사진</div>
                     <label class="uploadBtn" for="picBtn">사진 업로드</label>
-                    <input type="file" id="picBtn" name="profile_image" class="hidden" onchange="readURL(this);" />
-                    <img id="preview" src="{% static 'images/previewImg.svg' %}" alt="프로필 사진" />
-                    {% for error in form.profile_image.errors %}
+                    <input id="picBtn" type="file" onchange="readURL(this);">
+                    <img id="preview" src="{% static 'assets/previewImg.svg' %}" alt="프로필 사진" />
+                    <!-- {% for error in form.profile_image.errors %}
                         <p class="error">{{ error }}</p>
-                    {% endfor %}
+                    {% endfor %} -->
 
                     <!-- 비밀번호 -->
                     <div class="mainTxt">비밀번호</div>
@@ -68,6 +69,7 @@
                             <p class="error">{{ error }}</p>
                         {% endfor %}
                     {% endif %}
+                    
                     <!-- 관심 카테고리 -->
                     <div class="mainTxt">관심 있는 카테고리</div>
                     <div class="category-btn-group">

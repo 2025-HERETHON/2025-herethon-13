@@ -24,16 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
         btnCheck();
     }
 
-    // 전체 입력 유효성 검사
+    //모두 입력 되었는지 확인 후 회원가입 버튼 활성화
     function btnCheck() {
         const name = nameInput?.value.trim();
         const mail = mailInput?.value.trim();
         const pw = pwInput?.value.trim();
-        const category = categoryInput?.value.trim();
 
         joinBtn.classList.remove("active", "false");
 
-        if (mail && name && pw && message.classList.contains("success") && category) {
+        if (mail !== "" && name !== "" && pw !== "" && message.classList.contains("success")) {
             joinBtn.classList.add("active");
         } else {
             joinBtn.classList.add("false");
