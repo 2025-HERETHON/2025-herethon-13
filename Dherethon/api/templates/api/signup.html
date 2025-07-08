@@ -21,8 +21,9 @@
                     <div class="mainTxt">아이디</div>
                     <div class="subBox">
                         {{ form.username }}
-                        <button type="button" class="duBtn">중복 확인</button>
+                        <button type="button" id="check-username-btn" class="duBtn">중복 확인</button>
                     </div>
+                    <div id="username-message"></div>
                     {% for error in form.username.errors %}
                         <p class="error">{{ error }}</p>
                     {% endfor %}
@@ -31,8 +32,9 @@
                     <div class="mainTxt">닉네임</div>
                     <div class="subBox">
                         {{ form.nickname }}
-                        <button type="button" class="duBtn">중복 확인</button>
-                    </div>
+                        <button type="button" id="check-nickname-btn" class="duBtn">중복 확인</button>
+                    </div>            
+                    <div id="nickname-message"></div>        
                     {% for error in form.nickname.errors %}
                         <p class="error">{{ error }}</p>
                     {% endfor %}
@@ -42,9 +44,6 @@
                     <label class="uploadBtn" for="picBtn">사진 업로드</label>
                     <input id="picBtn" type="file" onchange="readURL(this);">
                     <img id="preview" src="{% static 'assets/previewImg.svg' %}" alt="프로필 사진" />
-                    <!-- {% for error in form.profile_image.errors %}
-                        <p class="error">{{ error }}</p>
-                    {% endfor %} -->
 
                     <!-- 비밀번호 -->
                     <div class="mainTxt">비밀번호</div>
@@ -58,33 +57,29 @@
                     <!-- 비밀번호 확인 -->
                     <div class="mainTxt">비밀번호 확인</div>
                     <div class="subBox">
-                        {{ form.password2 }}
-                    </div>
-                    <div id="confirm"></div>
+                        {{ form.password2 }}                        
+                    </div>                  
+                    <div id="confirm"></div>  
                     {% for error in form.password2.errors %}
                         <p class="error">{{ error }}</p>
                     {% endfor %}
-                    {% if form.non_field_errors %}
-                        {% for error in form.non_field_errors %}
-                            <p class="error">{{ error }}</p>
-                        {% endfor %}
-                    {% endif %}
                     
                     <!-- 관심 카테고리 -->
                     <div class="mainTxt">관심 있는 카테고리</div>
                     <div class="category-btn-group">
                         {% for value, label in category_choices %}
-                            <button type="button"
-                                    class="category-btn{% if value == form.interest_categories.value %} selected{% endif %}"
-                                    data-value="{{ value }}">
+                            <button
+                                class="category-btn{% if value == '학습 / 공부' %} selected{% endif %}"
+                                data-value="{{ value }}"
+                                type="button"
+                            >
                                 {{ label }}
                             </button>
                         {% endfor %}
                     </div>
-                    <input type="hidden" name="interest_categories" id="selected-category" value="{{ form.interest_categories.value }}">
-                    {% for error in form.interest_categories.errors %}
-                        <p class="error">{{ error }}</p>
-                    {% endfor %}
+
+                    <input type="hidden" name="interest_categories" id="selected-category" value="학습 / 공부">
+
 
 
                     <!-- 회원가입 버튼 -->

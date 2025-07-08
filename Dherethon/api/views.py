@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from api. forms import RegisterForm, LoginForm
 from django.urls import reverse
 from .models import *
+from django.http import JsonResponse
 
 def login_view(request):
     if request.method == 'POST':
@@ -31,3 +32,13 @@ def signup_view(request):
 def logout_view(request):
     logout(request)
     return redirect('api:login')
+
+def check_username(request):
+    username = request.GET.get('username')
+    exists = User.objects.filter(username=username).exists()
+    return JsonResponse({'exists': exists})
+
+def check_nickname(request):
+    nickname = request.GET.get('nickname')
+    exists = User.objects.filter(nickname=nickname).exists()
+    return JsonResponse({'exists': exists})

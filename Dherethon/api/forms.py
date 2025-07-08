@@ -36,7 +36,7 @@ class RegisterForm(UserCreationForm):
     password2 = forms.CharField(
         label='비밀번호 확인',
         widget=forms.PasswordInput(attrs={
-            'placeholder': '비밀번호를 다시 입력하세요.',
+            'placeholder': '비밀번호를 입력하세요.',
             'class': 'mainInput'  # 추가
         }),
     )
@@ -47,15 +47,6 @@ class RegisterForm(UserCreationForm):
         label='관심 있는 카테고리',
         error_messages={'required': '카테고리를 선택해주세요.'}
     )
-
-
-
-    def clean_password2(self):
-        password1 = self.cleaned_data.get("password1")
-        password2 = self.cleaned_data.get("password2")
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("비밀번호가 일치하지 않습니다.")
-        return password2
 
     class Meta:
         model = User

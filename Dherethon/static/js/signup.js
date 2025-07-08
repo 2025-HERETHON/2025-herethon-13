@@ -7,6 +7,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const joinBtn = document.querySelector("#joinBtn");
     const categoryInput = document.getElementById("selected-category");
 
+    // 중복 확인 함수
+    function checkDuplicate(type, value, callback) {
+        const url = type === 'username' ? '/api/check-username/' : '/api/check-nickname/';
+        fetch(`${url}?${type}=${encodeURIComponent(value)}`)
+            .then(response => response.json())
+            .then(data => callback(data.exists))
+            .catch(() => callback(false));
+    }
+
+    // 아이디 중복 확인 버튼
+    document.getElementById("check-username-btn")?.addEventListener("click", () => {
+        const username = document.querySelector("#id_username").value.trim();
+        const message = document.querySelector("#username-message");
+
+        checkDuplicate('username', username, exists => {
+            message.classList.remove("success", "error");
+            if (exists) {
+                message.textContent = "이미 존재하는 아이디입니다.";
+                message.classList.add("error");
+            } else {
+                message.textContent = "사용 가능한 아이디입니다!";
+                message.classList.add("success");
+            }
+        });
+    });
+
+    // 닉네임 중복 확인 버튼
+    document.getElementById("check-nickname-btn")?.addEventListener("click", () => {
+        const nickname = document.querySelector("#id_nickname").value.trim();
+        const message = document.querySelector("#nickname-message");
+
+        checkDuplicate('nickname', nickname, exists => {
+            message.classList.remove("success", "error");
+            if (exists) {
+                message.textContent = "이미 존재하는 닉네임입니다.";
+                message.classList.add("error");
+            } else {
+                message.textContent = "사용 가능한 닉네임입니다!";
+                message.classList.add("success");
+            }
+        });
+    });
+
     // 비밀번호 일치 확인
     function checkInputs() {
         const pw = pwInput?.value.trim();
@@ -57,13 +100,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 카테고리 버튼 선택
     document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener("click", function () {
+        btn.onclick = function () {
             document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
             this.classList.add('selected');
-            categoryInput.value = this.dataset.value;
-            btnCheck(); // 버튼 활성화 재확인
-        });
+
+            // 숨겨진 input에 선택한 값 저장
+            document.getElementById('selected-category').value = this.dataset.value;
+        };
     });
+
 
     // 최초 로드시 선택된 카테고리 반영
     const selected = categoryInput?.value;
