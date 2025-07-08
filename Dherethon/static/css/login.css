@@ -5,36 +5,34 @@ body {
 }
 
 .wrapper {
+  width: 100%;
+  height: 982px;
+  background: #ffffff;
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 32px;
-  background: #ffffff;
 }
 
 .card {
-  display: flex;
-  flex-direction: row;
+  width: 1440px;
+  padding: 60px 170px;
   background: #F7F7F7;
   border-radius: 10px;
-  width: 100%;
-  max-width: 1200px;
-  min-height: 700px;
-  padding: 60px 80px;
-  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
 }
 
+/* 왼쪽 로고 */
 .left img {
   width: 300px;
   height: auto;
 }
 
+/* 오른쪽 로그인 폼 */
 .right {
-  width: 100%;
-  max-width: 520px;
+  width: 520px;
 }
 
 .subBox {
@@ -90,24 +88,4 @@ input[type="password"] {
 
 button:hover {
   opacity: 0.85;
-}
-
-/* 반응형 */
-@media screen and (max-width: 768px) {
-  .card {
-    flex-direction: column;
-    padding: 40px 24px;
-  }
-
-  .left {
-    margin-bottom: 32px;
-  }
-
-  .left img {
-    width: 200px;
-  }
-
-  .btnBox {
-    flex-direction: column;
-  }
 }

@@ -7,35 +7,48 @@ from django.core.exceptions import ValidationError
 class RegisterForm(UserCreationForm):
     username = forms.CharField(
         label="아이디",
-        widget=forms.TextInput(attrs={'placeholder': '아이디를 입력하세요.'}),
+        widget=forms.TextInput(attrs={
+            'placeholder': '아이디를 입력하세요.',
+            'class': 'mainInput'  # 추가
+        }),
         error_messages={
             'unique': '이미 존재하는 아이디입니다.',
         }
     )
     nickname = forms.CharField(
-        widget=forms.TextInput(attrs={'placeholder': '닉네임을 입력하세요.'}),
+        widget=forms.TextInput(attrs={
+            'placeholder': '닉네임을 입력하세요.',
+            'class': 'mainInput'  # 추가
+        }),
         error_messages={
             'unique': '이미 존재하는 닉네임입니다.',
         }
     )
     profile_image = forms.ImageField(required=False)
+
     password1 = forms.CharField(
         label='비밀번호',
-        widget=forms.PasswordInput(attrs={'placeholder': '비밀번호를 입력하세요.'}),
+        widget=forms.PasswordInput(attrs={
+            'placeholder': '비밀번호를 입력하세요.',
+            'class': 'mainInput'  # 추가
+        }),
     )
     password2 = forms.CharField(
         label='비밀번호 확인',
-        widget=forms.PasswordInput(attrs={'placeholder': '비밀번호를 다시 입력하세요.'}),
+        widget=forms.PasswordInput(attrs={
+            'placeholder': '비밀번호를 다시 입력하세요.',
+            'class': 'mainInput'  # 추가
+        }),
     )
-    interest_categories = forms.ChoiceField(
-        choices=User.CATEGORY_CHOICES,
-        widget=forms.RadioSelect,
+
+    interest_categories = forms.CharField(
+        widget=forms.HiddenInput(),
         required=True,
-        label="관심 있는 카테고리",
-        error_messages={
-            'required': '카테고리를 선택해주세요.',
-        }
+        label='관심 있는 카테고리',
+        error_messages={'required': '카테고리를 선택해주세요.'}
     )
+
+
 
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")

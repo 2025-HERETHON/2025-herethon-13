@@ -1,75 +1,97 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
 </head>
+
 <body>
-    <h2>회원가입</h2>
+    <div class="spa-bg">
+        <div class="app-root">
+            <div class="container">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+                    <!-- 아이디 -->
+                    <div class="mainTxt">아이디</div>
+                    <div class="subBox">
+                        {{ form.username }}
+                        <button type="button" class="duBtn">중복 확인</button>
+                    </div>
+                    {% for error in form.username.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
 
-        <div>
-            <label for="id_username">아이디</label>
-            {{ form.username }}
-            {% for error in form.username.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
+                    <!-- 닉네임 -->
+                    <div class="mainTxt">닉네임</div>
+                    <div class="subBox">
+                        {{ form.nickname }}
+                        <button type="button" class="duBtn">중복 확인</button>
+                    </div>
+                    {% for error in form.nickname.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                    <!-- 프로필 사진 -->
+                    <div class="mainTxt">프로필 사진</div>
+                    <label class="uploadBtn" for="picBtn">사진 업로드</label>
+                    <input type="file" id="picBtn" name="profile_image" class="hidden" onchange="readURL(this);" />
+                    <img id="preview" src="{% static 'images/previewImg.svg' %}" alt="프로필 사진" />
+                    {% for error in form.profile_image.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                    <!-- 비밀번호 -->
+                    <div class="mainTxt">비밀번호</div>
+                    <div class="subBox">
+                        {{ form.password1 }}
+                    </div>
+                    {% for error in form.password1.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                    <!-- 비밀번호 확인 -->
+                    <div class="mainTxt">비밀번호 확인</div>
+                    <div class="subBox">
+                        {{ form.password2 }}
+                    </div>
+                    <div id="confirm"></div>
+                    {% for error in form.password2.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <p class="error">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                    <!-- 관심 카테고리 -->
+                    <div class="mainTxt">관심 있는 카테고리</div>
+                    <div class="category-btn-group">
+                        {% for value, label in category_choices %}
+                            <button type="button"
+                                    class="category-btn{% if value == form.interest_categories.value %} selected{% endif %}"
+                                    data-value="{{ value }}">
+                                {{ label }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="interest_categories" id="selected-category" value="{{ form.interest_categories.value }}">
+                    {% for error in form.interest_categories.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+
+                    <!-- 회원가입 버튼 -->
+                    <button id="joinBtn" type="submit" class="false">회원가입</button>
+                </form>
+            </div>
         </div>
+    </div>
 
-        <div>
-            <label for="id_nickname">닉네임</label>
-            {{ form.nickname }}
-            {% for error in form.nickname.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div>
-            <label for="id_profile_image">프로필 사진</label>
-            {{ form.profile_image }}
-            {% for error in form.profile_image.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div>
-            <label for="id_password1">비밀번호</label>
-            {{ form.password1 }}
-            {% for error in form.password1.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <div>
-            <label for="id_password2">비밀번호 확인</label>
-            {{ form.password2 }}
-            {% for error in form.password2.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-
-            {% if form.non_field_errors %}
-                {% for error in form.non_field_errors %}
-                    <p style="color: red;">{{ error }}</p>
-                {% endfor %}
-            {% endif %}
-        </div>
-
-        <div>
-            <label>관심 있는 카테고리</label>
-            {% for radio in form.interest_categories %}
-                <div>
-                    <label>{{ radio.tag }} {{ radio.choice_label }}</label>
-                </div>
-            {% endfor %}
-            {% for error in form.interest_category.errors %}
-                <p style="color: red;">{{ error }}</p>
-            {% endfor %}
-        </div>
-
-        <button type="submit">회원가입</button>
-    </form>
+    <script src="{% static 'js/signup.js' %}"></script>
 </body>
 </html>
