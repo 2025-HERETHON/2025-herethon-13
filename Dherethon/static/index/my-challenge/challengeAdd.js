@@ -212,11 +212,13 @@ window.renderChallengeAdd = function(challengeId) {
   // ===== (8) 닫기(✕) 버튼 이벤트 =====
   if (closeBtn) {
     closeBtn.onclick = function () {
-      if (typeof loadPage === "function") {
-        loadPage('myChallenge');
-      } else if (window.loadPage) {
+      const { pageName, detailKey } = window.getPrevPage?.() || {};
+      if (pageName) {
+        window.loadPage(pageName, detailKey);
+      } else {
         window.loadPage('myChallenge');
       }
     };
   }
+  
 };

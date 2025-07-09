@@ -20,17 +20,23 @@
       <!-- 진행률/진행바 -->
       <div class="challenge-detail-progress-box">
         <div class="challenge-detail-progress-label">진행률 34% (2/6)</div>
-        <div class="progress-bar-bg"><div id="progressBar"></div></div>
+        <div class="progress-bar-bg">
+          <div id="progressBar"></div>
+        </div>
       </div>
       <!-- 세부목표 영역 -->
       <div class="challenge-detail-goals-row">
         <div class="goals-block">
           <span class="completed">완료한 세부 목표</span>
-          <ul id="completedGoalList"></ul>
+          <div class="goalBox">
+            <ul id="completedGoalList"></ul>
+          </div>
         </div>
         <div class="goals-block">
           <span class="inprogress">진행할 세부 목표</span>
-          <ul id="inprogressGoalList"></ul>
+          <div class="goalBox">
+            <ul id="inprogressGoalList"></ul>
+          </div>
         </div>
       </div>
       <!-- 수정/삭제 버튼 -->
@@ -55,7 +61,7 @@
               <button class="calendar-prev-btn" aria-label="이전 달">&lt;</button>
               <span>2025 07</span>
               <button class="calendar-next-btn" aria-label="다음 달">&gt;</button>
-            </div>            
+            </div>
             <div class="calendar-grid"></div>
           </div>
         </div>

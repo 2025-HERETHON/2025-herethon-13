@@ -38,7 +38,7 @@ body {
 /*로고*/
 .logo {
     position: absolute;
-    left: 147px;
+    left: 100px;
     top: 185px;
     width: 467px;
     height: 467px;
@@ -51,7 +51,7 @@ body {
 .mainBox {
     position: absolute;
     top: 277px;
-    right: 103px;
+    right: 200px;
 }
 
 /*로그인 회원가입 각각의 박스*/
