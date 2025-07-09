@@ -1,0 +1,325 @@
+body {
+  background: #f7f7f8;
+  margin: 0;
+  padding: 0;
+}
+.main-content {
+  flex: 1;
+  margin: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+.header-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: #F0F0F0;
+  padding: 36px 0 28px 0;
+}
+.search-bar {
+  width: 1138px;
+  height: 61px;
+  background: #fff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  gap: 10px;
+}
+.search-icon {
+  width: 32px;
+  height: 32px;
+  opacity: 0.25;
+  margin-right: 12px;
+}
+.search-input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #757575;
+  font-family: "Segoe UI";
+  font-size: 12px;
+  font-weight: 400;
+}
+.search-btn {
+  color: #FFF;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: #605BFF;
+  padding: 5px 30px;
+  height: 40px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* ---------- 커뮤니티 메인 ---------- */
+.community-main-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+.community-top-row {
+  display: flex;
+  gap: 5px;
+}
+
+/* ---------- 카테고리 박스 ---------- */
+.category-box {
+  width: 243.857px;
+  min-width: 180px;
+  max-width: 320px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px 22px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.category-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #000;
+}
+.category-vertical-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.category-vertical-scroll::-webkit-scrollbar {
+  width: 6px;
+  background: #ececff;
+  border-radius: 6px;
+}
+.category-vertical-scroll::-webkit-scrollbar-thumb {
+  background: #605BFF44;
+  border-radius: 6px;
+}
+.category-item {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #f6f6fc;
+  color: #000;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.category-item.selected {
+  background: #605BFF;
+  color: #FFF;
+  font-weight: 900;
+}
+.category-item.selected .category-count {
+  color: #fff;
+  opacity: 1;
+}
+.category-count {
+  color: #000;
+  font-family: Lato;
+  font-size: 9px;
+  font-weight: 500;
+  opacity: 0.7;
+  margin-left: 8px;
+}
+
+/* ---------- 인기 POST 박스 ---------- */
+.popular-posts-box {
+  width: 910px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 30px;
+  min-width: 250px;
+  box-sizing: border-box;
+}
+.popular-posts-title {
+  color: #000;
+  font-family: Lato;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+.popular-post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.popular-post-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  border: 1.5px solid #ddd;
+  padding: 10px 22px;
+  min-height: 52px;
+  box-sizing: border-box;
+}
+.popular-post-thumb {
+  width: 49px;
+  height: 33px;
+  border-radius: 10px;
+  background: #D9D9D9;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+.popular-post-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.popular-post-title {
+  color: #000;
+  font-family: Lato;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.popular-post-desc {
+  color: #757575;
+  font-family: Lato;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+.popular-post-like {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: 24px;
+  min-width: 56px;
+  justify-content: flex-end;
+}
+.like-icon {
+  font-size: 11px;
+  color: #222;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+.like-count {
+  color: #000;
+  font-family: Pretendard;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16.667px;
+  vertical-align: middle;
+}
+
+/* ---------- 게시글 리스트 ---------- */
+.post-list-outer {
+  width: 100%;
+  max-width: 1180px;
+  height: 560px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 38px 90px 38px;
+  margin: 0 auto 44px auto;
+  box-sizing: border-box;
+  position: relative;
+  overflow-y: auto;  
+}
+.post-list-wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+.post-card {
+  background: #f3f3f3;
+  border-radius: 12px;
+  border: 1px solid #e4e4e4;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.post-thumb-area {
+  position: relative;
+  background: #ededed;
+  height: 290px;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 10px 10px 0 0;
+}
+.post-thumb {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px 10px 0 0;
+  background: #ededed;
+}
+.post-like-badge {
+  position: absolute;
+  right: 18px;
+  bottom: 16px;
+  background: #fff;
+  border-radius: 15px;
+  padding: 3px 8px;
+  color: #000;
+  font-family: Pretendard;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16.667px; 
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.02em;
+}
+.like-heart {
+  color: #000000;
+  font-size: 15px;
+  margin: 0 2px 0 4px;
+}
+.post-content-area {
+  background: #fff;
+  padding: 12px 0 22px 12px;
+  border-radius: 0 0 10px 10px;
+}
+.challenge-name {
+  color: #000;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.post-title {
+  color: #000;
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px; /* 140% */
+}
+.post-add-btn {
+  position: absolute;              
+  right: 120px;               
+  bottom: 20px;                    
+  width: 172.632px;
+  height: 58px;
+  background: #635bff;
+  color: #FFF;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 15px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s;
+}

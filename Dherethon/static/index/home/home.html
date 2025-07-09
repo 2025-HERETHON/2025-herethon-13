@@ -1,0 +1,95 @@
+<!-- 전체 레이아웃: 메인 콘텐츠 + 우측 사이드 -->
+<div class="layout-wrapper">
+
+  <!-- 왼쪽: 메인 콘텐츠 -->
+  <div class="home-mainBox">
+
+    <!-- 상단 박스 -->
+    <div class="home-topBox">
+      <div class="home-titleBox">
+        <div class="home-challengeTitle">김수정님의 Challenges</div>
+
+        <div class="dropdown">
+          <button class="dropbtn">
+            <span class="dropbtn-text">전체</span>
+            <img class="home-Polygon" src="../assets/homePolygon.svg" alt="▼">
+          </button>
+          <ul class="dropdown-content">
+            <li data-category="전체">전체</li>
+            <li data-category="학습 / 공부">학습 / 공부</li>
+            <li data-category="커리어 / 직무">커리어 / 직무</li>
+            <li data-category="운동 / 건강">운동 / 건강</li>
+            <li data-category="마음 / 루틴">마음 / 루틴</li>
+            <li data-category="정리 / 관리">정리 / 관리</li>
+            <li data-category="취미">취미</li>
+            <li data-category="기타">기타</li>
+          </ul>
+        </div>
+
+        <button id="home-addChallengeBtn" class="home-addChallengeBtn">
+          <img class="home-plusImg" src="../assets/homePlus.svg" alt="추가" />
+          도전 추가하기
+        </button>
+      </div>
+
+      <!-- 리스트 헤더 -->
+      <div class="challenge-list-header">
+        <div>도전리스트</div>
+        <div>진행률</div>
+        <div>다음 세부 목표</div>
+      </div>
+
+      <!-- 도전 리스트 동적 삽입 -->
+      <div class="home-listBox">
+        <div class="challenge-list"></div>
+      </div>
+    </div>
+    <!-- 중간 박스: 도전 카드 슬라이드 -->
+    <div class="home-middleBox">
+      <div class="home-side-cards"></div>
+    </div>
+
+    <!-- 하단 박스: 카테고리 + 인기포스트 -->
+    <div class="home-bottomBox">
+      <div class="home-bottomInner">
+
+        <!-- 왼쪽: 카테고리 -->
+        <div class="home-bottomLeft">
+          <div class="category-box">
+            <div class="category-title">카테고리</div>
+            <div class="home-category-vertical-scroll">
+              <div class="home-category-item selected">학습 / 공부 <span class="home-category-count">15 Posts</span></div>
+              <div class="home-category-item">커리어 / 직무 <span class="home-category-count">8 Posts</span></div>
+              <div class="home-category-item">운동 / 건강 <span class="home-category-count">10 Posts</span></div>
+              <div class="home-category-item">마음 / 루틴 <span class="home-category-count">5 Posts</span></div>
+              <div class="home-category-item">정리 / 관리 <span class="home-category-count">7 Posts</span></div>
+              <div class="home-category-item">취미 <span class="home-category-count">4 Posts</span></div>
+              <div class="home-category-item">기타 <span class="home-category-count">2 Posts</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 인기 포스트 -->
+        <div class="home-bottomRight">
+          <div class="home-popular-posts-box">
+            <div class="home-popular-posts-title">인기 POST</div>
+            <div class="home-popular-post-list">
+              <!-- 동적으로 삽입될 인기 post 아이템들 -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 오른쪽: 추천 챌린지 카드 -->
+  <aside class="home-side-wrapper">
+    <div class="home-sideChallengeTitle">김수정님을 위한 추천 Challenges</div>
+    <button class="home-suggestBtn">다시 추천받기</button>
+    <div class="home-suggestBox">
+    </div>
+  </aside>
+
+</div>
