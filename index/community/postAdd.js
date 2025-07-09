@@ -5,7 +5,7 @@ let selectedCertId = null;
 
 window.renderPostAdd = function () {
   const main = document.querySelector('.main-content');
-  const categories = ["학습 / 공부", "커리어 / 직무", "운동 / 건강", "마음 / 루틴", "정리 / 관리", "취미"];
+  const categories = ["학습 / 공부", "커리어 / 직무", "운동 / 건강", "마음 / 루틴", "정리 / 관리", "취미", "기타"];
   const challenges = JSON.parse(localStorage.getItem('challenges') || '[]');
   const certRecords = JSON.parse(localStorage.getItem('certRecords') || '[]');
 
@@ -21,16 +21,16 @@ window.renderPostAdd = function () {
         <div class="post-add-title">게시할 인증 기록을 선택해주세요</div>
         <div class="post-add-cat-row">
           ${categories.map(cat =>
-            `<button class="post-add-cat-btn${cat === selectedCategory ? ' selected' : ''}" data-cat="${cat}">${cat}</button>`
-          ).join("")}
+    `<button class="post-add-cat-btn${cat === selectedCategory ? ' selected' : ''}" data-cat="${cat}">${cat}</button>`
+  ).join("")}
         </div>
         <div class="post-add-challenge-row">
           <span class="post-add-label">도전 선택</span>
           <select class="post-add-challenge-select" ${filteredChallenges.length === 0 ? "disabled" : ""}>
             <option value="">도전을 선택하세요</option>
             ${filteredChallenges.map(ch =>
-              `<option value="${ch.id}" ${String(ch.id) === String(selectedChallengeId) ? "selected" : ""}>${ch.title}</option>`
-            ).join("")}
+    `<option value="${ch.id}" ${String(ch.id) === String(selectedChallengeId) ? "selected" : ""}>${ch.title}</option>`
+  ).join("")}
           </select>
         </div>
       </div>
@@ -43,18 +43,17 @@ window.renderPostAdd = function () {
             <img src="../../assets/Cancel.svg" alt="닫기" />
           </button>
         <div class="post-add-cert-list">
-          ${
-            !selectedChallengeId
-              ? `<div style="color:#aaa;padding:40px 0 0 0;">도전을 먼저 선택하세요.</div>`
-              : (filteredCerts.length === 0
-                ? `<div style="color:#aaa;padding:40px 0 0 0;">인증 기록이 없습니다.</div>`
-                : filteredCerts.map(cert => `
+          ${!selectedChallengeId
+      ? `<div style="color:#aaa;padding:40px 0 0 0;">도전을 먼저 선택하세요.</div>`
+      : (filteredCerts.length === 0
+        ? `<div style="color:#aaa;padding:40px 0 0 0;">인증 기록이 없습니다.</div>`
+        : filteredCerts.map(cert => `
                   <div class="challenge-record-card${String(cert.id) === String(selectedCertId) ? ' selected' : ''}" data-cert-id="${cert.id}">
                     <div class="record-thumb" style="
                       ${cert.imgDataUrl
-                        ? `background:url('${cert.imgDataUrl}') center/cover no-repeat;`
-                        : `background:#ededf1;`
-                      }
+            ? `background:url('${cert.imgDataUrl}') center/cover no-repeat;`
+            : `background:#ededf1;`
+          }
                       border-radius:10px;width:44px;height:44px;">
                     </div>
                     <div class="record-detail">
@@ -67,8 +66,8 @@ window.renderPostAdd = function () {
                     </div>
                   </div>
                 `).join("")
-              )
-          }
+      )
+    }
         </div>
         <button class="post-add-submit-btn" ${!selectedCertId ? "disabled" : ""}>게시하기</button>
       </div>
