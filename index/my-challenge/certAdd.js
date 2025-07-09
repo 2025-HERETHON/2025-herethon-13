@@ -198,11 +198,17 @@ window.renderCertAdd = function(certIdOrChallengeId) {
   // 9. 닫기 버튼 이벤트
   if (closeBtn) {
     closeBtn.onclick = function () {
-      const challengeId = challenge?.id || editingCert?.challengeId;
-      if (window.loadPage) {
-        if (challengeId) window.loadPage('challengeDetail', challengeId);
-        else window.loadPage('myChallenge');
+      const { pageName, detailKey } = window.getPrevPage?.() || {};
+      if (pageName) {
+        window.loadPage(pageName, detailKey);
+      } else {
+        const challengeId = challenge?.id || editingCert?.challengeId;
+        if (challengeId) {
+          window.loadPage('challengeDetail', challengeId);
+        } else {
+          window.loadPage('myChallenge');
+        }
       }
-    };
+    };    
   }
 };

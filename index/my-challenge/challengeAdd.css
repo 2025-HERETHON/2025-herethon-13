@@ -17,6 +17,7 @@ body {
   justify-content: center;
   padding: 0;
 }
+
 .close-btn img {
   width: 28px;
   height: 28px;
@@ -112,7 +113,7 @@ body {
 }
 
 .category-btn {
-  padding: 8px 16px;
+  padding: 10px 12px;
   background: rgba(0, 0, 0, 0.05);
   border: none;
   border-radius: 8px;
