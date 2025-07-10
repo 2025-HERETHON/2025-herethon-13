@@ -144,16 +144,43 @@
     <script src="{% static 'js/create_goal.js' %}"></script>
     <script src="{% static 'js/index.js' %}"></script>
 
-    <!-- 호출 -->
+    <!-- ✅ 수정모드일 경우, record 정보를 localStorage에 저장 -->
+    {% if record %}
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        {% if record %}
-        renderCertAdd({{ record.id }});
-        {% else %}
-        renderCertAdd({{ challenge.id }});
+    const tempRecord = {
+        id: {{ record.id }},
+        title: "{{ record.title|escapejs }}",
+        content: "{{ record.content|escapejs }}",
+        date: "{{ record.date|date:'Y-m-d' }}",
+        goal: "{{ record.goal.content|escapejs }}",
+        challengeId: {{ challenge.id }},
+        challengeTitle: "{{ challenge.title|escapejs }}",
+        challengeCategory: "{{ challenge.category.name|escapejs }}",
+        imgDataUrl: "{{ record.image.url|default:''|escapejs }}"
+    };
+
+        const certRecords = JSON.parse(localStorage.getItem('certRecords') || '[]');
+        const idx = certRecords.findIndex(r => String(r.id) === String(tempRecord.id));
+        if (idx !== -1) {
+            certRecords[idx] = tempRecord;
+        } else {
+            certRecords.push(tempRecord);
+        }
+        localStorage.setItem('certRecords', JSON.stringify(certRecords));
+        </script>
         {% endif %}
-    });
-    </script>
+
+        <!-- 호출 -->
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            {% if record %}
+            renderCertAdd({{ record.id }});  // 수정 모드
+            {% else %}
+            renderCertAdd({{ challenge.id }});  // 생성 모드
+            {% endif %}
+        });
+        </script>
+
 
 </body>
 </html>

@@ -33,7 +33,7 @@ def serialize_challenge_for_js(challenge, user):
         'startDate': challenge.start_date.strftime('%Y-%m-%d'),
         'endDate': challenge.end_date.strftime('%Y-%m-%d'),
         'goals': list(goals.values_list('content', flat=True)),  # 그대로 유지
-        'goalIdMap': {goal.content: goal.id for goal in goals},  # 추가
+        'goalIdMap': {goal.content: goal.id for goal in goals},  # 추가!
         'completedGoalContents': list(
             challenge.goals.filter(id__in=completed_goal_ids).values_list('content', flat=True)
         ),
@@ -264,30 +264,29 @@ def create_goal(request, challenge_id, record_id=None):
         else:
             # 생성
             progress, _ = GoalProgress.objects.update_or_create(
-            user=request.user,
-            goal=goal,
-            defaults={
-                'is_completed': True,
-                'content': content,
-                'image': image,
-                'date': date
-            }
-        )
+                user=request.user,
+                goal=goal,
+                defaults={
+                    'is_completed': True,
+                    'content': content,
+                    'image': image,
+                    'date': date
+                }
+            )
 
-        # GoalRecord 생성 후 연결
-        record = GoalRecord.objects.create(
-            user=request.user,
-            goal=goal,
-            goal_progress=progress,
-            title=title,
-            content=content,
-            date=date,
-            image=image
-        )
+            record = GoalRecord.objects.create(
+                user=request.user,
+                goal=goal,
+                goal_progress=progress,
+                title=title,
+                content=content,
+                date=date,
+                image=image
+            )
 
-        # 🔥 이게 누락되었음 → 반드시 연결 필요!
-        progress.record = record
-        progress.save()
+            # ✅ progress 객체 사용은 이 안에서만
+            progress.record = record
+            progress.save()
 
         return redirect('challenges:detail', pk=challenge.id)
 

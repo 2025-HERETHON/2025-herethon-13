@@ -31,7 +31,6 @@ window.renderCertAdd = function(certIdOrChallengeId) {
   const challengeTitleSpan = document.querySelector('.cert-add-title');
   const goalSelect   = document.getElementById('certAddGoal');
   const registerBtn  = document.getElementById('certAddSubmitBtn');
-  const closeBtn     = document.getElementById('certAddCloseBtn');
   const memoInput    = document.getElementById('certAddMemo'); // (있으면)
 
   let imgDataUrl = "";
@@ -216,19 +215,15 @@ window.renderCertAdd = function(certIdOrChallengeId) {
   }
 
   // 9. 닫기 버튼 이벤트
+  const closeBtn = document.querySelector('.cert-close-btn');  // ✅ 클래스명 정확히 수정
   if (closeBtn) {
-    closeBtn.onclick = function () {
-      const { pageName, detailKey } = window.getPrevPage?.() || {};
-      if (pageName) {
-        window.loadPage(pageName, detailKey);
+    closeBtn.addEventListener('click', () => {
+      if (challengeId) {
+        window.location.href = `/challenges/detail/${challengeId}/`;  // ✅ 올바른 URL
       } else {
-        const challengeId = challenge?.id || editingCert?.challengeId;
-        if (challengeId) {
-          window.loadPage('challengeDetail', challengeId);
-        } else {
-          window.loadPage('myChallenge');
-        }
+        window.location.href = '/challenges/';
       }
-    };    
+    });
   }
+
 };
