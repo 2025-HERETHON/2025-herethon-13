@@ -1,0 +1,65 @@
+<div class="challenge-add-layout">
+  <!-- 왼쪽: 챌린지 기본 정보 입력 폼 -->
+  <div class="challenge-add-form">
+    <!-- 도전 제목 입력 -->
+    <div class="challenge-add-title">어떤 걸 도전하시나요?</div>
+    <input class="challenge-name-input" type="text" placeholder="도전 이름을 입력해주세요." />
+
+    <!-- 카테고리 선택 -->
+    <div class="category-label">카테고리 선택</div>
+    <div class="category-btn-group">
+      <button class="category-btn selected">학습 / 공부</button>
+      <button class="category-btn">커리어 / 직무</button>
+      <button class="category-btn">운동 / 건강</button>
+      <button class="category-btn">마음 / 루틴</button>
+      <button class="category-btn">정리 / 관리</button>
+      <button class="category-btn">취미</button>
+      <button class="category-btn">기타</button>
+    </div>
+
+    <!-- 대표 이미지 업로드 -->
+    <div class="img-label">대표 이미지</div>
+    <label class="img-upload-box" for="imgInput">
+      <input type="file" id="imgInput" accept="image/*" style="display:none;" />
+      <img src="../assets/gallery-add.svg" id="imgPreview" class="img-upload-icon" />
+    </label>
+
+    <!-- 목표 기간 설정 -->
+    <div class="period-label">목표 기간</div>
+    <div class="period-inputs">
+      <input type="date" class="period-input" />
+      <span class="period-dash">-</span>
+      <input type="date" class="period-input" />
+    </div>
+
+    <!-- 공개 여부 설정 -->
+    <div class="public-row">
+      <span>공개 여부</span>
+      <label class="switch">
+        <input type="checkbox" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- 오른쪽: 인증/세부목표/등록 구역 -->
+  <div class="challenge-add-right">
+    <!-- 닫기 버튼 -->
+    <button class="close-btn" id="challengeAddCloseBtn" aria-label="닫기">
+      <img src="../../assets/Cancel.svg" alt="닫기" style="width:28px; height:28px; pointer-events:none;" />
+    </button>
+
+    <!-- 세부 목표 입력/추가 -->
+    <div class="goal-label">세부 목표</div>
+    <div class="goal-input-col">
+      <input class="goal-input" type="text" placeholder="세부 목표를 입력해주세요." />
+      <button class="goal-add-btn" type="button">
+        <img src="../../assets/Plus.svg" alt="추가" />
+      </button>
+    </div>
+    <ul class="goal-list"></ul>
+
+    <!-- 등록 버튼 -->
+    <button class="register-btn">등록하기</button>
+  </div>
+</div>

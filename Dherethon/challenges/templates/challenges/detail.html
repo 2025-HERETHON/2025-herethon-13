@@ -1,0 +1,111 @@
+{% load static %}
+{% block content %}
+<h2 style="display: none;">나의 도전</h2>
+
+<!-- JS 연결 -->
+<script src="{% static 'js/challenge_detail.js' %}"></script>
+
+<div style="display: flex; gap: 24px;">
+
+    <!-- 왼쪽 사이드바 -->
+    <div style="width: 200px;">
+        <p><strong>{{ request.user.nickname }}</strong></p>
+        {% if user.profile_image and user.profile_image.url %}
+            <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
+        {% else %}
+            <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지">
+        {% endif %}
+        <nav>
+            <ul>
+                <p><a href="{% url 'home:main' %}">홈</a></p>
+                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+                <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
+            </ul>
+        </nav>
+        <p><a href="{% url 'api:logout' %}">Log out</a></p>
+    </div>
+
+    <!-- 가운데 메인 콘텐츠 -->
+    <div style="flex: 2;">
+        <div>
+            <p>[{{ challenge.category.name }}]</p>
+            <h3>{{ challenge.title }}</h3>
+            <p>{{ challenge.start_date|date:"Y.m.d" }} - {{ challenge.end_date|date:"Y.m.d" }}</p>
+            <p>D+{{ challenge.d_plus }} / {{ challenge.d_day_prefix }}{{ challenge.d_day_value }}</p>
+            <p>공개 여부: {{ challenge.is_public|yesno:"공개,비공개" }}</p>
+            {% if challenge.image %}
+                <img src="{{ challenge.image.url }}" width="200">
+            {% endif %}
+        </div>
+
+        <div style="margin-top: 20px;">
+            <p><strong>진행률 {{ progress }}% ({{ completed_count }}/{{ total_goals }})</strong></p>
+            {% if show_badge_prompt %}
+                <form method="post" action="{% url 'challenges:complete_challenge' challenge.id %}">
+                    {% csrf_token %}
+                    <p><strong>모든 목표를 완료했어요! 뱃지를 받으시겠습니까?</strong></p>
+                    <button type="submit">예</button>
+                    <a href="{% url 'challenges:detail' challenge.id %}">아니오</a>
+                </form>
+            {% endif %}
+        </div>
+
+        <div>
+            <h4>완료한 세부 목표</h4>
+            <ul>
+                {% for goal in completed_goals %}
+                    <li>✅ {{ goal.content }}</li>
+                {% empty %}
+                    <li>없음</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div>
+            <h4>진행 중 세부 목표</h4>
+            <ul>
+                {% for goal in ongoing_goals %}
+                    <li>☐ {{ goal.content }}</li>
+                {% empty %}
+                    <li>없음</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        {% if not badge_received %}
+            <a href="{% url 'challenges:update_challenge' challenge.id %}">수정하기</a>
+            <form method="post" action="{% url 'challenges:delete_challenge' challenge.id %}">
+                {% csrf_token %}
+                <button type="submit">삭제하기</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <!-- 오른쪽 인증글 영역 -->
+    <div style="flex: 1;">
+        <h4>인증 기록</h4>
+
+        <!-- 날짜 선택 + 인증글 리스트 묶음 -->
+        <div id="calendar" style="margin-bottom: 16px;">
+            <!-- 날짜 선택 영역 -->
+            <input
+                type="date"
+                id="record-date-picker"
+                value="{{ today|date:'Y-m-d' }}"
+                data-challenge-id="{{ challenge.id }}"
+                style="margin-bottom: 12px; width: 100%;"
+            >
+
+            <!-- 인증글 출력 영역 (JS로 렌더링됨) -->
+            <ul id="record-list" style="list-style: none; padding: 0;"></ul>
+        </div>
+
+        {% if not badge_received %}
+            <a href="{% url 'challenges:create_goal' challenge.id %}">인증하기</a>
+        {% endif %}
+    </div>
+
+
+</div>
+{% endblock %}

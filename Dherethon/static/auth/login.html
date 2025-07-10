@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css" />
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="spa-bg">
+        <div class="app-root">
+            <div class="container">
+                <!--로고 이미지-->
+                <div class="logo"><img src="../assets/logo.svg" alt="로고"> </div>
+
+                <div class="mainBox">
+                    <!--아이디 텍스트, 아이디 인풋-->
+                    <div class="subBox">
+                        <div class="mainTxt" id="id">아이디</div>
+                        <input id="idInput" class="inputBox" placeholder="아이디를 입력하세요." />
+                    </div>
+                    <!--비밀번호 텍스트, 비밀번호 인풋-->
+                    <div class="subBox">
+                        <div class="mainTxt" id="pw">비밀번호</div>
+                        <input type="password" id="pwInput" class="inputBox" placeholder="비밀번호를 입력하세요." />
+                    </div>
+
+                    <!--로그인 버튼과 회원가입 버튼-->
+                    <div class="btnBox">
+                        <button class="joinBtn" onclick="goSignUp()"> 회원가입 </button>
+                        <button class="loginBtn" onclick="goHome()"> 로그인 </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="login.js"></script>
+</body>
+
+</html>

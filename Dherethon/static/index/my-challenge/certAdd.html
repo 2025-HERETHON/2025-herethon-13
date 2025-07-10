@@ -1,0 +1,48 @@
+<div class="cert-add-container">
+
+  <button class="cert-close-btn" id="certAddCloseBtn" aria-label="닫기">
+    <img src="../../assets/Cancel.svg" alt="닫기" />
+  </button>
+
+  <div class="cert-add-header">
+    <span class="cert-add-category"></span>
+    <span class="cert-add-title"></span>
+  </div>
+
+  <form class="cert-add-form-2col">
+
+    <div class="cert-row">
+      <div class="cert-col">
+        <label for="certAddGoal">세부 목표</label>
+        <select id="certAddGoal"></select>
+      </div>
+      <div class="cert-col">
+        <label for="certAddDate">날짜</label>
+        <input type="date" id="certAddDate" />
+      </div>
+    </div>
+
+    <div class="cert-row cert-row--middle">
+      <div class="cert-col">
+        <label class="cert-add-img-label">인증 이미지</label>
+        <label class="cert-add-img-upload-box" for="certAddImg" id="certAddImgLabel">
+          <input type="file" id="certAddImg" accept="image/*" style="display:none;" />
+          <div id="certAddImgPreviewArea" class="cert-add-img-preview-area">
+            <img src="../assets/gallery-add.svg" id="certAddImgIcon" class="cert-add-img-upload-icon" />
+          </div>
+        </label>
+      </div>
+      <div class="cert-col">
+        <label for="certAddInputTitle">제목</label>
+        <input type="text" id="certAddInputTitle" placeholder="제목을 입력하세요." />
+        <label for="certAddContent" class="cert-add-content-label">내용</label>
+        <textarea id="certAddContent" placeholder="내용을 입력하세요."></textarea>
+        <input type="text" id="certAddMemo" placeholder="메모 (선택)" style="display:none;" />
+      </div>
+    </div>
+
+    <div class="cert-add-btn-wrap">
+      <button class="cert-add-submit-btn" id="certAddSubmitBtn">등록하기</button>
+    </div>
+  </form>
+</div>
