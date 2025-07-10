@@ -430,3 +430,4 @@ def goal_record_dates(request, challenge_id):
     cert_dates = sorted(set(date.strftime("%Y-%m-%d") for date in records))
 
     return JsonResponse({"cert_dates": cert_dates})
+
