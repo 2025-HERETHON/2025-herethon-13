@@ -3,13 +3,11 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1512, initial-scale=1.0" />
-  <title>인증 글 게시하기</title>
-  <link rel="stylesheet" href="{% static 'index/community/postAdd.css' %}">
+  <title>인증글 작성</title>
+   <link rel="stylesheet" href="{% static 'index/community/postAdd.css' %}">
   <link rel="stylesheet" href="{% static 'index/index.css' %}">
 </head>
 <body>
-
   <div class="spa-bg">
     <div class="app-root">
 
@@ -43,18 +41,19 @@
       </div>
 
       <!-- ✅ 메인 콘텐츠 -->
-      <div class="main-content"></div> <!-- ✅ JS에서 자동 렌더링됨 -->
+      <div class="main-content">
 
+      </div> <!-- main-content 끝 -->
     </div> <!-- app-root 끝 -->
   </div> <!-- spa-bg 끝 -->
 
-<!-- challenge 변수 먼저 선언 -->
+  <!-- Django에서 넘겨준 데이터를 JS에서 활용할 수 있게 삽입 -->
 <script>
-  const challengesRaw = '{{ challenges_data|escapejs|safe }}';
-  const challenges = challengesRaw ? JSON.parse(challengesRaw) : [];
+  window.challengesRaw = `{{ challengesRaw|safe }}`;
+  window.goalProgressesRaw = `{{ goalProgressesRaw|safe }}`;
 </script>
 
-<!-- JS 파일은 그 다음에 로드 -->
 <script src="{% static 'index/community/postAdd.js' %}"></script>
+ 
 </body>
 </html>

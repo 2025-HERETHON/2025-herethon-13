@@ -196,6 +196,46 @@ def save_copied_challenge(request):
         return redirect('challenges:edit_challenge', challenge_id=copied.id)
 
 
+# @login_required
+# def badge_list(request):
+#     user = request.user
+#     selected_category = request.GET.get('category', '전체')
+
+#     if selected_category == '전체':
+#         badges = Badge.objects.filter(user=user)
+#     else:
+#         badges = Badge.objects.filter(user=user, category__name=selected_category)
+
+#     categories = Category.objects.all()
+#     badge_count = badges.count()
+
+#     return render(request, 'home/badge.html', {
+#         'badges': badges,
+#         'categories': categories,
+#         'selected_category': selected_category,
+#         'badge_count': badge_count,
+#     })
+
+# @login_required
+# def badge_list(request):
+#     user = request.user
+#     selected_category = request.GET.get('category', '전체')
+
+#     if selected_category == '전체':
+#         badges = Badge.objects.filter(user=user)
+#     else:
+#         badges = Badge.objects.filter(user=user, category__name=selected_category)
+
+#     categories = Category.objects.all()
+#     badge_count = badges.count()
+
+#     return render(request, 'home/badge.html', {
+#         'badges': badges,
+#         'categories': categories,
+#         'selected_category': selected_category,
+#         'badge_count': badge_count,
+#     })
+
 @login_required
 def badge_list(request):
     user = request.user

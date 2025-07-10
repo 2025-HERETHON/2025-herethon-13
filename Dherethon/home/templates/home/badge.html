@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1512, initial-scale=1.0" />
     <title>뱃지</title>
-    <link rel="stylesheet" href="{% static 'index/badge/badge.css' %}">
-    <link rel="stylesheet" href="{% static 'index/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/badge.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <script>
         const USER_NICKNAME = "{{ request.user.nickname }}";
         const SELECTED_CATEGORY = "{{ selected_category }}";
         const BADGE_LIST = JSON.parse(`{{ badges_json|escapejs }}`);
     </script>
 
-    <script src="{% static 'index/badge/badge.js' %}"></script>
-    <script src="{% static 'index/index.js' %}"></script>
+    <script src="{% static 'js/badge.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
 </head>
 <body>
     <div class="spa-bg">
