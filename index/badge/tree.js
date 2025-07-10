@@ -12,6 +12,23 @@
     function renderTreePage(page) {
         container.innerHTML = '';
 
+        if (totalPages === 0) {
+
+            const layout = document.createElement('div');
+            layout.className = 'tree-layout';
+
+            const treeImg = document.createElement('img');
+            treeImg.className = 'treeImg';
+            treeImg.src = "/assets/badgeTree.svg";
+            layout.appendChild(treeImg);
+
+            container.appendChild(layout);
+            pageIndicator.textContent = `0 / 0`;
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+            return;
+        }
+
         const start = page * pageSize;
         const chunk = badgeList.slice(start, start + pageSize);
 

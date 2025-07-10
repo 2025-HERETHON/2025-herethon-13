@@ -18,7 +18,7 @@
   // ------ 도전 리스트 및 사이드 카드 렌더링 ------
   function renderLists() {
     const data = JSON.parse(localStorage.getItem('challenges') || '[]');
-    const list = document.querySelector('.challenge-list');
+    const list = document.querySelector('.home-list');
     const sideCards = document.querySelector('.home-side-cards');
 
     if (!list || !sideCards) return;
