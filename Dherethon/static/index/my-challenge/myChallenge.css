@@ -1,0 +1,362 @@
+body {
+  margin: 0;
+  background: #F0F0F0;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.challenge-layout {
+  width: 1512px;
+  height: 982px;
+  margin: 0 auto;
+  background: #F0F0F0;
+  display: flex;
+  align-items: stretch;
+}
+
+.challenge-sidebar {
+  width: 225px;
+  min-width: 225px;
+  height: 918px;
+  background: #F7F7F7;
+  border-radius: 10px;
+  margin: 32px 0 0 49px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.challenge-main {
+  width: 768px;
+  height: 918px;
+  flex: 1;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 1px 8px #ededed;
+  margin: 32px 42px;
+  display: flex;
+  flex-direction: column;
+}
+
+.challenge-header {
+  margin: 22px 28px;
+}
+
+.challenge-header h2 {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+}
+
+.challenge-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: #000;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background .1s;
+}
+
+.tab.active {
+  background: #605BFF;
+  color: #fff;
+}
+
+.challenge-list-header {
+  display: flex;
+  width: 100%;
+  color: #666;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 22px 32px 20px 32px;
+  align-items: center;
+}
+
+.challenge-list-header>div:first-child {
+  width: 210px;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  font-family: "Segoe UI";
+  font-weight: 600;
+}
+
+.challenge-list-header>div:nth-child(2) {
+  width: 128px;
+  text-align: left;
+  padding: 0;
+  margin-left: 30px;
+  font-size: 13px;
+  font-family: "Segoe UI";
+  font-weight: 600;
+}
+
+.challenge-list-header>div:last-child {
+  width: 290px;
+  text-align: left;
+  padding: 0;
+  margin-left: 46px;
+  font-size: 13px;
+  font-family: "Segoe UI";
+  font-weight: 600;
+}
+
+.challenge-list {
+  flex: 1;
+  min-height: 0;
+  max-height: 650px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 32px;
+}
+
+.challenge-list::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 6px;
+  background: #f3f3f3;
+}
+
+.challenge-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
+
+.challenge-row {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.challenge-info {
+  width: 210px;
+  min-width: 210px;
+  max-width: 210px;
+  display: flex;
+  align-items: center;
+}
+
+.challenge-icon {
+  width: 35px;
+  height: 35px;
+  background: #dadada;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.challenge-info-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.challenge-date {
+  color: #757575;
+  font-family: "Segoe UI";
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.challenge-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.challenge-progress {
+  width: 128px;
+  min-width: 128px;
+  max-width: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 0;
+  margin-left: 30px;
+}
+
+.progress-percent {
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  min-width: 0;
+  height: 4px;
+  background: #D9D9D9;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #605BFF;
+  border-radius: 5px;
+}
+
+.challenge-goal {
+  width: 290px;
+  min-width: 290px;
+  max-width: 290px;
+  height: 30px;
+  border-radius: 5px;
+  background: rgba(255, 222, 91, 0.18);
+  padding-left: 10px;
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  margin-left: 46px;
+}
+
+.challenge-add-btn {
+  align-self: flex-end;
+  width: 172.632px;
+  height: 58px;
+  background: #605BFF;
+  border: none;
+  border-radius: 8px;
+  color: #FFF;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 20px;
+  transition: background .1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.challenge-side-cards-wrapper {
+  background: #F7F7F7;
+  border-radius: 10px;
+  width: 322px;
+  height: 918px;
+  margin-top: 32px;
+  margin-right: 58px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.challenge-side-cards {
+  width: 233px;
+  max-height: 900px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 25px;
+  padding-bottom: 0;
+}
+
+.challenge-side-cards::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 6px;
+  background: #f3f3f3;
+}
+
+.challenge-side-cards::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
+.cert-card {
+  width: 233px;
+  height: 273px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 1px 8px #ededed;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  box-sizing: border-box;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.cert-img {
+  width: 190px;
+  height: 128px;
+  background: #d9d9d9;
+  border-radius: 12px;
+  margin-top: 28px;
+  margin-left: 22px;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+
+.cert-category {
+  color: #757575;
+  font-family: "Segoe UI";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-left: 22px;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.cert-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-left: 22px;
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.cert-link {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  margin-left: 22px;
+  color: #605BFF;
+  font-family: "Segoe UI";
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-decoration: none;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+}
+
+.cert-link:hover {
+  text-decoration: underline;
+}

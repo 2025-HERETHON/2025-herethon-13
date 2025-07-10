@@ -1,0 +1,681 @@
+body {
+  margin: 0;
+  background: #fff;
+}
+
+.challenge-detail-outer {
+  position: relative;
+}
+
+.global-close-btn {
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  z-index: 100;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.global-close-btn img {
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  transition: filter 0.16s;
+}
+
+.challenge-detail-layout {
+  background: #fff;
+  width: 1139px;
+  height: 918px;
+  border-radius: 10px;
+  margin: 32px auto 0 38px;
+  display: flex;
+  box-shadow: none;
+}
+
+.challenge-detail-left {
+  flex: 1;
+  padding: 34px 0 0 32px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.challenge-detail-header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 78px;
+  align-items: flex-start;
+}
+
+.challenge-detail-thumb {
+  width: 260px;
+  height: 260px;
+  border-radius: 12px;
+  background: #eee;
+}
+
+.challenge-detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.challenge-detail-category {
+  display: inline-flex;
+  align-items: center;
+  color: #FFF;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 5px;
+  background: #605BFF;
+  padding: 8px;
+  margin-bottom: 7px;
+  width: fit-content;
+}
+
+.challenge-detail-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.challenge-detail-date {
+  background: rgba(255, 222, 91, 0.18);
+  border-radius: 5px;
+  padding: 2px 8px;
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.challenge-detail-dday {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.challenge-detail-public {
+  display: inline-flex;
+  align-items: center;
+  color: #000;
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  width: fit-content;
+}
+
+.challenge-detail-progress-box,
+.challenge-detail-goals-row,
+.goals-block,
+#completedGoalList,
+#inprogressGoalList {
+  width: 540px;
+  box-sizing: border-box;
+}
+
+.challenge-detail-progress-box {
+  margin: 0px 0 22px 0;
+}
+
+.challenge-detail-progress-label {
+  margin-bottom: 9px;
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 16px;
+  background: #D9D9D9;
+  border-radius: 6px;
+  margin: 4px 0;
+}
+
+#progressBar {
+  height: 16px;
+  background: #605bff;
+  border-radius: 6px;
+  width: 0%;
+  transition: width 0.3s;
+}
+
+.challenge-detail-goals-row {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 29px;
+}
+
+.goals-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.goalBox {
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-wrap: nowrap;
+  max-height: 130px;
+}
+
+.goalBox::-webkit-scrollbar {
+  width: 6px;
+  border-radius: 6px;
+  background: #f3f3f3;
+}
+
+.goalBox::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 6px;
+}
+
+.goals-block span {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 15px;
+  margin-bottom: 2px;
+}
+
+.goals-block .completed {
+  color: #000000;
+}
+
+.goals-block .inprogress {
+  color: #000000;
+}
+
+#completedGoalList,
+#inprogressGoalList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#completedGoalList li,
+#inprogressGoalList li {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 5px;
+  margin-bottom: 10px;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.goal-checkbox-btn,
+.goal-checkbox-static {
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-right: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.goal-checkbox-btn img,
+.goal-checkbox-static img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.goal-text-box,
+.goal-text-box.inprogress {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  padding: 7px 16px;
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 15px;
+  box-sizing: border-box;
+  height: 30px;
+}
+
+.goal-text-box {
+  background: rgba(143, 143, 143, 0.18);
+}
+
+.goal-text-box.inprogress {
+  background: rgba(255, 222, 91, 0.18);
+}
+
+.challenge-btn {
+  width: 172.632px;
+  height: 58px;
+  padding: 14px;
+  border-radius: 8px;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.13s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.challenge-detail-edit-btn,
+.challenge-detail-cert-btn {
+  background: #605bff;
+  color: #FFF;
+  border: none;
+}
+
+.challenge-detail-btns {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  justify-content: center;
+  margin: 0 0 28px 0;
+  margin-top: auto;
+}
+
+.challenge-detail-divider {
+  width: 1.5px;
+  min-height: 100%;
+  background: #E4E5EA;
+  margin: 0 18px;
+  border-radius: 2px;
+  align-self: stretch;
+}
+
+.challenge-detail-right {
+  width: 500px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: #fff;
+  padding: 0 30px 0 0;
+  border: none;
+}
+
+.challenge-records-card-bg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 740px;
+  height: 100%;
+  overflow: visible;
+  margin: 0;
+  margin-top: 84px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 0 0 20px 0;
+  align-items: stretch;
+}
+
+.challenge-records-header-bar {
+  display: inline-block;
+  background: #605bff;
+  color: #FFF;
+  font-family: "Segoe UI";
+  font-size: 15px;
+  font-weight: 600;
+  padding: 6px 20px 6px 10px;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+
+.challenge-records-calendar {
+  margin-top: 0;
+}
+
+.challenge-records-list {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.calendar {
+  background: #F6F5F5;
+  border-radius: 8px;
+  padding: 32px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: center;
+  /* 중앙정렬 */
+  align-items: center;
+  gap: 24px;
+  /* 버튼과 월 사이 여백 */
+  color: #000;
+  font-family: Inter;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 150%;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.calendar-header button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-header img {
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  color: #000;
+  font-family: Inter;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 150%;
+  padding: 0px 0 8px 0;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  font-family: Inter;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 150%;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.18s;
+  position: relative;
+}
+
+.calendar-day.active {
+  background: #605bff;
+  color: #fff;
+  font-weight: 700;
+}
+
+.calendar-day.other-month {
+  color: #BFBFBF;
+  font-family: Inter;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 150%;
+  background: transparent;
+}
+
+.calendar-day-inner {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-dot {
+  position: absolute;
+  top: -5px;
+  left: 0px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #605bff;
+  z-index: 2;
+}
+
+.challenge-records-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 200px;
+  padding: 0 8px 14px 8px;
+}
+
+.challenge-record-card {
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1.2px solid #ededf1;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.challenge-record-card>.record-thumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background: #ededf1;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.challenge-record-card .record-date {
+  margin-bottom: 8px;
+  color: rgba(0, 0, 0, 0.50);
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.challenge-record-card .record-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 15px;
+  background: #fff6c4;
+  display: inline-block;
+  padding: 4px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.record-content-title {
+  display: block;
+  color: #000;
+  font-family: Lato;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: -8px;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.record-content-body {
+  display: -webkit-box;
+  color: #757575;
+  font-family: Lato;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+  max-width: 260px;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.challenge-record-card .record-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.challenge-detail-cert-btn {
+  background: #605bff;
+  color: #FFF;
+  border: none;
+  margin: 5px auto 30px auto;
+  align-self: center;
+}
+
+.modal-overlay {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(36, 36, 53, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-modal-content {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px 0 rgba(90, 90, 115, 0.17);
+  width: 480px;
+  padding: 0 0 44px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: modalPop .23s;
+  overflow: hidden;
+  border: none;
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.93);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.delete-modal-head {
+  width: 100%;
+  border-radius: 5px;
+  background: rgba(255, 222, 91, 0.18);
+  margin-top: 60px;
+  padding: 19px 32px 19px 32px;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.modal-challenge-category {
+  background: #605bff;
+  color: #FFF;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  border-radius: 6px;
+  padding: 8px 16px 7px 16px;
+  margin-right: 7px;
+  display: inline-block;
+}
+
+.modal-challenge-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  vertical-align: middle;
+}
+
+.delete-modal-message {
+  width: 100%;
+  color: #000;
+  text-align: center;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin: 36px 0 81px 0;
+  text-align: center;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+
+.modal-btn-row {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  justify-content: center;
+  width: 100%;
+}
+
+.modal-btn {
+  width: 168px;
+  height: 54px;
+  border-radius: 10px;
+  border: none;
+  color: #FFF;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.13s;
+  box-shadow: none;
+  letter-spacing: 0.5px;
+  background: #605BFF;
+}
+
+.modal-btn-cancel:hover,
+.modal-btn-confirm:hover {
+  filter: brightness(0.93);
+}

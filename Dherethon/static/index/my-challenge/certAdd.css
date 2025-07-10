@@ -1,0 +1,218 @@
+.cert-add-container {
+  width: 1139px;
+  height: 918px;
+  background: #fff;
+  border-radius: 14px;
+  margin: 32px auto 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cert-add-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 52px;
+  margin-top: 37px;
+  margin-bottom: 30px;
+}
+
+.cert-add-category {
+  background: #605BFF;
+  padding: 6px;
+  border-radius: 8px;
+  color: #FFF;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; 
+}
+
+.cert-add-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.cert-add-form-2col {
+  width: 100%;
+  padding: 0 48px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.cert-row {
+  display: flex;
+  gap: 36px;
+  margin-bottom: 32px;
+}
+
+.cert-row--middle {
+  align-items: flex-start;
+}
+
+.cert-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cert-add-form-2col label {
+  color: #000;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  margin-bottom: 5px;
+}
+
+.cert-add-form-2col input,
+.cert-add-form-2col select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.10);
+  border-radius: 6px;
+  overflow: hidden;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; 
+  background: #fff;
+  transition: border 0.18s;
+  margin-bottom: 0;
+}
+
+.cert-add-form-2col textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #ececec;
+  border-radius: 8px;
+  color: #000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; 
+  background: #fff;
+  resize: vertical;
+  margin-top: 12px;
+  min-height: 124px;
+  transition: border 0.18s;
+}
+
+.cert-add-content-label {
+  margin-top: 24px;
+  margin-bottom: 11px;
+}
+
+.cert-add-img-upload-box {
+  width: 500px;
+  height: 391px;
+  background: var(--Gray-Color, #F0F0F0);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+
+.cert-add-img-preview-area {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.cert-add-img-upload-icon {
+  width: 80px;
+  height: 70px;
+  opacity: 0.22;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.18s;
+}
+
+.cert-add-img-preview-area.uploaded .cert-add-img-upload-icon {
+  display: none;
+}
+
+.cert-add-img-preview-area.uploaded img.real-preview {
+  display: block;
+}
+
+.cert-add-img-preview-area img.real-preview {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #605bff1a;
+}
+
+.cert-add-btn-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-right: 48px;
+}
+.cert-add-submit-btn {
+  width: 132px;
+  height: 48px;
+  background: #605BFF;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.cert-add-submit-btn:hover {
+  background: #5048d5;
+}
+.cert-close-btn {
+  position: absolute;
+  top: 32px;
+  right: 48px;
+  z-index: 30;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.cert-close-btn img {
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+  transition: filter 0.13s;
+}
+
+.cert-add-container {
+  position: relative;   
+}
