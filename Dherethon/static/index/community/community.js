@@ -168,18 +168,40 @@
     });
   };
 
-  // 게시글 작성 버튼 이벤트 설정
-  window.setupPostAddButton = function() {
-    const postAddBtn = document.querySelector('.post-add-btn');
-    if (postAddBtn) {
-      postAddBtn.addEventListener('click', () => {
-        window.loadPage('postAdd');
-      });
-    }
-  };
+// ✅ 반드시 전역에서 먼저 정의
+window.loadPage = function(pageName, postId = null) {
+  if (pageName === 'postAdd') {
+    window.location.href = '/community/create/';
+  } else if (pageName === 'communityDetail' && postId) {
+    window.location.href = `/community/${postId}/`;
+  }
+};
+
+window.setupPostAddButton = function() {
+  const postAddBtn = document.querySelector('.post-add-btn');
+  if (postAddBtn) {
+    postAddBtn.addEventListener('click', () => {
+      window.loadPage('postAdd');  // ✅ 작동
+    });
+  }
+};
+
+  async function fetchPosts() {
+  try {
+    const res = await fetch('/community/api/posts/');
+    const data = await res.json();
+    localStorage.setItem('communityPosts', JSON.stringify(data));
+    window.renderLists();
+    window.renderPopularPosts();
+    window.updateCategoryCounts();
+  } catch (error) {
+    console.error("게시글 데이터를 불러오지 못했습니다.", error);
+  }
+}
 
   // 초기화
   function init() {
+    fetchPosts(); 
     updateCategoryCounts();
     setupCategoryClickers();
     setupSearchInput();
@@ -194,3 +216,4 @@
     init();
   }
 })();
+

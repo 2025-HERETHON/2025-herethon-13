@@ -36,7 +36,7 @@ def serialize_challenge_for_js(challenge, user):
         'completedGoalContents': list(
             challenge.goals.filter(id__in=completed_goal_ids).values_list('content', flat=True)
         ),
-        'nextGoalContent': next_goal.content if next_goal else null,
+        'nextGoalContent': next_goal.content if next_goal else None,
     }
 
 # 로그인한 사용자 기준 list view
@@ -208,12 +208,14 @@ def create_challenge(request, pk=None):
                         goal.content = request.POST[key]
                         goal.save()
 
-            # 새 세부 목표 추가
+            # 새 세부 목표 추가 (기존과 중복 방지)
+            existing_goal_contents = set(goal.content.strip() for goal in Goal.objects.filter(challenge=saved))
+
             new_goals = request.POST.getlist('goals')
             for content in new_goals:
-                if content.strip():
+                content = content.strip()
+                if content and content not in existing_goal_contents:
                     Goal.objects.create(challenge=saved, content=content)
-
             return redirect('challenges:detail', pk=saved.pk)
 
     else:
@@ -395,9 +397,33 @@ def goal_records_by_date(request, challenge_id):
             'title': record.title,
             'content': record.content,
             'date': record.date.strftime('%Y-%m-%d'),
-            'goal_content': record.goal.content,
+            'goal': record.goal.content,  # goal_content로도 바꿔도 OK
             'image_url': record.image.url if record.image else None,
         })
 
     return JsonResponse({'records': result})
 
+@login_required
+def goal_record_dates(request, challenge_id):
+    year = request.GET.get("year")
+    month = request.GET.get("month")
+
+    if not (year and month):
+        return JsonResponse({"cert_dates": []})
+
+    try:
+        year = int(year)
+        month = int(month)
+    except ValueError:
+        return JsonResponse({"cert_dates": []})
+
+    records = GoalRecord.objects.filter(
+        user=request.user,
+        goal__challenge_id=challenge_id,
+        date__year=year,
+        date__month=month
+    ).values_list('date', flat=True)
+
+    cert_dates = sorted(set(date.strftime("%Y-%m-%d") for date in records))
+
+    return JsonResponse({"cert_dates": cert_dates})

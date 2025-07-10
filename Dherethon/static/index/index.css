@@ -81,6 +81,10 @@ body {
     width: 100%;
 }
 
+.sideBar_menu a {
+    text-decoration: none;
+}
+
 /* 메뉴 버튼 */
 .sideBar_Box {
     width: 185px;

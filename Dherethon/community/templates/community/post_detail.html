@@ -1,63 +1,101 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="stylesheet" href="{% static 'index/index.css' %}">  
+    <link rel="stylesheet" href="{% static 'index/community/communityDetail.css' %}">
     <title>Document</title>
 </head>
 <body>
-    {% block content %}
-  <h2>{{ post.user.nickname }}님의 인증글</h2>
+      
+  <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <!-- 상단: 프로필 + 메뉴 -->
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
+                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+                    </div>
 
-  <p>{{ post.content }}</p>
-  {% if post.image %}
-    <img src="{{ post.image.url }}" width="250"><br>
-  {% endif %}
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
 
-  <p><strong>도전:</strong> {{ post.goal.challenge.title }}</p>
-  <p><strong>세부 목표:</strong> {{ post.goal.content }}</p>
-  <p>🕒 {{ post.created_at|date:"Y-m-d H:i" }}</p>
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
+            </div>
+            <!-- ✅ 메인 컨텐츠는 JS가 채울 예정 -->
+            <div class="main-content">
+              
+            </div>
+        </div>
+  </div>    
 
-  <!-- 좋아요 -->
-  <form method="POST" action="{% url 'community:toggle_like' post.id %}">
-    {% csrf_token %}
-    <button type="submit">
-      {% if liked %}❤️ 좋아요 취소{% else %}🤍 좋아요{% endif %}
-    </button>
-    <span>{{ like_count }}명이 좋아했어요</span>
-  </form>
 
-  <hr>
+<!-- ✅ 메인 컨텐츠는 JS가 채울 예정 -->
+<div class="main-content">
 
-  <!-- 댓글 영역 -->
-  <h4>💬 댓글 ({{ comment_count }}개)</h4>
-  <form method="POST" action="{% url 'community:add_comment' post.id %}">
-    {% csrf_token %}
-    <input type="text" name="content" placeholder="댓글을 입력하세요" required>
-    <button type="submit">작성</button>
-  </form>
+</div>
 
-  <ul>
-    {% for comment in comments %}
-      <li style="margin-top:10px;">
-        <strong>{{ comment.user.nickname }}</strong>: {{ comment.content }}<br>
-        <small>{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+<script>
+  const postId = "{{ post.id }}";
+  const postData = JSON.parse(`{{ post_data|escapejs }}`);
 
-        {% if comment.user == request.user %}
-          <!-- 삭제 버튼 -->
-          <form method="POST" action="{% url 'community:delete_comment' comment.id %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" style="color:red; background:none; border:none;">삭제</button>
-          </form>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
+  // localStorage에 없으면 저장
+  const posts = JSON.parse(localStorage.getItem('communityPosts') || '[]');
+  if (!posts.find(p => String(p.id) === String(postData.id))) {
+    posts.push(postData);
+    localStorage.setItem('communityPosts', JSON.stringify(posts));
+  }
 
-  <br>
-  <a href="{% url 'community:post_list' %}">← 커뮤니티로 돌아가기</a>
-{% endblock %}
-
+  // ✅ 화면에 상세 내용을 렌더링
+  if (typeof renderCommunityDetail === 'function') {
+    renderCommunityDetail(postId);
+  } else {
+    console.error("renderCommunityDetail 함수가 로딩되지 않았습니다.");
+  }
+</script>
+<script src="{% static 'index/community/communityDetail.js' %}"></script>
 </body>
-</html>
 
+
+</html>
