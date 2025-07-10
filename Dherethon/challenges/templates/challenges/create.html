@@ -106,7 +106,8 @@
 
                     <div class="img-label">대표 이미지</div>
                     <label class="img-upload-box" for="imgInput">
-                        <input type="file" id="imgInput" name="image" accept="image/*" style="display:none;" />
+                        <input type="file" id="imgInput" name="image" accept="image/*"
+                            style="position: absolute; left: -9999px;" />
                         <img src="{% static 'assets/gallery-add.svg' %}" id="imgPreview" class="img-upload-icon" />
                     </label>
 

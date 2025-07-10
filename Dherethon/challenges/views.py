@@ -15,6 +15,7 @@ from django.utils.dateparse import parse_date
 from django.core.serializers import serialize
 from django.http import JsonResponse
 import json
+from django.utils.safestring import mark_safe
 
 def serialize_challenge_for_js(challenge, user):
     completed_goal_ids = GoalProgress.objects.filter(
@@ -284,7 +285,7 @@ def create_goal(request, challenge_id, record_id=None):
                 image=image
             )
 
-            # ✅ progress 객체 사용은 이 안에서만
+            # progress 객체 사용은 이 안에서만
             progress.record = record
             progress.save()
 
@@ -294,6 +295,7 @@ def create_goal(request, challenge_id, record_id=None):
         'challenge': challenge,
         'record': record,
         'all_goals': all_goals,
+        'challenge_json': mark_safe(json.dumps(serialize_challenge_for_js(challenge, request.user)))
     })
 
 @login_required

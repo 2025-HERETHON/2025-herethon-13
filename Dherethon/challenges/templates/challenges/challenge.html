@@ -99,7 +99,10 @@
                             <div class="challenge-row">
                                 <div class="challenge-info">
                                     <div class="challenge-icon"
-                                        style="background-image: url('{{ challenge.image.url|default_if_none:'' }}'); background-size: cover;"></div>
+                                        {% if challenge.image %}
+                                            style="background-image: url('{{ challenge.image.url }}'); background-size: cover;"
+                                        {% endif %}>
+                                    </div>
                                     <div class="challenge-info-texts">
                                         <div class="challenge-date">
                                             {{ challenge.d_day_prefix }}{{ challenge.d_day_value }} {{ challenge.category.name }}
@@ -136,8 +139,15 @@
                 <div class="challenge-side-cards">
                     {% for challenge in incomplete_challenges %}
                         <div class="cert-card">
-                            <div class="cert-img"
-                                style="background-image: url('{{ challenge.image.url|default_if_none:'' }}'); background-size: cover;"></div>
+                            {% if challenge.image %}
+                                <div class="cert-img"
+                                    style="background-image: url('{{ challenge.image.url }}'); background-size: cover;">
+                                </div>
+                            {% else %}
+                                <div class="cert-img" style="background-color: #eee;">
+                                    <!-- 기본 이미지가 있다면 여기에 <img src="{% static 'assets/default.svg' %}"> 추가 가능 -->
+                                </div>
+                            {% endif %}
                             <div class="cert-category">{{ challenge.category.name }}</div>
                             <div class="cert-title">{{ challenge.title }}</div>
                             <a href="{% url 'challenges:detail' challenge.id %}" class="cert-link">인증하러 가기 →</a>
@@ -145,6 +155,7 @@
                     {% empty %}
                         <div style="padding:20px;color:#aaa;">오늘 인증할 도전이 없습니다.</div>
                     {% endfor %}
+
                 </div>
             </div>
         </div>

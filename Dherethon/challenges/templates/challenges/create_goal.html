@@ -170,6 +170,18 @@
         </script>
         {% endif %}
 
+        <script>
+        const updatedChallenge = {{ challenge_json|safe }};
+        let challenges = JSON.parse(localStorage.getItem('challenges') || '[]');
+        const idx = challenges.findIndex(c => String(c.id) === String(updatedChallenge.id));
+        if (idx !== -1) {
+            challenges[idx] = updatedChallenge;
+        } else {
+            challenges.push(updatedChallenge);
+        }
+        localStorage.setItem('challenges', JSON.stringify(challenges));
+        </script>
+        
         <!-- 호출 -->
         <script>
         document.addEventListener("DOMContentLoaded", function () {
