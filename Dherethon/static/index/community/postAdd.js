@@ -1,48 +1,55 @@
-// 전역 상태
-let selectedCategory = "학습 / 공부";
+let selectedCategory = "전체";
 let selectedChallengeId = null;
-let selectedCertId = null;
-let certRecords = [];  // 전역으로 선언
+let selectedGoalProgressId = null;
+let goalProgresses = [];
 
-// 쿠키 가져오기 함수 (CSRF 토큰용)
-function getCookie(name) {
+function getCSRFToken() {
   const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
+  const parts = value.split(`; csrftoken=`);
+  return parts.length === 2 ? parts.pop().split(";").shift() : "";
 }
 
-console.log("챌린지 데이터:", challenges);
+const main = document.querySelector('.main-content');
 
-// 렌더 함수
-window.renderPostAdd = function () {
-  const main = document.querySelector('.main-content');
-  const categories = ["학습 / 공부", "커리어 / 직무", "운동 / 건강", "마음 / 루틴", "정리 / 관리", "취미", "기타"];
+function safeParseJSON(jsonStr) {
+  try {
+    return JSON.parse(jsonStr || '[]');
+  } catch (e) {
+    console.error('JSON parse error:', e);
+    return [];
+  }
+}
 
-  // Django에서 넘긴 JSON 구조에 맞게 파싱
-  const challengesData = challenges.map(obj => ({
-    id: obj.id,
-    category: obj.category,
-    title: obj.title
-  }));
+window.onload = function () {
+  renderPostAddPage();
+};
 
-  const filteredChallenges = challengesData.filter(ch => ch.category === selectedCategory);
-  const filteredCerts = certRecords.filter(cert => String(cert.challengeId) === String(selectedChallengeId));
+function renderPostAddPage() {
+  const challenges = safeParseJSON(window.challengesRaw);
+  const progresses = safeParseJSON(window.goalProgressesRaw);
+
+ const categories = ["전체", ...new Set(challenges.map(ch => ch.category))];
+
+  const filteredChallenges = selectedCategory === "전체"
+    ? challenges
+    : challenges.filter(ch => ch.category === selectedCategory);
+  const filteredGoals = progresses.filter(p => String(p.challenge_id) === String(selectedChallengeId));
 
   main.innerHTML = `
     <div class="post-add-flexbox">
       <div class="post-add-left">
-        <div class="post-add-title">게시할 인증 기록을 선택해주세요</div>
+        <h2 class="post-add-title">게시할 인증 기록을 선택해주세요</h2>
         <div class="post-add-cat-row">
-          ${categories.map(cat => `
-            <button class="post-add-cat-btn${cat === selectedCategory ? ' selected' : ''}" data-cat="${cat}">${cat}</button>
-          `).join("")}
+          ${categories.map(cat => `<button class="post-add-cat-btn${cat === selectedCategory ? ' selected' : ''}" data-cat="${cat}">${cat}</button>`).join("")}
         </div>
         <div class="post-add-challenge-row">
-          <span class="post-add-label">도전 선택</span>
-          <select id="challenge-select" class="post-add-challenge-select" ${filteredChallenges.length === 0 ? "disabled" : ""}>
+          <label class="post-add-label" for="challenge-select">도전 선택</label>
+          <select class="post-add-challenge-select" id="challenge-select">
             <option value="">도전을 선택하세요</option>
             ${filteredChallenges.map(ch => `
-              <option value="${ch.id}" ${String(ch.id) === String(selectedChallengeId) ? "selected" : ""}>${ch.title}</option>
+              <option value="${ch.id}" ${String(ch.id) === String(selectedChallengeId) ? "selected" : ""}>
+                ${ch.title}
+              </option>
             `).join("")}
           </select>
         </div>
@@ -51,121 +58,78 @@ window.renderPostAdd = function () {
       <div class="post-add-divider"></div>
 
       <div class="post-add-right">
-        <button class="post-add-close-btn" title="닫기" aria-label="닫기">
-          <img src="/static/assets/Cancel.svg" alt="닫기" />
-        </button>
         <div class="post-add-cert-list">
-          ${!selectedChallengeId
-            ? `<div style="color:#aaa;padding:40px 0;">도전을 먼저 선택하세요.</div>`
-            : (filteredCerts.length === 0
-              ? `<div style="color:#aaa;padding:40px 0;">인증 기록이 없습니다.</div>`
-              : filteredCerts.map(cert => `
-                <div class="challenge-record-card${String(cert.id) === String(selectedCertId) ? ' selected' : ''}" data-cert-id="${cert.id}">
-                  <div class="record-thumb" style="${cert.image_url
-                    ? `background:url('${cert.image_url}') center/cover no-repeat;`
-                    : `background:#ededf1;`} border-radius:10px;width:44px;height:44px;">
-                  </div>
-                  <div class="record-detail">
-                    <div class="record-date">${cert.date || ''}</div>
-                    <div class="record-title">${cert.goalTitle || ''}</div>
-                    <div class="record-content">
-                      <span class="record-content-body">${cert.content || ''}</span>
+          ${
+            !selectedChallengeId
+              ? `<p style="color:#aaa;">도전을 먼저 선택하세요.</p>`
+              : (filteredGoals.length === 0
+                ? `<p style="color:#aaa;">선택한 도전에 인증된 기록이 없습니다.</p>`
+                : filteredGoals.map(goal => `
+                  <div class="challenge-record-card${String(goal.id) === String(selectedGoalProgressId) ? ' selected' : ''}" data-id="${goal.id}">
+                    ${goal.image_url ? `<img class="record-thumb" src="${goal.image_url}" />` : `<div class="record-thumb"></div>`}
+                    <div class="record-detail">
+                      <div class="record-date">${goal.date}</div>
+                      <div class="record-title">${goal.goal_title}</div>
+                      <div class="record-content-title">${goal.content || ''}</div>
+                      <div class="record-content-body">${goal.content || ''}</div>
                     </div>
                   </div>
-                </div>
-              `).join("")
-            )
+                `).join(""))
           }
         </div>
-        <button class="post-add-submit-btn" ${!selectedCertId ? "disabled" : ""}>게시하기</button>
+        <button class="post-add-submit-btn" ${!selectedGoalProgressId ? "disabled" : ""}>게시하기</button>
       </div>
     </div>
   `;
 
-  // === 이벤트 바인딩 ===
-
-  // 카테고리 버튼 클릭
+  // 이벤트 바인딩
   main.querySelectorAll('.post-add-cat-btn').forEach(btn => {
-    btn.onclick = function () {
-      selectedCategory = this.dataset.cat;
+    btn.onclick = () => {
+      selectedCategory = btn.dataset.cat;
       selectedChallengeId = null;
-      selectedCertId = null;
-      window.renderPostAdd();
+      selectedGoalProgressId = null;
+      renderPostAddPage();
     };
   });
 
-  // 도전 선택 변경
-  const challengeSelect = main.querySelector('#challenge-select');
-  if (challengeSelect) {
-    challengeSelect.addEventListener('change', function () {
-      selectedChallengeId = this.value || null;
-      selectedCertId = null;
-
-      fetch(`/community/load_goal_progresses/?challenge_id=${selectedChallengeId}`)
-        .then(res => res.json())
-        .then(data => {
-          certRecords = data;
-          localStorage.setItem('certRecords', JSON.stringify(certRecords));
-          window.renderPostAdd();
-        })
-        .catch(() => alert("인증 기록을 불러오지 못했습니다."));
+  const selectBox = main.querySelector('#challenge-select');
+  if (selectBox) {
+    selectBox.addEventListener('change', () => {
+      selectedChallengeId = selectBox.value || null;
+      selectedGoalProgressId = null;
+      renderPostAddPage();
     });
   }
 
-  // 인증글 카드 선택
   main.querySelectorAll('.challenge-record-card').forEach(card => {
-    card.onclick = function () {
-      selectedCertId = this.dataset.certId;
-      window.renderPostAdd();
+    card.onclick = () => {
+      selectedGoalProgressId = card.dataset.id;
+      renderPostAddPage();
     };
   });
 
-  // 게시하기 버튼 클릭
   const submitBtn = main.querySelector('.post-add-submit-btn');
   if (submitBtn) {
-    submitBtn.onclick = function () {
-      if (!selectedCertId) return;
-      const cert = certRecords.find(c => String(c.id) === String(selectedCertId));
-      const challenge = challengesData.find(ch => String(ch.id) === String(selectedChallengeId));
-      if (!cert) return;
+    submitBtn.onclick = () => {
+      if (!selectedGoalProgressId) return;
 
-      fetch('/community/create/', {
-        method: 'POST',
+      fetch("/community/create/", {
+        method: "POST",
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'X-CSRFToken': getCookie('csrftoken')
+          'X-CSRFToken': getCSRFToken(),
         },
-        body: new URLSearchParams({
-          goal_progress: cert.progressId
-        })
+        body: new URLSearchParams({ goal_progress: selectedGoalProgressId })
       })
         .then(res => {
-          if (!res.ok) throw new Error("게시 실패");
+          if (!res.ok) throw new Error("전송 실패");
           alert("게시글이 등록되었습니다!");
-          window.loadPage('community');
+          location.href = "/community/";
         })
         .catch(err => {
           console.error(err);
-          alert("게시글 등록 중 오류가 발생했습니다.");
+          alert("오류가 발생했습니다.");
         });
     };
   }
-
-  // 닫기 버튼
-  const closeBtn = main.querySelector('.post-add-close-btn');
-  if (closeBtn) {
-    closeBtn.onclick = function () {
-      const { pageName, detailKey } = window.getPrevPage?.() || {};
-      if (pageName) {
-        window.loadPage(pageName, detailKey);
-      } else {
-        window.loadPage('community');
-      }
-    };
-  }
-};
-
-// 페이지 진입 시 자동 실행
-window.onload = function () {
-  if (window.renderPostAdd) window.renderPostAdd();
-};
+}
