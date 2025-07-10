@@ -1,0 +1,353 @@
+body {
+  background: #f7f7f8;
+  margin: 0;
+  padding: 0;
+}
+.main-content {
+  flex: 1;
+  margin: 0 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.community-detail-content-layout {
+  width: 1139px;
+  height: 918px;
+  margin: 32px auto 0px auto;
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  position: relative;
+  height: auto;           
+  min-height: 918px;  
+  overflow: visible;     
+}
+
+.detail-main {
+  flex: 1.85 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 38px;
+  min-width: 0;
+  height: 918px; 
+}
+
+.detail-thumbnail {
+  width: 665px;
+  height: 674px;
+  background: #d1d1d1;
+  border-radius: 6px;
+  margin-top: 30px;
+  margin-bottom: 22px;
+}
+
+.detail-info-block {
+  position: relative;
+  width: 95%;
+  min-width: 0;
+}
+
+.detail-like-fixed {
+  position: absolute;
+  top: 0;
+  right: -75px;
+  padding: 12px 40px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.like {
+  color: #000;
+  font-family: Pretendard;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16.667px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.like.liked .like-icon {
+  color: #f24141;
+}
+
+.like-icon {
+  width: 20px;
+  transition: transform 0.2s ease;
+}
+
+.detail-meta-date {
+  color: rgba(0, 0, 0, 0.50);
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.profile-image {
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  background: #dadada;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.detail-row .writer {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  margin-right: 30px;
+}
+
+.category-challenge-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-right: 40px;
+  flex-shrink: 0;
+  width: fit-content;
+  white-space: nowrap;
+}
+
+.category-challenge-block .category {
+  background: none;
+  color: #757575;
+  font-family: "Segoe UI";
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.category-challenge-block .challenge-title {
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: -0.2px;
+}
+
+.detail-row .badge {
+  background: rgba(255, 222, 91, 0.18);
+  color: #000;
+  font-family: "Segoe UI";
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 15px;
+  border-radius: 6px;
+  padding: 4px 14px;
+}
+
+.community-detail-title {
+  color: #000;
+  font-family: Lato;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: -0.6px;
+}
+
+.detail-content {
+  color: #757575;
+  font-family: Lato;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.8;
+  word-break: break-word;
+  margin-bottom: 30px;
+  white-space: pre-line;      
+  text-indent: 1.2em;          
+}
+
+
+.detail-comments {
+  width: 400px;
+  background: #fff;
+  border-left: 1.5px solid #e4e5ea;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  height: 918px;
+}
+
+.detail-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-size: 32px;
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  z-index: 2;
+  padding: 0;
+}
+
+.comment-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 76px 28px 60px 28px;
+}
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  border-top: 1px solid #e4e5ea;
+  padding: 24px 0;
+}
+
+.comment-profile {
+  width: 20px;
+  height: 20px;
+  background: #dadada;
+  margin-right: 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.comment-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.comment-writer {
+  color: #1B1B1B;
+  font-family: "Segoe UI";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.comment-date {
+  color: rgba(0, 0, 0, 0.50);
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; 
+  white-space: nowrap;
+}
+
+.comment-content {
+  color: #1B1B1B;
+  font-family: "Segoe UI";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.comment-input-row {
+  border: 1px solid #CDCDCD;
+  border-radius: 10px;
+  position: absolute;
+  bottom: 50px;
+  left: 23px;
+  right: 0;
+  padding: 16px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  width: 80%;
+}
+
+.comment-input {
+  flex: 1;
+  border: 1px solid #ffffff;
+  border-radius: 7px;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  color: #333;
+}
+
+.comment-send-btn {
+  margin-left: 10px;
+  border: none;
+  background: #ffffff;
+  color: #000000;
+  font-size: 22px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.13s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.comment-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comment-list::-webkit-scrollbar-thumb {
+  background: #ededed;
+  border-radius: 10px;
+}
+
+.comment-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detail-close-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+.detail-delete-btn {
+  position: absolute;
+  top: 30px;
+  left : 600px;
+  background: #5B5FEF;
+  color: #FFF;
+  font-family: "Segoe UI";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 15px;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 3;
+  transition: background 0.2s ease;
+}
+
+.detail-delete-btn:hover {
+  background: #4a4cce;
+}

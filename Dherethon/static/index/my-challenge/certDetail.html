@@ -1,0 +1,42 @@
+<div class="cert-detail-outer">
+  <button class="global-close-btn" id="certDetailCloseBtn" aria-label="닫기">
+    <img src="../../assets/Cancel.svg" alt="닫기" />
+  </button>
+  <div class="cert-detail-layout">
+    <div class="cert-detail-left">
+      <div class="cert-detail-thumb"></div>
+      <div class="cert-detail-challengebar">
+        <span class="challenge-category"></span>
+        <span class="detail-title"></span>
+      </div>
+      <div class="cert-detail-memo"></div>
+    </div>
+    <div class="cert-detail-right">
+      <div class="cert-detail-info">
+        <div class="cert-detail-date"></div>
+        <div class="cert-detail-title"></div>
+        <div class="cert-detail-desc"></div>
+      </div>
+      <div class="cert-detail-btns">
+        <button class="challenge-btn cert-detail-edit-btn" id="certEditBtn">수정하기</button>
+        <button class="challenge-btn cert-detail-delete-btn" id="certDeleteBtn">삭제하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="certDeleteModal" class="modal-overlay" style="display:none;">
+  <div class="modal-content delete-modal-content">
+    <div class="delete-modal-head">
+      <span class="modal-challenge-category" id="certModalCategory"></span>
+      <span class="modal-challenge-title" id="certModalTitle"></span>
+    </div>
+    <div class="delete-modal-message">
+      <b>이 인증글을 삭제하시겠습니까?</b>
+    </div>
+    <div class="modal-btn-row">
+      <button class="modal-btn modal-btn-confirm" id="certModalDeleteYes">예</button>
+      <button class="modal-btn modal-btn-cancel" id="certModalDeleteNo">아니요</button>
+    </div>
+  </div>
+</div>

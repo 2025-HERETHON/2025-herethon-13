@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signUp</title>
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+</head>
+
+<body>
+    <div class="spa-bg">
+        <div class="app-root">
+            <div class="container">
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- 아이디 -->
+                    <div class="mainTxt">아이디</div>
+                    <div class="subBox">
+                        {{ form.username }}
+                        <button type="button" id="check-username-btn" class="duBtn">중복 확인</button>
+                    </div>
+                    <div id="username-message"></div>
+                    {% for error in form.username.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                    <!-- 닉네임 -->
+                    <div class="mainTxt">닉네임</div>
+                    <div class="subBox">
+                        {{ form.nickname }}
+                        <button type="button" id="check-nickname-btn" class="duBtn">중복 확인</button>
+                    </div>            
+                    <div id="nickname-message"></div>        
+                    {% for error in form.nickname.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                    <!-- 프로필 사진 -->
+                    <div class="mainTxt">프로필 사진</div>
+                    <label class="uploadBtn" for="picBtn">사진 업로드</label>
+                    <input id="picBtn" type="file" onchange="readURL(this);">
+                    <img id="preview" src="{% static 'assets/previewImg.svg' %}" alt="프로필 사진" />
+
+                    <!-- 비밀번호 -->
+                    <div class="mainTxt">비밀번호</div>
+                    <div class="subBox">
+                        {{ form.password1 }}
+                    </div>
+                    {% for error in form.password1.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+
+                    <!-- 비밀번호 확인 -->
+                    <div class="mainTxt">비밀번호 확인</div>
+                    <div class="subBox">
+                        {{ form.password2 }}                        
+                    </div>                  
+                    <div id="confirm"></div>  
+                    {% for error in form.password2.errors %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                    
+                    <!-- 관심 카테고리 -->
+                    <div class="mainTxt">관심 있는 카테고리</div>
+                    <div class="category-btn-group">
+                        {% for value, label in category_choices %}
+                            <button
+                                class="category-btn{% if value == '학습 / 공부' %} selected{% endif %}"
+                                data-value="{{ value }}"
+                                type="button"
+                            >
+                                {{ label }}
+                            </button>
+                        {% endfor %}
+                    </div>
+
+                    <input type="hidden" name="interest_categories" id="selected-category" value="학습 / 공부">
+
+
+
+                    <!-- 회원가입 버튼 -->
+                    <button id="joinBtn" type="submit" class="false">회원가입</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/signup.js' %}"></script>
+</body>
+</html>

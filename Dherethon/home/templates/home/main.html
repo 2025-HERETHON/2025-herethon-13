@@ -1,0 +1,63 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body>
+
+<div>
+
+    <!-- 왼쪽 사이드바 -->
+    <div>
+        {% if user.profile_image and user.profile_image.url %}
+            <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
+        {% else %}
+            <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
+        {% endif %}
+
+
+        <p>{{ user.nickname }}</p>
+
+        <nav>
+            <p><a href="{% url 'home:main' %}">홈</a></p>
+            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
+            <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
+            <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
+        </nav>
+
+        <p><a href="{% url 'api:logout' %}">로그아웃</a></p>
+    </div>
+
+    <!-- 오른쪽 메인 콘텐츠 -->
+    <div>
+        <h1>메인 페이지입니다</h1>
+        <p>로그인 성공 후 이 페이지로 리다이렉트됩니다.</p>
+
+        <h2>{{ user.nickname }}님의 회원 정보</h2>
+        <ul>
+            <li><strong>아이디:</strong> {{ user.username }}</li>
+            <li><strong>닉네임:</strong> {{ user.nickname }}</li>
+            <li><strong>관심 카테고리:</strong>
+                {% if user.interest_categories %}
+                    {{ user.interest_categories }}
+                {% else %}
+                    없음
+                {% endif %}
+            </li>
+            <li><strong>프로필 사진:</strong><br>
+                {% if user.profile_image and user.profile_image.url %}
+                    <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
+                {% else %}
+                    <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
+</div>
+
+</body>
+</html>

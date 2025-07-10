@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="spa-bg">
+        <div class="app-root">
+            <div class="container">
+                <!--로고 이미지-->
+                <div class="logo"><img src="{% static 'assets/logo.svg' %}" alt="로고"></div>
+            
+                <div class="mainBox">
+                    <!--아이디 텍스트, 아이디 인풋-->
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <div class="subBox">
+                                <div class="mainTxt">아이디</div>
+                                {{ form.username }}
+                            </div>
+
+                            <!-- 비밀번호 입력 -->
+                            <div class="subBox">
+                                <div class="mainTxt">비밀번호</div>
+                                {{ form.password }}
+                            </div>
+
+                            <!-- 버튼 영역 -->
+                            <div class="btnBox">
+                                <button class="joinBtn" type="button" onclick="goSignUp()">회원가입</button>
+                                <button class="loginBtn" type="submit">로그인</button>  
+                            </div>
+                        </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/login.js' %}"></script>
+</body>
+</html>
