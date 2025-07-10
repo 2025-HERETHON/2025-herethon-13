@@ -1,23 +1,25 @@
 // --- SPA: 페이지 이름-경로 매핑 ---
 const PAGE_CONFIG = {
-  home:            { html: "home/home.html",                  js: "home/home.js" },
-  mypage:          { html: "mypage/mypage.html",              js: "mypage/mypage.js" },
-  myChallenge:     { html: "my-challenge/myChallenge.html",   js: "my-challenge/myChallenge.js" },
-  challengeAdd:    { html: "my-challenge/challengeAdd.html",  js: "my-challenge/challengeAdd.js" },
+  home: { html: "home/home.html", js: "home/home.js" },
+  mypage: { html: "mypage/mypage.html", js: "mypage/mypage.js" },
+  myChallenge: { html: "my-challenge/myChallenge.html", js: "my-challenge/myChallenge.js" },
+  challengeAdd: { html: "my-challenge/challengeAdd.html", js: "my-challenge/challengeAdd.js" },
   challengeDetail: { html: "my-challenge/challengeDetail.html", js: "my-challenge/challengeDetail.js" },
-  certAdd:         { html: "my-challenge/certAdd.html",       js: "my-challenge/certAdd.js" },
-  certDetail:      { html: "my-challenge/certDetail.html",    js: "my-challenge/certDetail.js" },
-  community:       { html: "community/community.html",        js: "community/community.js" },
-  communityDetail: { html: "community/communityDetail.html",  js: "community/communityDetail.js" },
-  postAdd:         { html: "community/postAdd.html",          js: "community/postAdd.js" },
-  badge:           { html: "badge/badge.html",                js: "badge/badge.js" }
+  certAdd: { html: "my-challenge/certAdd.html", js: "my-challenge/certAdd.js" },
+  certDetail: { html: "my-challenge/certDetail.html", js: "my-challenge/certDetail.js" },
+  community: { html: "community/community.html", js: "community/community.js" },
+  communityDetail: { html: "community/communityDetail.html", js: "community/communityDetail.js" },
+  postAdd: { html: "community/postAdd.html", js: "community/postAdd.js" },
+  badge: { html: "badge/badge.html", js: "badge/badge.js" },
+  tree: { html: "badge/tree.html", js: "badge/tree.js" }
+
 };
 
 // --- 상세/수정/등록 전역 저장용 ---
-let currentDetailTitle    = null;
-let currentCertId         = null;
+let currentDetailTitle = null;
+let currentCertId = null;
 let currentChallengeAddId = null;
-let currentCertAddId      = null;
+let currentCertAddId = null;
 
 // --- [추가] 이전 페이지 저장용 ---
 let prevPageName = null;
@@ -50,10 +52,10 @@ async function loadPage(pageName, detailKey) {
   document.getElementById("mainArea").innerHTML = html;
 
   // (2) 상태 저장
-  currentDetailTitle    = pageName === "challengeDetail" ? detailKey : null;
-  currentCertId         = pageName === "certDetail"      ? detailKey : null;
-  currentChallengeAddId = pageName === "challengeAdd"    ? detailKey : null;
-  currentCertAddId      = pageName === "certAdd"         ? detailKey : null;
+  currentDetailTitle = pageName === "challengeDetail" ? detailKey : null;
+  currentCertId = pageName === "certDetail" ? detailKey : null;
+  currentChallengeAddId = pageName === "challengeAdd" ? detailKey : null;
+  currentCertAddId = pageName === "certAdd" ? detailKey : null;
 
   // (3) 이전 동적 JS 제거
   const prevScript = document.getElementById("dynamic-page-script");
@@ -63,7 +65,7 @@ async function loadPage(pageName, detailKey) {
   if (jsPath) {
     const script = document.createElement("script");
     script.src = jsPath;
-    script.id  = "dynamic-page-script";
+    script.id = "dynamic-page-script";
     script.onload = () => {
       if (pageName === "community" && typeof window.init === "function") {
         window.init();
@@ -98,11 +100,11 @@ async function loadPage(pageName, detailKey) {
 }
 
 // --- 전역 getter & loadPage 등록 ---
-window.loadPage              = loadPage;
-window.currentDetailTitle    = () => currentDetailTitle;
-window.currentCertId         = () => currentCertId;
+window.loadPage = loadPage;
+window.currentDetailTitle = () => currentDetailTitle;
+window.currentCertId = () => currentCertId;
 window.currentChallengeAddId = () => currentChallengeAddId;
-window.currentCertAddId      = () => currentCertAddId;
+window.currentCertAddId = () => currentCertAddId;
 
 // --- 사이드바 버튼 이벤트 등록 ---
 document.querySelectorAll(".sideBar_Box").forEach(btn => {

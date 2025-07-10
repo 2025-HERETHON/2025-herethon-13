@@ -68,4 +68,10 @@
         renderBadgeListFromLocalStorage();
     });
 
+    document.getElementById("goTree").onclick = function () {
+        if (window.loadPage) {
+            window.loadPage("tree");
+        }
+    };
+
 })();

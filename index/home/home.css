@@ -134,20 +134,10 @@ body {
     width: 760px;
     height: 250px;
     background-color: transparent;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 
-.home-listBox::-webkit-scrollbar {
-    width: 6px;
-    border-radius: 6px;
-    background: #f3f3f3;
-}
-
-.home-listBox::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 6px;
-}
 
 .home-side-wrapper {
     background: #F7F7F7;
