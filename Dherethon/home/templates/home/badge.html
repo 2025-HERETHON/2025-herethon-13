@@ -3,77 +3,108 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>뱃지 목록</title>
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>뱃지</title>
+    <link rel="stylesheet" href="{% static 'css/badge.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script>
+        const USER_NICKNAME = "{{ request.user.nickname }}";
+        const SELECTED_CATEGORY = "{{ selected_category }}";
+        const BADGE_LIST = JSON.parse(`{{ badges_json|escapejs }}`);
+    </script>
+
+    <script src="{% static 'js/badge.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
 </head>
 <body>
-
-    <div style="display:flex;">
-
-        <!-- 좌측 사이드바 -->
-        <div style="width:200px; padding:10px;">
-            <p><strong>{{ request.user.nickname }}</strong></p>
-            <!-- 프로필 -->
-            {% if user.profile_image and user.profile_image.url %}
-                <img src="{{ user.profile_image.url }}" alt="프로필 이미지">
-            {% else %}
-                <img src="{% if user.profile_image %}{{ user.profile_image.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="프로필 이미지">
-            {% endif %}
-            <ul>
-                <p><a href="{% url 'home:main' %}">홈</a></p>
-                <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
-                <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
-                <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
-            </ul>
-            <p><a href="{% url 'api:logout' %}">Log out</a></p>
-        </div>
-
-        <!-- 메인 콘텐츠 영역 -->
-        <div style="flex-grow:1; padding:20px;">
-
-            <!-- 카테고리 탭 -->
-            <ul style="list-style:none; padding:0;">
-                <li style="display:inline; margin-right:10px;">
-                    <a href="?category=전체"{% if selected_category == '전체' %} style="font-weight:bold;"{% endif %}>전체</a>
-                </li>
-                {% for category in categories %}
-                    <li style="display:inline; margin-right:10px;">
-                        <a href="?category={{ category.name|urlencode }}"{% if selected_category == category.name %} style="font-weight:bold;"{% endif %}>
-                            {{ category.name }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-
-            <!-- 뱃지 개수 요약 -->
-            <p style="margin-top:20px;">
-                {{ request.user.nickname }} 님이 달성한 "{{ selected_category }}" 도전 뱃지 <strong>{{ badge_count }}</strong>개
-            </p>
-
-            <!-- 뱃지 리스트 -->
-            <div>
-                {% for badge in badges %}
-                    <div style="border:1px solid #ddd; padding:10px; margin:10px 0;">
-                        <div>
-                            <img src="{% static 'images/book-icon.png' %}" alt="뱃지 아이콘" width="40" height="40">
+    <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <!-- 상단: 프로필 + 메뉴 -->
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
                         </div>
-                        <div>
-                            <p>
-                                <strong>
-                                    <a href="{% url 'challenges:detail' badge.challenge.id %}" style="text-decoration: none; color: inherit;">
-                                        {{ badge.challenge.title }}
-                                    </a>
-                                </strong>
-                            </p>
-                            <p>{{ badge.challenge.start_date|date:"Y.m.d" }} - {{ badge.challenge.end_date|date:"Y.m.d" }}</p>
-                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
                     </div>
-                {% empty %}
-                    <p>획득한 뱃지가 없습니다.</p>
-                {% endfor %}
+
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
             </div>
 
-        </div>
+            <!-- 메인 콘텐츠 -->
+            <div class="challenge-content-wrap">
+                <!-- 뱃지 전체 컨테이너 -->
+                <div class="badge-container">
 
+                    <!-- 카테고리별 필터 탭 -->
+                    <div class="badge-btnBox">
+                        <button class="badge-btn {% if selected_category == '전체' %}active{% endif %}">전체</button>
+                        {% for category in categories %}
+                            <button class="badge-btn {% if selected_category == category.name %}active{% endif %}">
+                                {{ category.name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+
+                    <!-- 뱃지 타이틀 (개수 포함) -->
+                    <div class="badge-mainBox">
+                        <div class="badge-titleBox">
+                            <div class="badge-titleTxt" id="badgeTitleTxt">
+                                {{ request.user.nickname }} 님이 달성한 “{{ selected_category }}” 도전&nbsp;뱃지&nbsp;
+                            </div>
+                            <div class="badge-titleNumber" id="badgeCount">{{ badge_count }}</div>
+                            <div class="badge-titleTxt">&nbsp;개</div>
+                        </div>
+                    </div>
+
+                    <!-- 뱃지 리스트 렌더링 영역 -->
+                    <div class="badgelayout" id="badgeLayout"></div>
+
+                </div>
+
+
+            </div>
+        </div>
     </div>
 
 </body>

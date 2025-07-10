@@ -4,7 +4,7 @@ from .models import Challenge, Goal
 class ChallengeForm(forms.ModelForm):
     class Meta:
         model = Challenge
-        fields = ['title', 'category', 'image', 'start_date', 'end_date', 'is_public', 'frequency']
+        fields = ['title', 'category', 'image', 'start_date', 'end_date', 'is_public']
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
