@@ -97,14 +97,14 @@
                 <div class="category-box">
                   <div class="category-title">카테고리</div>
                   <div class="home-category-vertical-scroll">
-                    <!-- 각 카테고리 항목 -->
-                    <div class="home-category-item selected">학습 / 공부 <span class="home-category-count">15 Posts</span></div>
-                    <div class="home-category-item">커리어 / 직무 <span class="home-category-count">8 Posts</span></div>
-                    <div class="home-category-item">운동 / 건강 <span class="home-category-count">10 Posts</span></div>
-                    <div class="home-category-item">마음 / 루틴 <span class="home-category-count">5 Posts</span></div>
-                    <div class="home-category-item">정리 / 관리 <span class="home-category-count">7 Posts</span></div>
-                    <div class="home-category-item">취미 <span class="home-category-count">4 Posts</span></div>
-                    <div class="home-category-item">기타 <span class="home-category-count">2 Posts</span></div>
+                    <!-- 각 카테고리 항목 (포스트 수 제거됨) -->
+                    <div class="home-category-item selected">학습 / 공부</div>
+                    <div class="home-category-item">커리어 / 직무</div>
+                    <div class="home-category-item">운동 / 건강</div>
+                    <div class="home-category-item">마음 / 루틴</div>
+                    <div class="home-category-item">정리 / 관리</div>
+                    <div class="home-category-item">취미</div>
+                    <div class="home-category-item">기타</div>
                   </div>
                 </div>
               </div>
@@ -121,7 +121,7 @@
 
         </div>
 
-        <!-- 오른쪽: 추천 챌린지 -->``
+        <!-- 오른쪽: 추천 챌린지 -->
         <aside class="home-side-wrapper">
           <div class="home-sideChallengeTitle">{{ request.user.nickname }}님을 위한 추천 Challenges</div>
           <button class="home-suggestBtn">다시 추천받기</button>
@@ -132,6 +132,8 @@
 
     </div>
   </div>
+
+  <!-- JS 데이터 연동 -->
   <script>
     const myChallenges = JSON.parse('{{ my_challenges_json|escapejs }}');
     const communityPosts = JSON.parse('{{ popular_posts_json|escapejs }}');

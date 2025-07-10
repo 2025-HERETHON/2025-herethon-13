@@ -36,7 +36,7 @@ def serialize_challenge_for_js(challenge, user):
         'completedGoalContents': list(
             challenge.goals.filter(id__in=completed_goal_ids).values_list('content', flat=True)
         ),
-        'nextGoalContent': next_goal.content if next_goal else null,
+        'nextGoalContent': next_goal.content if next_goal else None,
     }
 
 # 로그인한 사용자 기준 list view

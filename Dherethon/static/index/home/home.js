@@ -1,3 +1,4 @@
+
 (function () {
   // ------ 이미지 스타일 함수 ------
   function makeIconStyle(imgDataUrl) {
@@ -262,14 +263,16 @@
         goalsHTML = goals.map(goal => `<div class="home-randomDetailGoals">${goal}</div>`).join('');
       }
 
+      const writerName = randomChallenge.user?.username || '알 수 없음';
       container.innerHTML = `
-        <div class="home-randomChallengeTitle">김정수님의 Challenge </div>
+         <div class="home-randomChallengeTitle">${writerName}님의 Challenge</div>
         <div class="home-randomCategory">${category}</div>
         <div class="home-randomChallengeTitle">${title}</div>
         <div class="home-randomDetailTitle">세부 목표</div>
         ${goalsHTML}
         <button class="home-randomAddBtn">
           <img class="home-plusImg" src="/static/assets/homePlus.svg" alt="추가" />
+
           도전 추가하기
         </button>
       `;
