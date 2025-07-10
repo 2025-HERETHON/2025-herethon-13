@@ -32,12 +32,14 @@ def serialize_challenge_for_js(challenge, user):
         'imgDataUrl': challenge.image.url if challenge.image else None,
         'startDate': challenge.start_date.strftime('%Y-%m-%d'),
         'endDate': challenge.end_date.strftime('%Y-%m-%d'),
-        'goals': list(goals.values_list('content', flat=True)),
+        'goals': list(goals.values_list('content', flat=True)),  # 그대로 유지
+        'goalIdMap': {goal.content: goal.id for goal in goals},  # 추가
         'completedGoalContents': list(
             challenge.goals.filter(id__in=completed_goal_ids).values_list('content', flat=True)
         ),
         'nextGoalContent': next_goal.content if next_goal else None,
     }
+
 
 # 로그인한 사용자 기준 list view
 @login_required
