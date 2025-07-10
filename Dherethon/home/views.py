@@ -12,12 +12,14 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from challenges.forms import ChallengeForm, GoalForm
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 @login_required
 def home_view(request):
     user = request.user
 
-    # --- 1. 로그인한 사용자의 도전 리스트 + 진행률 + 다음 세부목표
+    # 1. 내 도전들 (100% 완료 제외)
     my_challenges = Challenge.objects.filter(user=user, is_deleted=False)
     my_challenges_with_progress = []
 
@@ -27,11 +29,9 @@ def home_view(request):
         completed = GoalProgress.objects.filter(user=user, goal__in=goals, is_completed=True).count()
         progress = int((completed / total) * 100) if total > 0 else 0
 
-        # ✅ 진행률이 100%인 도전은 제외
         if progress >= 100:
             continue
 
-        # 아직 인증 안 된 세부목표 중 가장 빠른 것
         next_goal = goals.exclude(
             id__in=GoalProgress.objects.filter(user=user, is_completed=True).values_list('goal_id', flat=True)
         ).order_by('id').first()
@@ -39,41 +39,37 @@ def home_view(request):
         my_challenges_with_progress.append({
             'id': ch.id,
             'title': ch.title,
-            'progress': progress,
-            'next_goal': next_goal,
+            'category': ch.category.name if ch.category else "기타",
+            'goals': [next_goal.content] if next_goal else [],
+            'imgDataUrl': ch.image.url if ch.image else "",
+            'endDate': ch.end_date.isoformat() if ch.end_date else "",
         })
 
-    # --- 2. 인기 게시글 (좋아요 수 기준 상위 10개)
+    # 2. 인기 게시글
     popular_posts = Post.objects.annotate(
         like_count=Count('like')
     ).order_by('-like_count')[:3]
 
-    # --- 3. 추천 도전 + 세부목표 (랜덤으로 여러 개)
-    others_challenges = Challenge.objects.exclude(user=request.user).filter(is_public=True, goals__isnull=False, is_deleted=False).distinct()
-
-    recommended_challenges = []
-
-    if others_challenges.exists():
-        # 최대 3개까지만 랜덤 추출
-        selected_challenges = random.sample(list(others_challenges), min(1, others_challenges.count()))
-        for ch in selected_challenges:
-            recommended_challenges.append({
-                'challenge': ch,
-                'goals': ch.goals.all(),
-            })
+    popular_posts_serialized = []
+    for p in popular_posts:
+        popular_posts_serialized.append({
+            'id': p.id,
+            'content': p.content,
+            'like': p.like_count,
+            'liked': False,
+            'writer': p.user.username if p.user else '익명',
+            'challengeTitle': p.challenge.title if p.challenge else "",
+            'imgDataUrl': p.image.url if p.image else "",
+            'date': p.created_at.strftime('%Y.%m.%d %H:%M'),
+            'comments': [],  # 댓글 포함하고 싶다면 여기에 추가
+        })
 
     context = {
-        'my_challenges': my_challenges_with_progress,
-        'popular_posts': popular_posts,
-        'recommended_challenges': recommended_challenges,
+        'my_challenges_json': json.dumps(my_challenges_with_progress, cls=DjangoJSONEncoder, ensure_ascii=False),
+        'popular_posts_json': json.dumps(popular_posts_serialized, cls=DjangoJSONEncoder, ensure_ascii=False),
     }
 
-    return render(request, 'home/main.html', {
-        'my_challenges': my_challenges_with_progress,
-        'popular_posts': popular_posts,
-        'recommended_challenges': recommended_challenges,
-    })
-
+    return render(request, 'home/main.html', context)
 
 @login_required
 def get_random_recommendation(request):
@@ -206,16 +202,28 @@ def badge_list(request):
     selected_category = request.GET.get('category', '전체')
 
     if selected_category == '전체':
-        badges = Badge.objects.filter(user=user)
+        badges = Badge.objects.filter(user=user).select_related('challenge', 'category')
     else:
-        badges = Badge.objects.filter(user=user, category__name=selected_category)
+        badges = Badge.objects.filter(user=user, category__name=selected_category).select_related('challenge', 'category')
 
     categories = Category.objects.all()
     badge_count = badges.count()
+
+    # 👉 프론트 JS에서 쓰기 위한 JSON 데이터 생성
+    badge_list = []
+    for badge in badges:
+        badge_list.append({
+            'title': badge.challenge.title,
+            'startDate': badge.challenge.start_date.strftime('%Y.%m.%d'),
+            'endDate': badge.challenge.end_date.strftime('%Y.%m.%d'),
+            'category': badge.category.name,
+            'challengeId': badge.challenge.id
+        })
 
     return render(request, 'home/badge.html', {
         'badges': badges,
         'categories': categories,
         'selected_category': selected_category,
         'badge_count': badge_count,
+        'badges_json': json.dumps(badge_list),  # ← 💡 이거 추가됨
     })

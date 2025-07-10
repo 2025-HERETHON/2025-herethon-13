@@ -1,82 +1,90 @@
-// ====== 전역 상태 ======
+// 전역 상태
 let selectedCategory = "학습 / 공부";
 let selectedChallengeId = null;
 let selectedCertId = null;
+let certRecords = [];  // 전역으로 선언
 
+// 쿠키 가져오기 함수 (CSRF 토큰용)
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+console.log("챌린지 데이터:", challenges);
+
+// 렌더 함수
 window.renderPostAdd = function () {
   const main = document.querySelector('.main-content');
   const categories = ["학습 / 공부", "커리어 / 직무", "운동 / 건강", "마음 / 루틴", "정리 / 관리", "취미", "기타"];
-  const challenges = JSON.parse(localStorage.getItem('challenges') || '[]');
-  const certRecords = JSON.parse(localStorage.getItem('certRecords') || '[]');
 
-  const filteredChallenges = challenges.filter(ch => ch.category === selectedCategory);
-  const filteredCerts = certRecords.filter(cert =>
-    String(cert.challengeId) === String(selectedChallengeId)
-  );
+  // Django에서 넘긴 JSON 구조에 맞게 파싱
+  const challengesData = challenges.map(obj => ({
+    id: obj.id,
+    category: obj.category,
+    title: obj.title
+  }));
+
+  const filteredChallenges = challengesData.filter(ch => ch.category === selectedCategory);
+  const filteredCerts = certRecords.filter(cert => String(cert.challengeId) === String(selectedChallengeId));
 
   main.innerHTML = `
     <div class="post-add-flexbox">
-      <!-- 좌측: 카테고리/도전 -->
       <div class="post-add-left">
         <div class="post-add-title">게시할 인증 기록을 선택해주세요</div>
         <div class="post-add-cat-row">
-          ${categories.map(cat =>
-    `<button class="post-add-cat-btn${cat === selectedCategory ? ' selected' : ''}" data-cat="${cat}">${cat}</button>`
-  ).join("")}
+          ${categories.map(cat => `
+            <button class="post-add-cat-btn${cat === selectedCategory ? ' selected' : ''}" data-cat="${cat}">${cat}</button>
+          `).join("")}
         </div>
         <div class="post-add-challenge-row">
           <span class="post-add-label">도전 선택</span>
-          <select class="post-add-challenge-select" ${filteredChallenges.length === 0 ? "disabled" : ""}>
+          <select id="challenge-select" class="post-add-challenge-select" ${filteredChallenges.length === 0 ? "disabled" : ""}>
             <option value="">도전을 선택하세요</option>
-            ${filteredChallenges.map(ch =>
-    `<option value="${ch.id}" ${String(ch.id) === String(selectedChallengeId) ? "selected" : ""}>${ch.title}</option>`
-  ).join("")}
+            ${filteredChallenges.map(ch => `
+              <option value="${ch.id}" ${String(ch.id) === String(selectedChallengeId) ? "selected" : ""}>${ch.title}</option>
+            `).join("")}
           </select>
         </div>
       </div>
 
       <div class="post-add-divider"></div>
 
-      <!-- 우측: 인증글/게시버튼 -->
       <div class="post-add-right">
-         <button class="post-add-close-btn" id="postAddCloseBtn" title="닫기" aria-label="닫기">
-            <img src="../../assets/Cancel.svg" alt="닫기" />
-          </button>
+        <button class="post-add-close-btn" title="닫기" aria-label="닫기">
+          <img src="/static/assets/Cancel.svg" alt="닫기" />
+        </button>
         <div class="post-add-cert-list">
           ${!selectedChallengeId
-      ? `<div style="color:#aaa;padding:40px 0 0 0;">도전을 먼저 선택하세요.</div>`
-      : (filteredCerts.length === 0
-        ? `<div style="color:#aaa;padding:40px 0 0 0;">인증 기록이 없습니다.</div>`
-        : filteredCerts.map(cert => `
-                  <div class="challenge-record-card${String(cert.id) === String(selectedCertId) ? ' selected' : ''}" data-cert-id="${cert.id}">
-                    <div class="record-thumb" style="
-                      ${cert.imgDataUrl
-            ? `background:url('${cert.imgDataUrl}') center/cover no-repeat;`
-            : `background:#ededf1;`
-          }
-                      border-radius:10px;width:44px;height:44px;">
-                    </div>
-                    <div class="record-detail">
-                      <div class="record-date">${(cert.date || '').replace(/-/g, '.')}.</div>
-                      <div class="record-title">${cert.goal || ''}</div>
-                      <div class="record-content">
-                        <span class="record-content-title">${cert.title || ''}</span><br>
-                        <span class="record-content-body">${cert.content || ''}</span>
-                      </div>
+            ? `<div style="color:#aaa;padding:40px 0;">도전을 먼저 선택하세요.</div>`
+            : (filteredCerts.length === 0
+              ? `<div style="color:#aaa;padding:40px 0;">인증 기록이 없습니다.</div>`
+              : filteredCerts.map(cert => `
+                <div class="challenge-record-card${String(cert.id) === String(selectedCertId) ? ' selected' : ''}" data-cert-id="${cert.id}">
+                  <div class="record-thumb" style="${cert.image_url
+                    ? `background:url('${cert.image_url}') center/cover no-repeat;`
+                    : `background:#ededf1;`} border-radius:10px;width:44px;height:44px;">
+                  </div>
+                  <div class="record-detail">
+                    <div class="record-date">${cert.date || ''}</div>
+                    <div class="record-title">${cert.goalTitle || ''}</div>
+                    <div class="record-content">
+                      <span class="record-content-body">${cert.content || ''}</span>
                     </div>
                   </div>
-                `).join("")
-      )
-    }
+                </div>
+              `).join("")
+            )
+          }
         </div>
         <button class="post-add-submit-btn" ${!selectedCertId ? "disabled" : ""}>게시하기</button>
       </div>
     </div>
   `;
 
-  // ===== 이벤트 바인딩 =====
+  // === 이벤트 바인딩 ===
 
-  // 1. 카테고리 버튼
+  // 카테고리 버튼 클릭
   main.querySelectorAll('.post-add-cat-btn').forEach(btn => {
     btn.onclick = function () {
       selectedCategory = this.dataset.cat;
@@ -86,17 +94,25 @@ window.renderPostAdd = function () {
     };
   });
 
-  // 2. 도전 셀렉트
-  const challengeSelect = main.querySelector('.post-add-challenge-select');
-  if (challengeSelect && !challengeSelect.disabled) {
-    challengeSelect.onchange = function () {
+  // 도전 선택 변경
+  const challengeSelect = main.querySelector('#challenge-select');
+  if (challengeSelect) {
+    challengeSelect.addEventListener('change', function () {
       selectedChallengeId = this.value || null;
       selectedCertId = null;
-      window.renderPostAdd();
-    };
+
+      fetch(`/community/load_goal_progresses/?challenge_id=${selectedChallengeId}`)
+        .then(res => res.json())
+        .then(data => {
+          certRecords = data;
+          localStorage.setItem('certRecords', JSON.stringify(certRecords));
+          window.renderPostAdd();
+        })
+        .catch(() => alert("인증 기록을 불러오지 못했습니다."));
+    });
   }
 
-  // 3. 인증글 카드 선택
+  // 인증글 카드 선택
   main.querySelectorAll('.challenge-record-card').forEach(card => {
     card.onclick = function () {
       selectedCertId = this.dataset.certId;
@@ -104,36 +120,38 @@ window.renderPostAdd = function () {
     };
   });
 
-  // 4. 게시하기 버튼
+  // 게시하기 버튼 클릭
   const submitBtn = main.querySelector('.post-add-submit-btn');
   if (submitBtn) {
     submitBtn.onclick = function () {
       if (!selectedCertId) return;
       const cert = certRecords.find(c => String(c.id) === String(selectedCertId));
+      const challenge = challengesData.find(ch => String(ch.id) === String(selectedChallengeId));
       if (!cert) return;
-      const challenge = challenges.find(ch => String(ch.id) === String(selectedChallengeId));
 
-      let posts = JSON.parse(localStorage.getItem('communityPosts') || '[]');
-      posts.unshift({
-        id: Date.now(),
-        certId: cert.id, // ← 인증글과 연결하는 키!
-        category: selectedCategory,
-        challengeId: selectedChallengeId,
-        challengeTitle: challenge ? challenge.title : "",
-        title: cert.title || cert.goal || "",
-        content: cert.content,
-        date: cert.date,
-        badge: cert.title ? '뉴스 기사 번역 해석' : '',
-        imgDataUrl: cert.imgDataUrl || "",
-        like: 0,
-      });
-      localStorage.setItem('communityPosts', JSON.stringify(posts));
-      alert("게시글이 등록되었습니다!");
-      if (window.loadPage) window.loadPage('community');
+      fetch('/community/create/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: new URLSearchParams({
+          goal_progress: cert.progressId
+        })
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("게시 실패");
+          alert("게시글이 등록되었습니다!");
+          window.loadPage('community');
+        })
+        .catch(err => {
+          console.error(err);
+          alert("게시글 등록 중 오류가 발생했습니다.");
+        });
     };
   }
 
-  // 5. 닫기 버튼 (이전 페이지 있으면 복귀, 없으면 community)
+  // 닫기 버튼
   const closeBtn = main.querySelector('.post-add-close-btn');
   if (closeBtn) {
     closeBtn.onclick = function () {
@@ -145,10 +163,9 @@ window.renderPostAdd = function () {
       }
     };
   }
-
 };
 
-// 페이지 진입 시 자동 실행 (SPA)
+// 페이지 진입 시 자동 실행
 window.onload = function () {
   if (window.renderPostAdd) window.renderPostAdd();
 };

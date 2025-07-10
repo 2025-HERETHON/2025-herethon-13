@@ -1,58 +1,98 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티</title>
+  <link rel="stylesheet" href="{% static 'index/community/community.css' %}">
+  <link rel="stylesheet" href="{% static 'index/index.css' %}">
 </head>
 <body>
-    {% block content %}
-  <h2>🏡 커뮤니티</h2>
+  <div class="spa-bg">
+    <div class="app-root">
 
-        <nav>
-            <p><a href="{% url 'home:main' %}">홈</a></p>
-            <p><a href="{% url 'challenges:my_challenges' %}">나의 도전</a></p>
-            <p><a href="{% url 'community:post_list' %}">커뮤니티</a></p>
-            <p><a href="{% url 'home:badge_list' %}">뱃지</a></p>
-        </nav>
-        
-  <a href="{% url 'community:create_post' %}">➕ 인증 글 작성하기</a>
-  <hr>
-            <!-- 검색창 -->
-    <form method="get" action="{% url 'community:post_list' %}">
-      <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ query }}">
-      <button type="submit">검색</button>
-    </form>
+      <!-- ✅ 사이드바 -->
+      <div class="sideBar">
+        <div class="sideBar_topSection">
+          <div class="sideBar_profileBox">
+            <div class="sideBar_profileImg">
+              {% if user.profile_image and user.profile_image.url %}
+                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+              {% else %}
+                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+              {% endif %}
+            </div>
+            <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+          </div>
+          <div class="sideBar_menu">
+            <a href="{% url 'home:main' %}"><button class="sideBar_Box"><img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" /><span class="sideBar_text">홈</span></button></a>
+            <a href="{% url 'challenges:my_challenges' %}"><button class="sideBar_Box"><img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" /><span class="sideBar_text">나의 도전</span></button></a>
+            <a href="{% url 'community:post_list' %}"><button class="sideBar_Box active"><img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" /><span class="sideBar_text">커뮤니티</span></button></a>
+            <a href="{% url 'home:badge_list' %}"><button class="sideBar_Box"><img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" /><span class="sideBar_text">뱃지</span></button></a>
+          </div>
+        </div>
+        <form action="{% url 'api:logout' %}" method="post">
+          {% csrf_token %}
+          <button class="sideBar_logoutBox">
+            <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+            <span class="sideBar_logoutText">Log out</span>
+          </button>
+        </form>
+      </div>
 
-    <!-- 🔽 카테고리 필터 nav -->
-    <div style="margin: 10px 0;">
-      <a href="?category=전체{% if query %}&q={{ query }}{% endif %}"
-        {% if selected_category == '전체' %}style="font-weight:bold;"{% endif %}>
-        전체
-      </a>
-      {% for cat in categories %}
-        |
-        <a href="?category={{ cat.name }}{% if query %}&q={{ query }}{% endif %}"
-          {% if selected_category == cat.name %}style="font-weight:bold;"{% endif %}>
-          {{ cat.name }}
-        </a>
-      {% endfor %}
-    </div>
+      <!-- ✅ 메인 콘텐츠 -->
+      <div class="main-content">
 
-  <hr>
+        <!-- 🔍 상단 검색바 -->
+        <div class="header-bar">
+          <div class="search-bar">
+            <img class="search-icon" src="{% static 'assets/Search.svg' %}" alt="검색" />
+            <input class="search-input" type="text" placeholder="관심있는 도전기록을 검색해보세요" />
+            <button class="search-btn">검색</button>
+          </div>
+        </div>
 
-  {% for post in posts %}
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-      <p><strong>{{ post.user.nickname }}</strong>님의 인증글</p>
-      <p>{{ post.content|truncatechars:100 }}</p>
-      <p><strong>도전:</strong> {{ post.goal.challenge.title }}</p>
-      <p>❤️ {{ post.like_count }} / 💬 {{ post.comments.count }}</p>
-      <a href="{% url 'community:post_detail' post.id %}">[자세히 보기]</a>
-    </div>
-  {% empty %}
-    <p>아직 등록된 게시글이 없습니다.</p>
-  {% endfor %}
-{% endblock %}
+        <!-- 🧠 커뮤니티 메인 -->
+        <section class="community-main-section">
+          <div class="community-top-row">
+
+            <!-- 📚 카테고리 (JS 렌더링 대상) -->
+            <div class="category-box">
+              <div class="category-title">카테고리</div>
+              <div class="category-vertical-scroll">
+                <div class="category-item selected">전체 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">학습 / 공부 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">커리어 / 직무 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">운동 / 건강 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">마음 / 루틴 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">정리 / 관리 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">취미 <span class="category-count">0 Posts</span></div>
+                <div class="category-item">기타 <span class="category-count">0 Posts</span></div>
+              </div>
+            </div>
+
+            <!-- 🔥 인기 POST -->
+            <div class="popular-posts-box">
+              <div class="popular-posts-title">인기 POST</div>
+              <div class="popular-post-list"></div>
+            </div>
+          </div>
+
+          <!-- 📋 전체 게시글 리스트 -->
+          <div class="post-list-outer">
+            <div class="post-list-wrap"></div>
+          </div>
+        </section>
+
+        <!-- ➕ 게시글 작성 버튼 -->
+       <button class="post-add-btn">게시글 올리기</button>
+
+      </div> <!-- main-content 끝 -->
+    </div> <!-- app-root 끝 -->
+  </div> <!-- spa-bg 끝 -->
+
+  <!-- ✅ JS 렌더링 로직 삽입 -->
+  <script src="{% static 'index/community/community.js' %}"></script>
 </body>
 </html>
-

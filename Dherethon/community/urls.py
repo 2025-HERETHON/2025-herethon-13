@@ -10,5 +10,8 @@ urlpatterns = [
     path('<int:post_id>/comment/', add_comment, name='add_comment'),
     path('<int:post_id>/like/', toggle_like, name='toggle_like'),
     path('comment/<int:comment_id>/delete/', delete_comment, name='delete_comment'),
+    path('post/<int:post_id>/delete/', delete_post, name='delete_post'),
     path('load_goal_progresses/', load_goal_progresses, name='load_goal_progresses'),
+    path('api/posts/', post_list_json, name='post_list_json'),
+    
 ]

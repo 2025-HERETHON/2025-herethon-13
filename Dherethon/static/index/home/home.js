@@ -95,7 +95,8 @@
           <div class="home-cert-img" style="${certImgStyle}"></div>
           <div class="home-cert-category">${ch.category}</div>
           <div class="home-cert-title">${ch.title}</div>
-          <a href="#" class="home-cert-link">인증하러 가기 →</a>
+          <a href="{% url 'challenges:create_goal' challenge.id %}" class="home-cert-link">인증하러 가기 →</a>
+
         `;
       sideCards.appendChild(div);
 
@@ -268,7 +269,7 @@
         <div class="home-randomDetailTitle">세부 목표</div>
         ${goalsHTML}
         <button class="home-randomAddBtn">
-          <img class="home-plusImg" src="../assets/homePlus.svg" alt="추가" />
+          <img class="home-plusImg" src="/static/assets/homePlus.svg" alt="추가" />
           도전 추가하기
         </button>
       `;

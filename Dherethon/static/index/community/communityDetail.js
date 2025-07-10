@@ -1,6 +1,6 @@
-console.log("communityDetail.js loaded!");
 
 window.renderCommunityDetail = function(postId) {
+  
   // 1) 로컬스토리지에서 포스트 불러오기
   const posts = JSON.parse(localStorage.getItem('communityPosts') || '[]');
   const post = posts.find(p => String(p.id) === String(postId));
@@ -34,7 +34,7 @@ window.renderCommunityDetail = function(postId) {
       <div class="detail-info-block">
         <div class="detail-like-fixed">
           <div class="like like-button${post.liked ? ' liked' : ''}">
-            <img class="like-icon" src="${post.liked ? '/assets/heartfull.svg' : '/assets/heart.svg'}" alt="좋아요" />
+            <img class="like-icon" src="${post.liked ? '/static/assets/heartfull.svg' : '/static/assets/heart.svg'}" alt="좋아요" />
             <span class="like-count">${post.like}</span>
           </div>
           <div class="detail-meta-date">${post.date || ''}</div>
@@ -54,8 +54,9 @@ window.renderCommunityDetail = function(postId) {
     </div>
     <aside class="detail-comments">
       <button class="detail-close-btn" id="communityDetailCloseBtn" aria-label="닫기">
-        <img src="../../assets/Cancel.svg" alt="닫기" />
+        <img src="/static/assets/Cancel.svg" alt="닫기" />
       </button>
+      
       <div class="comment-list">
         ${(post.comments || []).map(c => `
           <div class="comment-item">
@@ -78,15 +79,11 @@ window.renderCommunityDetail = function(postId) {
   `;
 
   // 6) 닫기 이벤트
-  const closeBtn = container.querySelector('#communityDetailCloseBtn');
-  closeBtn.onclick = () => {
-    const { pageName, detailKey } = window.getPrevPage?.() || {};
-    if (pageName) {
-      window.loadPage(pageName, detailKey);
-    } else {
-      window.loadPage('community');
-    }
-  };
+// 6) 닫기 이벤트
+const closeBtn = container.querySelector('#communityDetailCloseBtn');
+closeBtn.onclick = () => {
+  window.location.href = "/community/";  // ← post_list URL로 이동
+};
 
   // 7) 좋아요 버튼
   const likeBtn = container.querySelector('.like-button');
@@ -148,4 +145,18 @@ window.renderCommunityDetail = function(postId) {
       window.loadPage('community');
     }
   };
+};
+document.addEventListener("DOMContentLoaded", () => {
+  if (typeof renderCommunityDetail === 'function') {
+    renderCommunityDetail(postId);
+  } else {
+    console.error("❌ renderCommunityDetail 함수 없음");
+  }
+});
+console.log("communityDetail.js loaded!");
+
+window.onload = function () {
+  if (typeof postId !== 'undefined') {
+    window.renderCommunityDetail(postId);
+  }
 };

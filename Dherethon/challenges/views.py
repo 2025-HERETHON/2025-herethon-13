@@ -12,29 +12,56 @@ from django.db.models.functions import TruncDate
 from django.utils.timezone import localdate
 from django.http import JsonResponse
 from django.utils.dateparse import parse_date
+from django.core.serializers import serialize
+from django.http import JsonResponse
+import json
+
+def serialize_challenge_for_js(challenge, user):
+    completed_goal_ids = GoalProgress.objects.filter(
+        user=user, goal__challenge=challenge, is_completed=True
+    ).values_list('goal_id', flat=True)
+
+    goals = challenge.goals.all().order_by('date', 'id')
+
+    next_goal = goals.exclude(id__in=completed_goal_ids).first()
+
+    return {
+        'id': challenge.id,
+        'title': challenge.title,
+        'category': challenge.category.name,
+        'imgDataUrl': challenge.image.url if challenge.image else None,
+        'startDate': challenge.start_date.strftime('%Y-%m-%d'),
+        'endDate': challenge.end_date.strftime('%Y-%m-%d'),
+        'goals': list(goals.values_list('content', flat=True)),
+        'completedGoalContents': list(
+            challenge.goals.filter(id__in=completed_goal_ids).values_list('content', flat=True)
+        ),
+        'nextGoalContent': next_goal.content if next_goal else null,
+    }
 
 # 로그인한 사용자 기준 list view
 @login_required
 def my_challenges(request):
     category_name = request.GET.get('category')
-    challenges = Challenge.objects.filter(user=request.user).select_related('category')
-
-    if category_name and category_name != '전체':
-        challenges = challenges.filter(category__name=category_name)
-
     today = localdate()
 
-    for challenge in challenges:
+    # 전체 도전 + 목표 사전 로딩
+    challenge_all = Challenge.objects.filter(user=request.user).select_related('category').prefetch_related('goals')
+    badge_challenge_ids = set(Badge.objects.filter(user=request.user).values_list('challenge_id', flat=True))
+
+    # 먼저 필요한 정보 모두 계산
+    for challenge in challenge_all:
         # 진행률 계산
         total = challenge.goals.count()
         completed = GoalProgress.objects.filter(
             user=request.user, goal__challenge=challenge, is_completed=True
         ).count()
-        challenge.progress_percent = int(completed / total * 100) if total > 0 else 0
-        challenge.badge_received = Badge.objects.filter(user=request.user, challenge=challenge).exists()
+        challenge.progress_percent = int((completed / total) * 100) if total > 0 else 0
 
-                
-        # 다음 세부 목표
+        # 뱃지 수령 여부
+        challenge.badge_received = challenge.id in badge_challenge_ids
+
+        # 다음 목표
         challenge.next_goal = Goal.objects.filter(
             challenge=challenge
         ).exclude(
@@ -42,37 +69,54 @@ def my_challenges(request):
             goalprogress__is_completed=True
         ).order_by('date', 'id').first()
 
-        # D-Day 계산
+        # D-day 계산
         end_date = challenge.end_date.date() if hasattr(challenge.end_date, "date") else challenge.end_date
         d_day = (end_date - today).days
         challenge.d_day_value = abs(d_day)
         challenge.d_day_prefix = "D-" if d_day >= 0 else "D+"
 
-    # 인증 필요 목표 목록
-    incomplete_challenges = []
-    awarded_challenge_ids = Badge.objects.filter(user=request.user).values_list('challenge_id', flat=True)
+    # 뱃지 수령 도전 제외
+    challenges = [c for c in challenge_all if not c.badge_received]
 
-    valid_challenges = Challenge.objects.annotate(
-        start_date_only=TruncDate('start_date'),
-        end_date_only=TruncDate('end_date')
-    ).filter(
-        user=request.user,
-        start_date_only__lte=today,
-        end_date_only__gte=today
-    ).exclude(
-        id__in=awarded_challenge_ids  # 뱃지 받은 도전 제외
-    ).order_by('end_date')
+    # 카테고리 필터링 (먼저 도전들에서 선택한 것만 유지)
+    if category_name and category_name != '전체':
+        challenges = [c for c in challenges if c.category.name == category_name]
 
-    incomplete_challenges = list(valid_challenges[:3])
+    # 오늘 날짜 인증 가능한 도전들 (기간 내 + 뱃지 안 받은 것)
+    def to_date(dt):
+        return dt.date() if hasattr(dt, 'date') else dt
 
-    category_list = ['전체'] + list(Category.objects.values_list('name', flat=True))
+    incomplete_challenges = [
+        c for c in challenges 
+        if to_date(c.start_date) <= today <= to_date(c.end_date)
+    ][:3]
+
+    # 카테고리 리스트
+    category_list = list(Category.objects.exclude(name='전체').values_list('name', flat=True))
+    challenge_dicts = [serialize_challenge_for_js(c, request.user) for c in challenges]
+
+    # 인증 완료된 목표들을 JS에 넘기기 위한 cert_records 생성
+    goal_progresses = GoalProgress.objects.filter(
+        user=request.user, is_completed=True
+    ).select_related('goal', 'goal__challenge')
+
+    cert_records = [
+        {
+            'goal': gp.goal.content,
+            'challengeId': gp.goal.challenge.id,
+        }
+        for gp in goal_progresses
+    ]
 
     return render(request, 'challenges/challenge.html', {
         'challenges': challenges,
         'incomplete_challenges': incomplete_challenges,
         'selected_category': category_name or '전체',
         'category_list': category_list,
+        'challenges_json': json.dumps(challenge_dicts, ensure_ascii=False),
+        'cert_records_json': json.dumps(cert_records, ensure_ascii=False), 
     })
+
 
 @login_required
 def detail(request, pk):
@@ -301,8 +345,7 @@ def delete_challenge(request, pk):
         return redirect('challenges:detail', pk=pk)
 
     if request.method == 'POST':
-        challenge.is_deleted = True  # ❌ 물리삭제 대신 논리삭제
-        challenge.save()
+        challenge.delete()
         return redirect('challenges:my_challenges')  # 삭제 후 이동할 곳 설정
     
     return redirect('challenges:detail', pk=pk)
@@ -357,7 +400,6 @@ def goal_records_by_date(request, challenge_id):
         })
 
     return JsonResponse({'records': result})
-
 
 @login_required
 def copy_challenge(request, challenge_id):
