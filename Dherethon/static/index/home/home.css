@@ -766,3 +766,20 @@ body {
     margin-top: 0 !important;
 }
 
+/* 추천 챌린지 내용(상단 영역) */
+.home-side-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* 아래쪽으로 늘려서, 하단 버튼과 여백이 충분히 남게 함 */
+}
+
+/* 하단 버튼/로고 영역 */
+.home-side-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 80px;
+    margin-top: 465px;
+    margin-bottom: 20px; /* 바닥 여백(피그마 스타일) */
+}

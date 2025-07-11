@@ -10,4 +10,6 @@ urlpatterns = [
     path('copy/<int:challenge_id>/', copy_challenge, name='copy_challenge'),
     path('save_copy/', save_copied_challenge, name='save_copied_challenge'),
     path('edit_challenge/<int:challenge_id>/', edit_challenge, name='edit_challenge'),
+    path('tree/', tree_view, name='tree'),
+    path('get_random_recommendation/', get_random_recommendation, name='get_random_recommendation'),
 ]

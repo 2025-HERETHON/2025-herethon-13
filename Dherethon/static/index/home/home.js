@@ -170,17 +170,12 @@
   }
 
   // ------ 카테고리별 글 수 업데이트 ------
+  // main.html의 끝에 이미 포함시킨 상태라고 가정
   function updateCategoryCounts() {
-    const posts = JSON.parse(localStorage.getItem('communityPosts') || '[]');
+    const categoryPostCounts = JSON.parse(document.getElementById('category-post-counts').textContent);
     document.querySelectorAll('.home-category-item').forEach(item => {
-      const textNode = Array.from(item.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-      const catName = textNode
-        ? textNode.textContent.trim()
-        : item.textContent.replace(/\d+\s*Posts?/, '').trim();
-
-      let filtered = posts.filter(p => p.category === catName);
-
-      const count = filtered.length;
+      const catName = item.childNodes[0].nodeValue.trim();
+      const count = categoryPostCounts[catName] || 0;
 
       let span = item.querySelector('.home-category-count');
       if (!span) {
@@ -191,6 +186,9 @@
       span.textContent = `${count} Posts`;
     });
   }
+  // 최초 실행
+  updateCategoryCounts();
+
 
   // ------ 진행률 계산 ------
   function calcProgress(ch) {
@@ -278,16 +276,17 @@
     `;
   }
 
-  // --- 추천 다시받기 버튼 ---
-  document.querySelectorAll('.home-suggestBtn').forEach(btn => {
-    btn.onclick = function () {
-      fetch('/home/get_random_recommendation/')
+  // .home-suggestBtn이 클릭될 때마다 항상 동작 (동적으로 생겨도 OK)
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('home-suggestBtn')) {
+      fetch('/get_random_recommendation/')
         .then(res => res.json())
         .then(data => {
           renderRandomChallenge(data.recommendedChallenge);
         });
     }
   });
+
 
   // --- 도전 추가하기 버튼 이벤트 ---
   document.addEventListener('click', function (e) {
@@ -300,6 +299,16 @@
       window.location.href = `/copy/${currentRecommendedChallenge.id}/`;
     }
   });
+  // "내 Dotry 보기" 버튼 클릭 시 tree 페이지로 이동
+  const goTreeBtn = document.getElementById('goTree');
+  if (goTreeBtn) {
+    goTreeBtn.addEventListener('click', function() {
+      // data-url 속성 값으로 이동
+      const url = this.dataset.url || '/home/tree/';
+      window.location.href = url;
+    });
+  }
+
 
   // ------ 실행 ------
   renderLists();

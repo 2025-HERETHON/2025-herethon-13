@@ -92,8 +92,16 @@ def home_view(request):
             }
         }
 
+    # --- 카테고리별 커뮤니티 포스트 개수 집계 추가 ---
+    category_post_counts = {}
+    categories = Category.objects.all()
+    for cat in categories:
+        # 카테고리별로 커뮤니티 포스트 개수 집계
+        category_post_counts[cat.name] = Post.objects.filter(challenge__category=cat).count()
+
     context = {
         'category_list': CATEGORY_LIST,
+        'category_post_counts': json.dumps(category_post_counts, ensure_ascii=False),
         'my_challenges_json': json.dumps(my_challenges_with_progress, cls=DjangoJSONEncoder, ensure_ascii=False),
         'popular_posts_json': json.dumps(popular_posts_serialized, cls=DjangoJSONEncoder, ensure_ascii=False),
         'recommended_challenge_json': json.dumps(recommended_challenge_dict, ensure_ascii=False),
@@ -303,4 +311,23 @@ def badge_list(request):
         'selected_category': selected_category,
         'badge_count': badge_count,
         'badges_json': json.dumps(badge_list),  # ← 💡 이거 추가됨
+    })
+
+@login_required
+def tree_view(request):
+    user = request.user
+    badges = Badge.objects.filter(user=user).select_related('challenge', 'category')
+    badge_list = [
+        {
+            'title': badge.challenge.title,
+            'startDate': badge.challenge.start_date.strftime('%Y.%m.%d'),
+            'endDate': badge.challenge.end_date.strftime('%Y.%m.%d'),
+            'category': badge.category.name,
+            'challengeId': badge.challenge.id
+        }
+        for badge in badges
+    ]
+    # badges_json을 context로 내려줌
+    return render(request, 'home/tree.html', {
+        'badges_json': json.dumps(badge_list, ensure_ascii=False)
     })
