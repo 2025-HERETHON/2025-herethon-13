@@ -56,6 +56,7 @@ body {
     display: flex;
     align-items: center;
     padding-left: 8px;
+    cursor: pointer;  
 }
 
 .dropdown {
@@ -130,6 +131,157 @@ body {
     display: block;
 }
 
+
+.challenge-list-header {
+    display: flex;
+    width: 100%;
+    color: #666;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    line-height: normal;
+    margin: 22px 32px 20px 32px;
+    align-items: center;
+}
+
+.challenge-list-header>div:first-child {
+    width: 210px;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-list-header>div:nth-child(2) {
+    width: 128px;
+    text-align: left;
+    padding: 0;
+    margin-left: 30px;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-list-header>div:last-child {
+    width: 290px;
+    text-align: left;
+    padding: 0;
+    margin-left: 46px;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-row {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.challenge-info {
+  width: 210px;
+  min-width: 210px;
+  max-width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 11px;                     /* 사진-텍스트 간격 */
+  margin-left: 0;                /* 좌측 정렬 */
+  padding-left: 0;
+  background: transparent;
+}
+
+.challenge-icon {
+  width: 38px;                   /* 이미지 크기 확대 */
+  height: 38px;
+  border-radius: 8px;            /* 살짝 둥글게 (원형 원하면 50%) */
+  background: #e9e9e9;
+  margin: 0;
+  object-fit: cover;
+}
+
+.challenge-info-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;                      /* 도전명/카테고리 간격 */
+}
+
+.challenge-date {
+  font-size: 11px;
+  color: #757575;
+  font-weight: 600;
+  margin-bottom: 1px;
+  margin-top: 0;
+}
+
+.challenge-title {
+  font-size: 15px;               /* 도전명 크기 살짝 키움 */
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+/* [수정] 진행률 부분 정렬 & 넓이 조정 */
+.challenge-progress {
+  width: 128px;
+  min-width: 128px;
+  max-width: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-left: 36px;             /* 헤더 기준 맞춤 */
+  padding: 0;
+  justify-content: center;       /* 세로 가운데 */
+}
+
+.progress-percent {
+  font-size: 13px;
+  font-weight: 600;
+  color: #605BFF;
+  margin-bottom: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* 진행바 배경/포그레스 스타일 미세조정 */
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #605BFF;
+  border-radius: 3px;
+  transition: width 0.2s;
+}
+
+/* [수정] 다음 세부 목표 영역 */
+.challenge-goal {
+  width: 290px;
+  min-width: 210px;
+  max-width: 290px;
+  height: 32px;
+  background: #FFF8E1;
+  border-radius: 6px;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #222;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  margin-left: 46px;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
 .home-listBox {
     width: 760px;
     height: 250px;
@@ -184,6 +336,7 @@ body {
     font-weight: 600;
     line-height: 15px;
     border: none;
+    cursor: pointer;
 }
 
 .home-suggestBox {
@@ -279,6 +432,7 @@ body {
     margin-top: 39px;
     margin-left: 137px;
     margin-bottom: 13px;
+    cursor: pointer;
 }
 
 .home-middleBox {
@@ -397,6 +551,7 @@ body {
 
 .home-bottomRight {
     width: 550px;
+    height: 244px;
     flex-shrink: 0;
 }
 
@@ -447,6 +602,25 @@ body {
     margin-left: 8px;
 }
 
+.category-box {
+    width: 243.857px;
+    min-width: 180px;
+    max-width: 320px;
+    height: 244px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 22px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+.category-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #000;
+}
+
 .category-vertical-scroll {
     display: flex;
     flex-direction: column;
@@ -478,7 +652,8 @@ body {
 
 
 .home-popular-posts-box {
-    width: 482px;
+    width: 490px;
+    height: 244px;
     background: #fff;
     border-radius: 10px;
     padding: 10px 20px;
@@ -589,4 +764,22 @@ body {
     height: 918px;
     flex-shrink: 0;
     margin-top: 0 !important;
+}
+
+/* 추천 챌린지 내용(상단 영역) */
+.home-side-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* 아래쪽으로 늘려서, 하단 버튼과 여백이 충분히 남게 함 */
+}
+
+/* 하단 버튼/로고 영역 */
+.home-side-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 80px;
+    margin-top: 465px;
+    margin-bottom: 20px; /* 바닥 여백(피그마 스타일) */
 }

@@ -472,7 +472,7 @@ def edit_challenge(request, challenge_id):
         'form': form,
         'challenge': challenge,
         'goals': goals,
-        'mode': 'edit',  # ✅ 템플릿에서 폼 action 설정을 위해 필요
+        'mode': 'edit',  # 템플릿에서 폼 action 설정을 위해 필요
     })
 def goal_record_dates(request, challenge_id):
     year = request.GET.get("year")
@@ -497,3 +497,4 @@ def goal_record_dates(request, challenge_id):
     cert_dates = sorted(set(date.strftime("%Y-%m-%d") for date in records))
 
     return JsonResponse({"cert_dates": cert_dates})
+
