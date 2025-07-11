@@ -80,6 +80,7 @@ body {
 .like-icon {
   width: 20px;
   transition: transform 0.2s ease;
+  
 }
 
 .detail-meta-date {

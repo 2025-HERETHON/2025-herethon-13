@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <link rel="stylesheet" href="{% static 'index/index.css' %}">  
+    <link rel="stylesheet" href="{% static 'index/index.css' %}">  
     <link rel="stylesheet" href="{% static 'index/community/communityDetail.css' %}">
-    <title>Document</title>
+    <title>{{ post.goal.content }} - 인증글 상세보기</title>
 </head>
 <body>
       
-  <div class="spa-bg">
+<div class="spa-bg">
         <div class="app-root">
             <!-- 사이드바 -->
             <div class="sideBar">
@@ -71,30 +71,18 @@
   </div>    
 
 
-<!-- ✅ 메인 컨텐츠는 JS가 채울 예정 -->
-<div class="main-content">
 
-</div>
 
-<script>
-  const postId = "{{ post.id }}";
-  const postData = JSON.parse(`{{ post_data|escapejs }}`);
-
-  // localStorage에 없으면 저장
-  const posts = JSON.parse(localStorage.getItem('communityPosts') || '[]');
-  if (!posts.find(p => String(p.id) === String(postData.id))) {
-    posts.push(postData);
-    localStorage.setItem('communityPosts', JSON.stringify(posts));
-  }
-
-  // ✅ 화면에 상세 내용을 렌더링
-  if (typeof renderCommunityDetail === 'function') {
-    renderCommunityDetail(postId);
-  } else {
-    console.error("renderCommunityDetail 함수가 로딩되지 않았습니다.");
-  }
-</script>
 <script src="{% static 'index/community/communityDetail.js' %}"></script>
+<script>
+  const postId = "{{ post.id }}";  // 이거 하나면 충분함!
+    const heartSvg = "{% static 'assets/heart.svg' %}";
+  const heartFullSvg = "{% static 'assets/heartfull.svg' %}";
+</script>
+
+
+
+
 </body>
 
 
