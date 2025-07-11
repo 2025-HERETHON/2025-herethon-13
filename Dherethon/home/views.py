@@ -38,7 +38,7 @@ def home_view(request):
         ).order_by('id').first()
 
         my_challenges_with_progress.append({
-            'id': ch.id,
+            'id': ch.id, # 챌린지 아이디
             'title': ch.title,
             'category': ch.category.name if ch.category else "기타",
             'goals': list(goals.values_list('content', flat=True)),
