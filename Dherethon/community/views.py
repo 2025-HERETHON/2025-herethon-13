@@ -138,11 +138,10 @@ def create_post(request):
 
 @login_required
 def delete_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
-    if post.user != request.user:
-        return HttpResponseForbidden("본인 글만 삭제할 수 있습니다.")
+    post = get_object_or_404(Post, id=post_id, user=request.user)  # 🔥 사용자 조건 추가!
     post.delete()
     return redirect('community:post_list')
+
 
 @login_required
 def post_list(request):
@@ -157,8 +156,6 @@ def post_list(request):
     if category and category != '전체':
         posts = posts.filter(goal__challenge__category__name=category)
 
-    # 카테고리 목록을 보내줌 (전체 포함)
-    from challenges.models import Category
     categories = Category.objects.all()
     for cat in categories:
         cat.post_count = Post.objects.filter(goal__challenge__category=cat).count()
@@ -173,22 +170,20 @@ def post_list(request):
         'popular_posts': popular_posts,
     })
 
-
 @login_required
-def post_detail(request, post_id):
+def post_detail_json(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    comments = Comment.objects.filter(post=post).select_related('user')
-    comment_count = comments.count()
-    liked = Like.objects.filter(post=post, user=request.user).exists()
-    like_count = Like.objects.filter(post=post).count()
+    comments = Comment.objects.filter(post=post).select_related('user').order_by('created_at')
 
-    # ✅ JS 렌더링용 직렬화 데이터 구성
+    like_count = Like.objects.filter(post=post).count()
+    liked = Like.objects.filter(post=post, user=request.user).exists()
+
     post_data = {
         'id': post.id,
-        'title': f"{post.goal.content} 인증글",  # title이 모델엔 없어서 goal 기반으로 생성
+
         'content': post.content,
         'writer': post.user.nickname if hasattr(post.user, 'nickname') else post.user.username,
-        'category': post.challenge.category.name if post.challenge and post.challenge.category else '',
+        'isMine': request.user == post.user, 
         'challengeTitle': post.challenge.title if post.challenge else '',
         'detailGoal': post.goal.content if post.goal else '',
         'date': localtime(post.created_at).strftime("%Y.%m.%d %H:%M"),
@@ -204,41 +199,81 @@ def post_detail(request, post_id):
         ]
     }
 
+    return JsonResponse(post_data)
+
+
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    comments = Comment.objects.filter(post=post)
+    
+    post_data = {
+        'id': post.id,
+
+        'content': post.content,
+        'writer': post.user.nickname,
+     
+        'challengeTitle': post.goal.challenge.title if post.goal else '',
+        'detailGoal': post.goal.content if post.goal else '',
+        'date': post.created_at.strftime('%Y.%m.%d %H:%M'),
+        'comments': [
+            {
+                'writer': comment.user.nickname,
+                'date': comment.created_at.strftime('%Y.%m.%d %H:%M'),
+                'text': comment.content
+            } for comment in comments
+        ]
+    }
+
     return render(request, 'community/post_detail.html', {
         'post': post,
-        'comments': comments,
-        'comment_count': comment_count,
-        'like_count': like_count,
-        'liked': liked,
-        'post_data': mark_safe(json.dumps(post_data, cls=DjangoJSONEncoder)) 
+        'post_data': json.dumps(post_data, cls=DjangoJSONEncoder)
     })
 
 @login_required
 def add_comment(request, post_id):
     if request.method == 'POST':
         content = request.POST.get('content')
+        if not content:
+            return JsonResponse({'error': '내용이 비어 있습니다.'}, status=400)
+
         post = get_object_or_404(Post, id=post_id)
-        Comment.objects.create(user=request.user, post=post, content=content)
-    return redirect('community:post_detail', post_id=post_id)
+        comment = Comment.objects.create(user=request.user, post=post, content=content)
+
+        return JsonResponse({
+            'message': '댓글이 등록되었습니다.',
+            'writer': getattr(request.user, 'nickname', request.user.username),
+            'date': localtime(comment.created_at).strftime("%Y.%m.%d %H:%M"),
+            'text': escape(comment.content)
+        })
+
+    return JsonResponse({'error': '잘못된 요청'}, status=400)
+
 
 @login_required
 def toggle_like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     like, created = Like.objects.get_or_create(user=request.user, post=post)
+
     if not created:
         like.delete()
-    return redirect('community:post_detail', post_id=post_id)
+
+    like_count = Like.objects.filter(post=post).count()
+
+    return JsonResponse({
+        'liked': created,
+        'like_count': like_count
+    })
 
 @login_required
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-
     if comment.user != request.user:
         return HttpResponseForbidden("본인 댓글만 삭제할 수 있습니다.")
 
-    post_id = comment.post.id
     comment.delete()
-    return redirect('community:post_detail', post_id=post_id)
+    return JsonResponse({'message': '댓글 삭제 완료'})
+
+
 
 @login_required
 def load_goal_progresses(request):
