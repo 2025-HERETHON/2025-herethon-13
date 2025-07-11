@@ -140,25 +140,34 @@ body {
 }
 
 .category-challenge-block .challenge-title {
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  letter-spacing: -0.2px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    letter-spacing: -0.2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100px;
 }
 
+
 .detail-row .badge {
-  background: rgba(255, 222, 91, 0.18);
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: 15px;
-  border-radius: 6px;
-  padding: 4px 14px;
+    background: rgba(255, 222, 91, 0.18);
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    border-radius: 6px;
+    padding: 4px 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
 }
 
 .community-detail-title {

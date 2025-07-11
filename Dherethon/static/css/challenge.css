@@ -1,3 +1,5 @@
+myChallenge.css
+
 body {
   margin: 0;
   background: #F0F0F0;
@@ -176,10 +178,14 @@ body {
 }
 
 .challenge-title {
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 13px;
-  font-weight: 600;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100px;
 }
 
 .challenge-progress {
@@ -220,21 +226,25 @@ body {
 }
 
 .challenge-goal {
-  width: 290px;
-  min-width: 290px;
-  max-width: 290px;
-  height: 30px;
-  border-radius: 5px;
-  background: rgba(255, 222, 91, 0.18);
-  padding-left: 10px;
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 13px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  margin: 0;
-  margin-left: 46px;
+    width: 250px;
+    min-width: 250px;
+    max-width: 290px;
+    height: 30px;
+    border-radius: 5px;
+    background: rgba(255, 222, 91, 0.18);
+    padding-left: 10px;
+    padding-right: 10px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    margin-left: 46px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .challenge-add-btn {
@@ -330,15 +340,19 @@ body {
 }
 
 .cert-title {
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  margin-left: 22px;
-  margin-bottom: 0;
-  text-align: left;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-left: 22px;
+    margin-bottom: 0;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 180px;
 }
 
 .cert-link {

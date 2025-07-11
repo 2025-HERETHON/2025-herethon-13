@@ -213,7 +213,7 @@
         window.recommendedChallenge = {{ recommended_challenge_json|default:"null"|safe }};
         window.loginUserNickname = "{{ loginUserNickname|escapejs }}";
     </script>
-    <script src="{% static 'index/index.js' %}"></script>
     <script src="{% static 'index/home/home.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
 </body>
 </html>

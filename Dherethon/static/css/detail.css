@@ -83,11 +83,14 @@ body {
 }
 
 .challenge-detail-title {
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 7px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 7px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .challenge-detail-date {
@@ -250,18 +253,21 @@ body {
 
 .goal-text-box,
 .goal-text-box.inprogress {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  border-radius: 6px;
-  padding: 7px 16px;
-  color: #000;
-  font-family: "Segoe UI";
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 15px;
-  box-sizing: border-box;
-  height: 30px;
+   flex: 1;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    padding: 7px 16px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 15px;
+    box-sizing: border-box;
+    height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .goal-text-box {

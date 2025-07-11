@@ -117,4 +117,11 @@ document.querySelectorAll(".sideBar_Box").forEach(btn => {
 // --- 최초 진입시 home 페이지 로드 ---
 window.addEventListener("DOMContentLoaded", () => {
   loadPage("home");
+
+  const savedImage = localStorage.getItem('profileImage');
+  if (savedImage) {
+    document.querySelectorAll(".sideBar_profileImg").forEach(img => {
+      img.src = savedImage;
+    });
+  }
 });
