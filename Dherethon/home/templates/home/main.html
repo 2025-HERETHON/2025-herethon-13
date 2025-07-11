@@ -78,6 +78,7 @@
                                     <img class="home-Polygon" src="{% static 'assets/homePolygon.svg' %}" alt="▼">
                                 </button>
                                 <ul class="dropdown-content">
+                                    <li data-category="전체">전체</li>  <!-- ✅ 이 줄을 추가! -->
                                     {% for category in category_list %}
                                         <li data-category="{{ category }}">{{ category }}</li>
                                     {% endfor %}

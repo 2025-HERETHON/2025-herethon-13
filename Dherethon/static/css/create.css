@@ -356,6 +356,8 @@ body {
   list-style: none;
   padding: 0;
   margin: 10px 0 24px 0;
+  max-height: 600px; 
+  overflow-y: auto;  
 }
 
 .goal-list li {

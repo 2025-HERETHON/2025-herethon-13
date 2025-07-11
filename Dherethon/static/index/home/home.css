@@ -37,6 +37,26 @@ body {
 
 .home-plusImg {
     width: 24px;
+    margin-right: 5px;
+}
+
+.home-suggestContainer {
+    width: 274px;
+    max-height: 550px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+.home-suggestContainer::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-suggestContainer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
 }
 
 .home-addChallengeBtn {
