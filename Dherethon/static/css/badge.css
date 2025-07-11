@@ -165,3 +165,41 @@
     justify-content: center;
     margin-top: 15px;
 }
+
+.goTreeBtn {
+    position: relative;
+    top: 870px;
+    right: 350px;
+    width: 187px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 3px solid #605BFF;
+    background: #FFF;
+    z-index: 1000;
+    color: #605BFF;
+    font-family: "Segoe UI";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.logoName {
+    width: 101px;
+    height: 32px;
+}
+
+.badge-logo {
+    position: relative;
+    top: 810px;
+    right: 250px;
+    width: 187px;
+    width: 126px;
+    height: 93px;
+    z-index: 999;
+}

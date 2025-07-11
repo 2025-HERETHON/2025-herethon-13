@@ -47,7 +47,7 @@
                         <a href="{% url 'home:badge_list' %}">
                             <button class="sideBar_Box">
                                 <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
-                                <span class="sideBar_text">방지</span>
+                                <span class="sideBar_text">뱃지</span>
                             </button>
                         </a>
                     </div>
@@ -152,7 +152,10 @@
                                     <div class="category-title">카테고리</div>
                                     <div class="home-category-vertical-scroll">
                                         {% for category in category_list %}
-                                            <div class="home-category-item {% if forloop.first %}selected{% endif %}">{{ category }}</div>
+                                            <div class="home-category-item {% if forloop.first %}selected{% endif %}">
+                                                {{ category }}
+                                                <span class="home-category-count"></span>
+                                            </div>
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -171,22 +174,31 @@
 
                 <!-- 추천 챌린지 -->
                 <aside class="home-side-wrapper">
-                    <!-- 로그인한 유저 닉네임 -->
-                    <div class="home-sideChallengeTitle">{{ loginUserNickname }}님을 위한 추천 Challenges</div>
-
-                    <button class="home-suggestBtn">다시 추천받기</button>
-
-                    <div class="home-suggestBox">
-                        <!-- 추천 챌린지 작성자 닉네임 명시 -->
-                        <div>추천 챌린지 작성자: {{ recommendedUserNickname|default:"알 수 없음" }}님</div>
-                        <!-- JS가 렌더링하는 나머지 추천 챌린지 내용은 여기서 진행 -->
+                    <!-- 상단: 추천 챌린지 내용 -->
+                    <div class="home-side-content">
+                        <div class="home-sideChallengeTitle">{{ loginUserNickname }}님을 위한 추천 Challenges</div>
+                        <button class="home-suggestBtn">다시 추천받기</button>
+                        <div class="home-suggestBox">
+                            <div>추천 챌린지 작성자: {{ recommendedUserNickname|default:"알 수 없음" }}님</div>
+                            <!-- JS가 렌더링하는 나머지 추천 챌린지 내용은 여기서 진행 -->
+                        </div>
+                        <!-- 뱃지 리스트 영역도 여기 위에 둠 -->
+                        <div class="badgelayout" id="badgeLayout"></div>
                     </div>
+
                 </aside>
+
+
             </div>
 
+
         </div>
+
     </div>
-  </div>
+
+    <script id="category-post-counts" type="application/json">
+        {{ category_post_counts|safe }}
+    </script>
 
     <!-- 데이터 주입 및 스크립트 -->
     <script>

@@ -4,24 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1512, initial-scale=1.0" />
-    <title>뱃지</title>
-    <link rel="stylesheet" href="{% static 'css/badge.css' %}">
+    <title>홈</title>
+    <link rel="stylesheet" href="{% static 'css/tree.css' %}">
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
-    <script>
-        const USER_NICKNAME = "{{ request.user.nickname }}";
-        const SELECTED_CATEGORY = "{{ selected_category }}";
-        const BADGE_LIST = JSON.parse(`{{ badges_json|escapejs }}`);
-    </script>
-
-    <script src="{% static 'js/badge.js' %}"></script>
-    <script src="{% static 'js/index.js' %}"></script>
 </head>
 <body>
+    <script>
+        const STATIC_PREFIX = "{% static 'assets/' %}";
+    </script>
+
     <div class="spa-bg">
         <div class="app-root">
             <!-- 사이드바 -->
             <div class="sideBar">
-                <!-- 상단: 프로필 + 메뉴 -->
                 <div class="sideBar_topSection">
                     <div class="sideBar_profileBox">
                         <div class="sideBar_profileImg">
@@ -71,44 +66,30 @@
                 </form>
             </div>
 
-            <!-- 메인 콘텐츠 -->
-            <div class="challenge-content-wrap">
-                <!-- 뱃지 전체 컨테이너 -->
-                <div class="badge-container">
-
-                    <!-- 카테고리별 필터 탭 -->
-                    <div class="badge-btnBox">
-                        <button class="badge-btn {% if selected_category == '전체' %}active{% endif %}">전체</button>
-                        {% for category in categories %}
-                            <button class="badge-btn {% if selected_category == category.name %}active{% endif %}">
-                                {{ category.name }}
-                            </button>
-                        {% endfor %}
-                    </div>
-
-                    <!-- 뱃지 타이틀 (개수 포함) -->
-                    <div class="badge-mainBox">
-                        <div class="badge-titleBox">
-                            <div class="badge-titleTxt" id="badgeTitleTxt">
-                                {{ request.user.nickname }} 님이 달성한 “{{ selected_category }}” 도전&nbsp;뱃지&nbsp;
-                            </div>
-                            <div class="badge-titleNumber" id="badgeCount">{{ badge_count }}</div>
-                            <div class="badge-titleTxt">&nbsp;개</div>
-                        </div>
-                    </div>
-                <!-- 뱃지 리스트 렌더링 영역 -->
-                <div class="badgelayout" id="badgeLayout"></div>
-                <img src="{% static 'assets/logo.svg' %}" class="badge-logo">
-                <button id="goTree" class="goTreeBtn" data-url="{% url 'home:tree' %}">내 <img class="logoName" src="{% static 'assets/logoName.svg' %}" />보기</button>
-
-
+            <div class="tree-box">
+                <button class="tree-close-btn" id="treeCloseBtn" aria-label="닫기">
+                    <img src="{% static 'assets/Cancel.svg' %}" alt="닫기" style="width:28px; height:28px; pointer-events:none;" />
+                </button>
+                <div class="tree-container"></div>
+                <div class="tree-nav">
+                    <button id="prevBtn">&lt;</button>
+                    <span id="pageIndicator"> 0 / 1</span>
+                    <button id="nextBtn">&gt;</button>
                 </div>
-
-
-
             </div>
+
         </div>
     </div>
+
+    <script>
+        const badgeList = JSON.parse(`{{ badges_json|escapejs }}`);
+        const BADGE_LIST_URL = "{% url 'home:badge_list' %}";
+        // 아래 코드 추가: 페이지 진입 시 localStorage에 바로 저장
+        localStorage.setItem('badgeList', JSON.stringify(badgeList));
+    </script>
+
+    <script src="{% static 'js/index.js' %}"></script>
+    <script src="{% static 'js/tree.js' %}"></script>
 
 </body>
 </html>
