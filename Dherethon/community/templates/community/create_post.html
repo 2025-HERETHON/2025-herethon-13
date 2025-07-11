@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>인증글 작성</title>
+   <link rel="stylesheet" href="{% static 'index/community/postAdd.css' %}">
+  <link rel="stylesheet" href="{% static 'index/index.css' %}">
+</head>
+<body>
+  <div class="spa-bg">
+    <div class="app-root">
+
+      <!-- ✅ 사이드바 -->
+      <div class="sideBar">
+        <div class="sideBar_topSection">
+          <div class="sideBar_profileBox">
+            <div class="sideBar_profileImg">
+              {% if user.profile_image and user.profile_image.url %}
+                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+              {% else %}
+                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+              {% endif %}
+            </div>
+            <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+          </div>
+          <div class="sideBar_menu">
+            <a href="{% url 'home:main' %}"><button class="sideBar_Box"><img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" /><span class="sideBar_text">홈</span></button></a>
+            <a href="{% url 'challenges:my_challenges' %}"><button class="sideBar_Box"><img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" /><span class="sideBar_text">나의 도전</span></button></a>
+            <a href="{% url 'community:post_list' %}"><button class="sideBar_Box active"><img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" /><span class="sideBar_text">커뮤니티</span></button></a>
+            <a href="{% url 'home:badge_list' %}"><button class="sideBar_Box"><img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" /><span class="sideBar_text">뱃지</span></button></a>
+          </div>
+        </div>
+        <form action="{% url 'api:logout' %}" method="post">
+          {% csrf_token %}
+          <button class="sideBar_logoutBox">
+            <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+            <span class="sideBar_logoutText">Log out</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- ✅ 메인 콘텐츠 -->
+      <div class="main-content">
+
+      </div> <!-- main-content 끝 -->
+    </div> <!-- app-root 끝 -->
+  </div> <!-- spa-bg 끝 -->
+
+  <!-- Django에서 넘겨준 데이터를 JS에서 활용할 수 있게 삽입 -->
+<script>
+  window.challengesRaw = `{{ challengesRaw|safe }}`;
+  window.goalProgressesRaw = `{{ goalProgressesRaw|safe }}`;
+</script>
+
+<script src="{% static 'index/community/postAdd.js' %}"></script>
+ 
+</body>
+</html>

@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>나의 도전</title>
+    <link rel="stylesheet" href="{% static 'css/challenge.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+    <script src="{% static 'js/challenge.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+</head>
+<body>
+    <script>
+        const challengeData = JSON.parse('{{ challenges_json|escapejs }}');
+        const certRecordData = JSON.parse('{{ cert_records_json|escapejs }}');  // 인증 데이터 추가
+
+        localStorage.setItem("challenges", JSON.stringify(challengeData));
+        localStorage.setItem("certRecords", JSON.stringify(certRecordData));  // 인증 데이터 저장
+    </script>
+
+
+    <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
+                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+                    </div>
+
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 메인 콘텐츠 -->
+            <div class="challenge-main">
+                <div class="challenge-header">
+                    <h2>{{ request.user.nickname }} 님의 Challenges</h2>
+                    <div class="challenge-tabs">
+                        <button class="tab{% if selected_category == '전체' %} active{% endif %}">전체</button>
+                        {% for name in category_list %}
+                            <button class="tab{% if selected_category == name %} active{% endif %}">{{ name }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- 리스트 헤더(도전리스트/진행률/다음 세부 목표) -->
+                <div class="challenge-list-header">
+                    <div>도전리스트</div>
+                    <div>진행률</div>
+                    <div>다음 세부 목표</div>
+                </div>
+
+                <!-- 도전 리스트 -->
+                <div class="challenge-list">
+                    {% for challenge in challenges %}
+                            <div class="challenge-row">
+                                <div class="challenge-info">
+                                    <div class="challenge-icon"
+                                        {% if challenge.image %}
+                                            style="background-image: url('{{ challenge.image.url }}'); background-size: cover;"
+                                        {% endif %}>
+                                    </div>
+                                    <div class="challenge-info-texts">
+                                        <div class="challenge-date">
+                                            {{ challenge.d_day_prefix }}{{ challenge.d_day_value }} {{ challenge.category.name }}
+                                        </div>
+                                        <div class="challenge-title">
+                                            <a href="{% url 'challenges:detail' challenge.id %}">{{ challenge.title }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="challenge-progress">
+                                    <span class="progress-percent">{{ challenge.progress_percent }}%</span>
+                                    <div class="progress-bar-bg">
+                                        <div class="progress-bar" style="width: {{ challenge.progress_percent }}%"></div>
+                                    </div>
+                                </div>
+                                <div class="challenge-goal">
+                                    {% if challenge.next_goal %}
+                                        {{ challenge.next_goal.content }}
+                                    {% else %}
+                                        다음 세부 목표 없음
+                                    {% endif %}
+                                </div>
+                            </div>
+                    {% empty %}
+                        <p style="padding: 20px;">참여 중인 도전이 없습니다.</p>
+                    {% endfor %}
+                </div>
+
+                <button id="addChallengeBtn" class="challenge-add-btn">도전 추가하기</button>
+            </div>
+
+            <!-- 사이드카드 -->
+            <div class="challenge-side-cards-wrapper">
+                <div class="challenge-side-cards">
+                    {% for challenge in incomplete_challenges %}
+                        <div class="cert-card">
+                            {% if challenge.image %}
+                                <div class="cert-img"
+                                    style="background-image: url('{{ challenge.image.url }}'); background-size: cover;">
+                                </div>
+                            {% else %}
+                                <div class="cert-img" style="background-color: #eee;">
+                                    <!-- 기본 이미지가 있다면 여기에 <img src="{% static 'assets/default.svg' %}"> 추가 가능 -->
+                                </div>
+                            {% endif %}
+                            <div class="cert-category">{{ challenge.category.name }}</div>
+                            <div class="cert-title">{{ challenge.title }}</div>
+                            <a href="{% url 'challenges:detail' challenge.id %}" class="cert-link">인증하러 가기 →</a>
+                        </div>
+                    {% empty %}
+                        <div style="padding:20px;color:#aaa;">오늘 인증할 도전이 없습니다.</div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.renderLists) renderLists();
+        });
+    </script>
+</body>
+</html>

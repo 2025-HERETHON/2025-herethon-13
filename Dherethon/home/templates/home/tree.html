@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>홈</title>
+    <link rel="stylesheet" href="{% static 'css/tree.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <script>
+        const STATIC_PREFIX = "{% static 'assets/' %}";
+    </script>
+
+    <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
+                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+                    </div>
+
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="tree-box">
+                <button class="tree-close-btn" id="treeCloseBtn" aria-label="닫기">
+                    <img src="{% static 'assets/Cancel.svg' %}" alt="닫기" style="width:28px; height:28px; pointer-events:none;" />
+                </button>
+                <div class="tree-container"></div>
+                <div class="tree-nav">
+                    <button id="prevBtn">&lt;</button>
+                    <span id="pageIndicator"> 0 / 1</span>
+                    <button id="nextBtn">&gt;</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const badgeList = JSON.parse(`{{ badges_json|escapejs }}`);
+        const BADGE_LIST_URL = "{% url 'home:badge_list' %}";
+        // 아래 코드 추가: 페이지 진입 시 localStorage에 바로 저장
+        localStorage.setItem('badgeList', JSON.stringify(badgeList));
+    </script>
+
+    <script src="{% static 'js/index.js' %}"></script>
+    <script src="{% static 'js/tree.js' %}"></script>
+
+</body>
+</html>
