@@ -51,7 +51,6 @@
       row.style.display = 'flex'; // 꼭 필요함
       row.style.alignItems = 'center';
       row.style.padding = '12px 24px';
-      row.style.borderBottom = '1px solid #eee';
       row.style.backgroundColor = '#fff';
 
       row.innerHTML = `
@@ -268,7 +267,9 @@
       <div class="home-randomCategory">${category}</div>
       <div class="home-randomChallengeTitle">${title}</div>
       <div class="home-randomDetailTitle">세부 목표</div>
+      <div class="home-suggestContainer">
       ${goalsHTML}
+      </div>
       <button class="home-randomAddBtn">
         <img class="home-plusImg" src="/static/assets/homePlus.svg" alt="추가" />
         도전 추가하기
