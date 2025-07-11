@@ -1,0 +1,203 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>나의 도전</title>
+    <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <script>
+        window.challengeData = {
+            id: "{{ challenge.id }}",
+            title: "{{ challenge.title|escapejs }}",
+            category: "{{ challenge.category.name|escapejs }}",
+            startDate: "{{ challenge.start_date|date:'Y-m-d' }}",
+            endDate: "{{ challenge.end_date|date:'Y-m-d' }}",
+            dPlus: "{{ challenge.d_plus }}",
+            dDayPrefix: "{{ challenge.d_day_prefix }}",
+            dDayValue: "{{ challenge.d_day_value }}",
+            isPublic: {{ challenge.is_public|yesno:"true,false" }},
+            imageUrl: "{% if challenge.image %}{{ challenge.image.url }}{% endif %}",
+            progress: {{ progress }},
+            completedCount: {{ completed_count }},
+            totalGoals: {{ total_goals }},
+            completedGoals: [{% for g in completed_goals %}"{{ g.content|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+            ongoingGoals: [{% for g in ongoing_goals %}"{{ g.content|escapejs }}"{% if not forloop.last %}, {% endif %}{% endfor %}],
+            badgeReceived: {{ badge_received|yesno:"true,false" }},
+        };
+    </script>
+
+    <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
+                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+                    </div>
+
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
+            </div>
+
+    
+            <div class="challenge-detail-outer">
+                <button type="button" class="global-close-btn" id="globalCloseBtn" aria-label="닫기">
+                    <img src="{% static 'assets/Cancel.svg' %}" alt="닫기" width="28" height="28" />
+                </button>
+
+                <div class="challenge-detail-layout">
+                    <!-- 왼쪽: 도전 상세 정보 -->
+                    <section class="challenge-detail-left">
+                        <div class="challenge-detail-header">
+                            <div class="challenge-detail-thumb"></div>
+                            <div class="challenge-detail-info">
+                                <div class="challenge-detail-category"></div>
+                                <div class="challenge-detail-title"></div>
+                                <div class="challenge-detail-date"></div>
+                                <div class="challenge-detail-dday"></div>
+                                <div class="challenge-detail-dday"></div>
+                                <div class="challenge-detail-public"></div>
+                            </div>
+                        </div>
+
+                        <div class="challenge-detail-progress-box">
+                            <div class="challenge-detail-progress-label"></div>
+                            <div class="progress-bar-bg">
+                                <div id="progressBar"></div>
+                            </div>
+                        </div>
+
+                        <div class="challenge-detail-goals-row">
+                            <div class="goals-block">
+                                <span class="completed">완료한 세부 목표</span>
+                                <div class="goalBox">
+                                    <ul id="completedGoalList"></ul>
+                                </div>
+                            </div>
+                            <div class="goals-block">
+                                <span class="inprogress">진행할 세부 목표</span>
+                                <div class="goalBox">
+                                    <ul id="inprogressGoalList"></ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% if not badge_received %}
+                        <div class="challenge-detail-btns">
+                            <button class="challenge-btn challenge-detail-edit-btn" id="editBtn">수정하기</button>
+                            <button class="challenge-btn challenge-detail-delete-btn" id="deleteBtn">삭제하기</button>
+                        </div>
+                        {% endif %}
+                    </section>
+
+                    <div class="challenge-detail-divider"></div>
+
+                    <!-- 오른쪽: 달력 + 인증기록 카드 -->
+                    <section class="challenge-detail-right">
+                        <div class="challenge-records-card-bg">
+                            <div class="challenge-records-header-bar">인증 기록</div>
+                            <div class="challenge-records-calendar" id="calendar">
+                                <div class="calendar">
+                                    <div class="calendar-header">
+                                        <button class="calendar-prev-btn" aria-label="이전 달">&lt;</button>
+                                        <span id="calendarYearMonth">2025 07</span>
+                                        <button class="calendar-next-btn" aria-label="다음 달">&gt;</button>
+                                    </div>
+                                    <div class="calendar-grid" id="calendarGrid"></div>
+                                </div>
+                            </div>
+                            <div class="challenge-records-list" id="recordList"></div>
+                            {% if not badge_received %}
+                                <button class="challenge-btn challenge-detail-cert-btn" id="certBtn">인증하기</button>
+                            {% endif %}
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- 도전 삭제 모달 -->
+            <div id="deleteModal" class="modal-overlay" style="display:none;">
+                <div class="modal-content delete-modal-content">
+                    <div class="delete-modal-head">
+                        <span class="modal-challenge-category" id="modalCategory">학습 / 공부</span>
+                        <span class="modal-challenge-title" id="modalTitle">챌린지 제목</span>
+                    </div>
+                    <div class="delete-modal-message">
+                        <b>이 도전을 삭제하시겠습니까?</b>
+                    </div>
+                    <div class="modal-btn-row">
+                        <button class="modal-btn modal-btn-confirm" id="modalDeleteYes">예</button>
+                        <button class="modal-btn modal-btn-cancel" id="modalDeleteNo">아니요</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 도전 완료 뱃지 모달 -->
+            <div id="badgeModal" class="modal-overlay" style="display:none;">
+                <div class="modal-content delete-modal-content">
+                    <div class="delete-modal-head">
+                        <span class="modal-challenge-category" id="badgeModalCategory">학습 / 공부</span>
+                        <span class="modal-challenge-title" id="badgeModalTitle">챌린지 제목</span>
+                    </div>
+                    <div class="delete-modal-message">
+                        <b>모든 세부 목표를 완료했어요!<br>도전 완료 뱃지를 받을까요?</b>
+                    </div>
+                    <div class="modal-btn-row">
+                        <button class="modal-btn modal-btn-confirm" id="badgeModalYes">예</button>
+                        <button class="modal-btn modal-btn-cancel" id="badgeModalNo">아니요</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{% static 'js/detail.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+</body>
+</html>

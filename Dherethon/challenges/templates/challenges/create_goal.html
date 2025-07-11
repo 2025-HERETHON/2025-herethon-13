@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>나의 도전</title>
+    <link rel="stylesheet" href="{% static 'css/create_goal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <div class="spa-bg">        
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
+                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+                    </div>
+
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 인증글 작성 영역 -->
+            <div class="cert-add-container">
+            <button class="cert-close-btn" id="certAddCloseBtn" aria-label="닫기">
+                <img src="{% static 'assets/Cancel.svg' %}" alt="닫기" />
+            </button>
+
+            <!-- 헤더 -->
+            <div class="cert-add-header">
+                <span class="cert-add-category">{{ challenge.category.name }}</span>
+                <span class="cert-add-title">{{ challenge.title }}</span>
+            </div>
+
+            <!-- 인증글 작성 폼 -->
+            <form method="POST" enctype="multipart/form-data" class="cert-add-form-2col">
+                {% csrf_token %}
+
+                <div class="cert-row">
+                <!-- 세부 목표 선택 -->
+                <div class="cert-col">
+                    <label for="certAddGoal">세부 목표</label>
+                    <select id="certAddGoal" name="goal" required>
+                    <option value="">-- 세부 목표 선택 --</option>
+                    {% for g in all_goals %}
+                        <option value="{{ g.id }}" {% if record and record.goal.id == g.id %}selected{% endif %}>{{ g.content }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 날짜 -->
+                <div class="cert-col">
+                    <label for="certAddDate">날짜</label>
+                    <input type="date" id="certAddDate" name="date" value="{{ record.date|date:'Y-m-d' }}">
+                </div>
+                </div>
+
+                <div class="cert-row cert-row--middle">
+                <!-- 이미지 업로드 -->
+                <div class="cert-col">
+                    <label class="cert-add-img-label">인증 이미지</label>
+                    <label class="cert-add-img-upload-box" for="certAddImg" id="certAddImgLabel">
+                    <input type="file" id="certAddImg" name="image" accept="image/*" style="display:none;" />
+                    <div id="certAddImgPreviewArea" class="cert-add-img-preview-area {% if record and record.image %}uploaded{% endif %}">
+                        <!-- 업로드 아이콘 (기본 표시) -->
+                        <img src="{% static 'assets/gallery-add.svg' %}" id="certAddImgIcon" class="cert-add-img-upload-icon" style="{% if record and record.image %}display: none;{% endif %}"/>
+
+                        <!-- 실제 미리보기 이미지 -->
+                        <img
+                            src="{% if record and record.image %}{{ record.image.url }}{% endif %}"
+                            class="real-preview"
+                            style="{% if not record or not record.image %}display: none;{% endif %}"
+                        />
+                    </div>
+                    </label>
+                </div>
+
+                <!-- 제목/내용 -->
+                <div class="cert-col">
+                    <label for="certAddInputTitle">제목</label>
+                    <input type="text" id="certAddInputTitle" name="title" placeholder="제목을 입력하세요." value="{{ record.title|default_if_none:'' }}">
+
+                    <label for="certAddContent" class="cert-add-content-label">내용</label>
+                    <textarea id="certAddContent" name="content" placeholder="내용을 입력하세요.">{{ record.content|default_if_none:'' }}</textarea>
+
+                    <!-- 선택 메모 필드가 있으면 여기 추가 가능 -->
+                </div>
+                </div>
+
+                <div class="cert-add-btn-wrap">
+                <button type="submit" class="cert-add-submit-btn">
+                    {% if record %}수정하기{% else %}등록하기{% endif %}
+                </button>
+                </div>
+            </form>
+            </div>
+
+        </div>
+    </div>
+            
+    <!-- 함수 정의 파일 로드 -->
+    <script src="{% static 'js/create_goal.js' %}"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+    <!-- ✅ 수정모드일 경우, record 정보를 localStorage에 저장 -->
+    {% if record %}
+    <script>
+    const tempRecord = {
+        id: {{ record.id }},
+        title: "{{ record.title|escapejs }}",
+        content: "{{ record.content|escapejs }}",
+        date: "{{ record.date|date:'Y-m-d' }}",
+        goal: "{{ record.goal.content|escapejs }}",
+        challengeId: {{ challenge.id }},
+        challengeTitle: "{{ challenge.title|escapejs }}",
+        challengeCategory: "{{ challenge.category.name|escapejs }}",
+        imgDataUrl: "{{ record.image.url|default:''|escapejs }}"
+    };
+
+        const certRecords = JSON.parse(localStorage.getItem('certRecords') || '[]');
+        const idx = certRecords.findIndex(r => String(r.id) === String(tempRecord.id));
+        if (idx !== -1) {
+            certRecords[idx] = tempRecord;
+        } else {
+            certRecords.push(tempRecord);
+        }
+        localStorage.setItem('certRecords', JSON.stringify(certRecords));
+        </script>
+        {% endif %}
+
+        <script>
+        const updatedChallenge = {{ challenge_json|safe }};
+        let challenges = JSON.parse(localStorage.getItem('challenges') || '[]');
+        const idx = challenges.findIndex(c => String(c.id) === String(updatedChallenge.id));
+        if (idx !== -1) {
+            challenges[idx] = updatedChallenge;
+        } else {
+            challenges.push(updatedChallenge);
+        }
+        localStorage.setItem('challenges', JSON.stringify(challenges));
+        </script>
+        
+        <!-- 호출 -->
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            {% if record %}
+            renderCertAdd({{ record.id }});  // 수정 모드
+            {% else %}
+            renderCertAdd({{ challenge.id }});  // 생성 모드
+            {% endif %}
+        });
+        </script>
+
+
+</body>
+</html>

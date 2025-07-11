@@ -1,0 +1,167 @@
+.badge-container {
+    position: absolute;
+    display: flex;
+    z-index: 0;
+}
+
+.badge-mainBox {
+    width: 1139px;
+    height: 845px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #FFF;
+    margin-left: 42px;
+    margin-top: 105px;
+    display: flex;
+    position: absolute;
+    left: 0px;
+    z-index: 1;
+}
+
+.badge-btnBox {
+    position: absolute;
+    left: 50px;
+    margin-top: 39px;
+    width: 1139px;
+    height: 66px;
+    display: flex;
+}
+
+.badge-btn {
+    width: 123px;
+    height: 66px;
+    flex-shrink: 0;
+    border-radius: 10px 10px 0px 0px;
+    background: #FFF;
+    color: #767676;
+    font-family: "Segoe UI";
+    font-size: 19px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    border: none;
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .1s;
+}
+
+.badge-btn.active {
+    background: #605BFF;
+    color: #fff;
+}
+
+.badge-titleBox {
+    width: 1139px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: 10px 10px 0px 0px;
+    background: #605BFF;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.badge-titleTxt {
+    color: #FFF;
+    font-family: "Segoe UI";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.badge-titleNumber {
+    color: #FFDE5B;
+    font-family: "Segoe UI";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+/*뱃지*/
+.badgelayout {
+    margin-top: 230px;
+    margin-left: 55px;
+    height: 720px;
+    width: 1140px;
+    z-index: 3;
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.badgelayout::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.badgelayout::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.badge-bigBox {
+    width: 530px;
+    display: flex;
+    position: relative;
+    margin-right: 25px;
+    margin-bottom: 25px;
+    height: 169px;
+}
+
+
+.badgeBox {
+    width: 490px;
+    height: 169px;
+    border-radius: 10px;
+    border: 1px solid rgba(117, 117, 117, 0.50);
+    background: #FFF;
+    z-index: 4;
+    margin-left: 45px;
+}
+
+.studyBadge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+}
+
+.badgeyellowBox {
+    width: 490px;
+    height: 60px;
+    flex-shrink: 0;
+    background: rgba(255, 222, 91, 0.18);
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.badgePeriodBox {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+}
