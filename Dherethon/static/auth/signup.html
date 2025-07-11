@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>signUp</title>
+    <link rel="stylesheet" href="signup.css" />
+</head>
+
+<body>
+    <div class="spa-bg">
+        <div class="app-root">
+            <div class="container">
+
+                <!--이메일 입력-->
+                <div class="mainTxt">이메일 주소</div>
+                <div class="subBox">
+                    <input id="mail" class="mainInput" placeholder="이메일을 입력하세요." />
+                    <button class="duBtn"> 중복 확인</button>
+                </div>
+
+                <!--닉네임 입력-->
+                <div class="mainTxt">닉네임</div>
+                <div class="subBox">
+                    <input id="name" class="mainInput" placeholder="닉네임을 입력하세요." />
+                    <button class="duBtn"> 중복 확인</button>
+                </div>
+
+                <!--프로필 사진 업로드-->
+                <div class="mainTxt">프로필 사진</div>
+                <label class="uploadBtn" for="picBtn"> 사진 업로드 </label>
+                <input id="picBtn" type="file" onchange="readURL(this);">
+                <img id="preview" src="../assets/previewImg.svg" alt="프로필 사진" />
+
+                <!--비밀번호 입력-->
+                <div class="mainTxt">비밀번호</div>
+                <div class="subBox">
+                    <input type="password" id="pw" class="mainInput" placeholder="비밀번호를 입력하세요." />
+                </div>
+
+                <!--비밀번호확인 입력-->
+                <div class="mainTxt">비밀번호 확인</div>
+                <div class="subBox">
+                    <input id="conPw" class="mainInput" placeholder="비밀번호를 입력하세요." />
+                </div>
+                <div id="confirm"></div>
+
+                <!--카테고리 버튼-->
+                <div class="mainTxt">관심 있는 카테고리</div>
+                <div class="category-btn-group">
+                    <button class="category-btn selected">학습 / 공부</button>
+                    <button class="category-btn">커리어 / 직무</button>
+                    <button class="category-btn">운동 / 건강</button>
+                    <button class="category-btn">마음 / 루틴</button>
+                    <button class="category-btn">정리 / 관리</button>
+                    <button class="category-btn">취미</button>
+                    <button class="category-btn">기타</button>
+                </div>
+
+                <!--회원가입 버튼-->
+                <button id="joinBtn">회원가입</button>
+            </div>
+        </div>
+    </div>
+    <script src="signup.js"></script>
+</body>
+
+</html>

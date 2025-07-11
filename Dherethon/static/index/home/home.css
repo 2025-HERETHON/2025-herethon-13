@@ -1,0 +1,805 @@
+body {
+    margin: 0;
+    background: #F0F0F0;
+}
+
+.home-topBox {
+    position: relative;
+    width: 768px;
+    height: 348px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: #FFF;
+    margin-top: 0px;
+    margin-left: 40px;
+    margin-right: 32px;
+    padding-top: 18px;
+}
+
+.home-titleBox {
+    height: 30px;
+    width: 768px;
+    display: flex;
+    align-items: center;
+}
+
+.home-challengeTitle {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-left: 32px;
+    width: 152px;
+
+}
+
+.home-plusImg {
+    width: 24px;
+    margin-right: 5px;
+}
+
+.home-suggestContainer {
+    width: 274px;
+    max-height: 550px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+
+.home-suggestContainer::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-suggestContainer::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.home-addChallengeBtn {
+    width: 112px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #605BFF;
+    margin-left: 7px;
+    border: none;
+    color: #FFF;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    cursor: pointer;  
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    display: flex;
+    margin-left: 328px;
+}
+
+.home-Polygon {
+    width: 10px;
+    position: absolute;
+    right: 12px;
+}
+
+.dropbtn {
+    background-color: #605BFF;
+    color: white;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 112px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    padding-left: 13px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    background-color: white;
+    min-width: 160px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    z-index: 1000;
+    list-style: none;
+    padding: 8px 0;
+    max-height: 150px;
+    overflow-y: auto;
+
+}
+
+.dropdown-content::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.dropdown-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.dropdown-content li {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.dropdown-content li:hover {
+    background-color: #f2f2f2;
+}
+
+.dropdown.active .dropdown-content {
+    display: block;
+}
+
+
+.challenge-list-header {
+    display: flex;
+    width: 100%;
+    color: #666;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-weight: 600;
+    line-height: normal;
+    margin: 22px 32px 20px 32px;
+    align-items: center;
+}
+
+.challenge-list-header>div:first-child {
+    width: 210px;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-list-header>div:nth-child(2) {
+    width: 128px;
+    text-align: left;
+    padding: 0;
+    margin-left: 30px;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-list-header>div:last-child {
+    width: 290px;
+    text-align: left;
+    padding: 0;
+    margin-left: 46px;
+    font-size: 13px;
+    font-family: "Segoe UI";
+    font-weight: 600;
+}
+
+.challenge-row {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.challenge-info {
+  width: 210px;
+  min-width: 210px;
+  max-width: 210px;
+  display: flex;
+  align-items: center;
+  gap: 11px;                     /* 사진-텍스트 간격 */
+  margin-left: 0;                /* 좌측 정렬 */
+  padding-left: 0;
+  background: transparent;
+}
+
+.challenge-icon {
+  width: 38px;                   /* 이미지 크기 확대 */
+  height: 38px;
+  border-radius: 8px;            /* 살짝 둥글게 (원형 원하면 50%) */
+  background: #e9e9e9;
+  margin: 0;
+  object-fit: cover;
+}
+
+.challenge-info-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;                      /* 도전명/카테고리 간격 */
+}
+
+.challenge-date {
+  font-size: 11px;
+  color: #757575;
+  font-weight: 600;
+  margin-bottom: 1px;
+  margin-top: 0;
+}
+
+.challenge-title {
+  font-size: 15px;               /* 도전명 크기 살짝 키움 */
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+/* [수정] 진행률 부분 정렬 & 넓이 조정 */
+.challenge-progress {
+  width: 128px;
+  min-width: 128px;
+  max-width: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-left: 36px;             /* 헤더 기준 맞춤 */
+  padding: 0;
+  justify-content: center;       /* 세로 가운데 */
+}
+
+.progress-percent {
+  font-size: 13px;
+  font-weight: 600;
+  color: #605BFF;
+  margin-bottom: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+/* 진행바 배경/포그레스 스타일 미세조정 */
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #605BFF;
+  border-radius: 3px;
+  transition: width 0.2s;
+}
+
+/* [수정] 다음 세부 목표 영역 */
+.challenge-goal {
+  width: 290px;
+  min-width: 210px;
+  max-width: 290px;
+  height: 32px;
+  background: #FFF8E1;
+  border-radius: 6px;
+  padding-left: 18px;
+  font-size: 13px;
+  color: #222;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  margin-left: 46px;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+.home-listBox {
+    width: 760px;
+    height: 250px;
+    background-color: transparent;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.home-listBox::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-listBox::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.home-side-wrapper {
+    background: #F7F7F7;
+    border-radius: 10px;
+    width: 322px;
+    height: 918px;
+    margin-top: 32px;
+    margin-right: 58px;
+}
+
+.home-sideChallengeTitle {
+    color: #1B1B1B;
+    font-family: "Segoe UI";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-left: 22px;
+    margin-top: 20px;
+}
+
+.home-suggestBtn {
+    width: 112px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #605BFF;
+    margin-top: 7px;
+    margin-left: 25px;
+    color: #FFF;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.home-suggestBox {
+    width: 274px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #FFF;
+    margin-left: 15px;
+    margin-top: 9px;
+    padding-top: 16px;
+    padding-left: 17px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.home-suggestTitle {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.home-randomCategory {
+    color: #757575;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-top: 17px;
+}
+
+.home-randomChallengeTitle {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: 11px;
+}
+
+.home-randomDetailTitle {
+    color: #757575;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.home-randomDetailGoals {
+    width: 245px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    background: rgba(255, 222, 91, 0.18);
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    margin-bottom: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 8px;
+}
+
+.home-randomAddBtn {
+    width: 112px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: #605BFF;
+    margin-left: 7px;
+    border: none;
+    color: #FFF;
+    font-family: "Segoe UI";
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 15px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    margin-top: 39px;
+    margin-left: 137px;
+    margin-bottom: 13px;
+    cursor: pointer;
+}
+
+.home-middleBox {
+    width: 768px;
+    height: 275px;
+    background-color: transparent;
+    margin-left: 49px;
+}
+
+.home-side-cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 26px;
+    padding: 20px 0;
+}
+
+.home-side-cards::-webkit-scrollbar {
+    width: 6px;
+    border-radius: 6px;
+    background: #f3f3f3;
+}
+
+.home-side-cards::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 6px;
+}
+
+.home-cert-card {
+    flex-shrink: 0;
+    width: 233px;
+    height: 273px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 1px 8px #ededed;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+
+.home-cert-img {
+    width: 190px;
+    height: 128px;
+    background: #d9d9d9;
+    border-radius: 12px;
+    margin-top: 28px;
+    margin-left: 22px;
+    margin-bottom: 20px;
+    align-self: flex-start;
+}
+
+.home-cert-category {
+    color: #757575;
+    font-family: "Segoe UI";
+    font-size: 15px;
+    font-weight: 600;
+    margin-left: 22px;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.home-cert-title {
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 18px;
+    font-weight: 700;
+    margin-left: 22px;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.home-cert-link {
+    margin-top: auto;
+    margin-bottom: 22px;
+    margin-left: 22px;
+    color: #605BFF;
+    font-family: "Segoe UI";
+    font-size: 17px;
+    font-weight: 600;
+    text-decoration: none;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+}
+
+.home-cert-link:hover {
+    text-decoration: underline;
+}
+
+.home-bottomBox {
+    width: 768px;
+    margin-top: 35px;
+    margin-left: 50px;
+}
+
+.home-bottomInner {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+.home-bottomLeft {
+    width: 210px;
+    height: 244px;
+    border-radius: 10px;
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+}
+
+.home-bottomRight {
+    width: 550px;
+    height: 244px;
+    flex-shrink: 0;
+}
+
+
+.home-leftTitle {
+    margin-top: 15px;
+    margin-left: 28px;
+    width: 151px;
+    color: #000;
+    font-family: "Segoe UI";
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.home-category-item {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #f6f6fc;
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.home-category-item.selected {
+    background: #605BFF;
+    color: #FFF;
+    font-weight: 900;
+}
+
+.home-category-item.selected .home-category-count {
+    color: #fff;
+    opacity: 1;
+}
+
+.home-category-count {
+    color: #000;
+    font-family: Lato;
+    font-size: 9px;
+    font-weight: 500;
+    opacity: 0.7;
+    margin-left: 8px;
+}
+
+.category-box {
+    width: 243.857px;
+    min-width: 180px;
+    max-width: 320px;
+    height: 244px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px 22px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+.category-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #000;
+}
+
+.category-vertical-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.home-category-vertical-scroll::-webkit-scrollbar {
+    width: 6px;
+    background: #ececff;
+    border-radius: 6px;
+}
+
+.home-category-vertical-scroll::-webkit-scrollbar-thumb {
+    background: #605BFF44;
+    border-radius: 6px;
+}
+
+.home-category-vertical-scroll {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 180px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+
+.home-popular-posts-box {
+    width: 490px;
+    height: 244px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+.home-popular-posts-title {
+    color: #000;
+    font-family: Lato;
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.home-popular-post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.home-popular-post-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #ddd;
+    padding: 10px 16px;
+    box-sizing: border-box;
+    min-height: 52px;
+}
+
+.home-popular-post-thumb {
+    width: 40px;
+    height: 30px;
+    border-radius: 8px;
+    background: #D9D9D9;
+    flex-shrink: 0;
+    margin-right: 10px;
+}
+
+.home-popular-post-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.home-popular-post-title {
+    color: #000;
+    font-family: Lato;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 3px;
+    line-height: 1.3;
+}
+
+.home-popular-post-desc {
+    color: #757575;
+    font-family: Lato;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+}
+
+.home-popular-post-like {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 18px;
+    min-width: 50px;
+    justify-content: flex-end;
+}
+
+.like-icon {
+    font-size: 11px;
+    color: #222;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.like-count {
+    color: #000;
+    font-family: Pretendard;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 16.667px;
+    vertical-align: middle;
+}
+
+.layout-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin-top: 32px;
+}
+
+.home-container {
+    width: 768px;
+    display: flex;
+    flex-direction: column;
+}
+
+.home-side-wrapper {
+    background: #F7F7F7;
+    border-radius: 10px;
+    width: 322px;
+    height: 918px;
+    flex-shrink: 0;
+    margin-top: 0 !important;
+}
+
+/* 추천 챌린지 내용(상단 영역) */
+.home-side-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* 아래쪽으로 늘려서, 하단 버튼과 여백이 충분히 남게 함 */
+}
+
+/* 하단 버튼/로고 영역 */
+.home-side-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 80px;
+    margin-top: 465px;
+    margin-bottom: 20px; /* 바닥 여백(피그마 스타일) */
+}
