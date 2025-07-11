@@ -5,15 +5,13 @@ body {
 
 .container {
     width: 1237px;
-    height: 800px;
+    height: 830;
     margin-top: 34px;
-    margin-bottom: 30px;
     margin-left: 37px;
     margin-right: 38px;
     border-radius: 10px;
     background: #F7F7F7;
-    padding: 60px 170px;
-
+    padding: 30px 170px;
 }
 
 .spa-bg {

@@ -51,7 +51,6 @@
       row.style.display = 'flex'; // 꼭 필요함
       row.style.alignItems = 'center';
       row.style.padding = '12px 24px';
-      row.style.borderBottom = '1px solid #eee';
       row.style.backgroundColor = '#fff';
 
       row.innerHTML = `

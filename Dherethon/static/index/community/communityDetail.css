@@ -11,16 +11,16 @@ body {
 }
 
 .community-detail-content-layout {
-  width: 1139px;
-  height: 918px;
-  margin: 32px auto 0px auto;
-  background: #fff;
-  border-radius: 10px;
-  display: flex;
-  position: relative;
-  height: auto;           
-  min-height: 918px;  
-  overflow: visible;     
+    width: 1139px;
+    height: 918px;
+    margin: 32px auto 0px auto;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    position: relative;
+    height: auto;
+    max-height: 918px;
+    overflow: visible;
 }
 
 .detail-main {
