@@ -36,6 +36,18 @@
 <br>
 <br>
 
+## 🛠️ 기술 스택
+
+| 분야 | 기술 |
+|------|------|
+| **Frontend** | `HTML`, `CSS`, `JavaScript` |
+| **Backend** | `Django`, `Mysql` |
+| **Design** | `Figma`|
+| **Collaboration** | `GitHub` |
+
+<br>
+<br>
+
 ## 👥 팀 소개  
 
 **기획 & 디자인**  
@@ -48,6 +60,12 @@
 **Back-end** 
 - [@0euun](https://github.com/0euun)  
 - [@zyecastle](https://github.com/zyecastle)
+
+<br>
+<br>
+
+## 🔗 배포 링크
+👉 [Dotry](https://2025herethon13.pythonanywhere.com/)
 
 <br>
 <br>
