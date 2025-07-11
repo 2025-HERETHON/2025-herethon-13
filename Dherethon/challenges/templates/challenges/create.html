@@ -13,8 +13,9 @@
 </head>
 <body>
     <script>
-        const challengeData = JSON.parse('{{ challenges_json|escapejs }}');
-        const certRecordData = JSON.parse('{{ cert_records_json|escapejs }}');
+        // JSON 데이터 안전하게 파싱 (빈 값이면 []로)
+        const challengeData = JSON.parse('{{ challenges_json|default:"[]"|escapejs }}');
+        const certRecordData = JSON.parse('{{ cert_records_json|default:"[]"|escapejs }}');
         localStorage.setItem("challenges", JSON.stringify(challengeData));
         localStorage.setItem("certRecords", JSON.stringify(certRecordData));
     </script>
@@ -176,7 +177,7 @@
     </div>
 
     <script src="{% static 'js/create.js' %}"></script>
-    <script src="{% static 'js/index.js' %}"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             renderChallengeAdd({{ challenge.id|default_if_none:"null" }});

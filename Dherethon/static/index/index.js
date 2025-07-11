@@ -1,6 +1,6 @@
 // --- SPA: 페이지 이름-경로 매핑 ---
 const PAGE_CONFIG = {
-  home:            { html: "home/home.html",                  js: "home/home.js" },
+  home:            { html: "home/main.html",                  js: "home/home.js" },
   mypage:          { html: "mypage/mypage.html",              js: "mypage/mypage.js" },
   myChallenge:     { html: "my-challenge/myChallenge.html",   js: "my-challenge/myChallenge.js" },
   challengeAdd:    { html: "my-challenge/challengeAdd.html",  js: "my-challenge/challengeAdd.js" },
