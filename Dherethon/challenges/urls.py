@@ -26,6 +26,8 @@ urlpatterns = [
     # 날짜별 세부목표 인증글
     # 날짜별 세부목표 인증글
     path('challenge/<int:challenge_id>/records/', goal_records_by_date, name='goal_records_by_date'),
+    path('challenge/<int:challenge_id>/records/dates/', goal_record_dates, name='goal_record_dates'),
+
 
     # 세부목표 상세
     path('record/<int:record_id>/', goal_detail, name='goal_detail'),

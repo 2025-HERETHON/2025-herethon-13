@@ -32,4 +32,3 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user.nickname} 이 {self.post.id}를 좋아합니다"
-

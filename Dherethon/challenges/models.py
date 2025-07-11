@@ -97,4 +97,3 @@ class GoalProgress(models.Model):
 
     def __str__(self):
         return f"{self.user.nickname} - {self.goal.content} - {'완료' if self.is_completed else '미완료'}"
-

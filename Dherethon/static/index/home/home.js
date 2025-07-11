@@ -41,30 +41,39 @@
     filtered.slice().reverse().forEach(ch => {
       const dDayText = ch.category || '';
       const percent = calcProgress(ch);
-      const firstGoal = (ch.goals && ch.goals.length > 0) ? ch.goals[0] : '';
+      const firstGoal = (ch.remaining_goals && ch.remaining_goals.length > 0)
+        ? ch.remaining_goals[0]
+        : '다음 세부 목표 없음';
       const iconStyle = makeIconStyle(ch.imgDataUrl);
 
       const row = document.createElement('div');
       row.className = 'challenge-row';
+      row.style.display = 'flex'; // 꼭 필요함
+      row.style.alignItems = 'center';
+      row.style.padding = '12px 24px';
+      row.style.borderBottom = '1px solid #eee';
+      row.style.backgroundColor = '#fff';
+
       row.innerHTML = `
-          <div class="challenge-info">
-            <div class="challenge-icon" style="${iconStyle}"></div>
-            <div class="challenge-info-texts">
-              <div class="challenge-date">${dDayText}</div>
-              <div class="challenge-title">${ch.title}</div>
-            </div>
+        <div class="challenge-info" style="display:flex; align-items:center; width: 320px;">
+          <div class="challenge-icon" style="${iconStyle}"></div>
+          <div class="challenge-info-texts" style="margin-left: 12px;">
+            <div class="challenge-date" style="font-size: 11px; color: #888;">${dDayText}</div>
+            <div class="challenge-title" style="font-size: 14px; font-weight: 600;">${ch.title}</div>
           </div>
-          <div class="challenge-progress">
-            <span class="progress-percent">${percent}%</span>
-            <div class="progress-bar-bg">
-              <div class="progress-bar" style="width:${percent}%"></div>
-            </div>
+        </div>
+        <div class="challenge-progress" style="display:flex; flex-direction: column; align-items:flex-start; width: 180px;">
+          <span class="progress-percent" style="font-size: 11px; color: #555;">${percent}%</span>
+          <div class="progress-bar-bg" style="width:100%; height: 6px; background:#e9e9e9; border-radius: 3px;">
+            <div class="progress-bar" style="height:6px; background:#605BFF; border-radius: 3px; width:${percent}%;"></div>
           </div>
-          <div class="challenge-goal">${firstGoal}</div>
-        `;
+        </div>
+        <div class="challenge-goal" style="width: 200px; font-size: 13px; color: #333; font-weight: 500;">${firstGoal}</div>
+      `;
+
       row.style.cursor = 'pointer';
       row.onclick = function () {
-        if (window.loadPage) window.loadPage("challengeDetail", ch.id);
+        window.location.href = `/challenges/detail/${ch.id}/`;
       };
       list.appendChild(row);
     });
@@ -96,16 +105,11 @@
           <div class="home-cert-img" style="${certImgStyle}"></div>
           <div class="home-cert-category">${ch.category}</div>
           <div class="home-cert-title">${ch.title}</div>
-          <a href="{% url 'challenges:create_goal' challenge.id %}" class="home-cert-link">인증하러 가기 →</a>
+          <a href="/challenges/challenge/${ch.id}/goals/create/" class="home-cert-link">인증하러 가기 →</a>
 
         `;
       sideCards.appendChild(div);
 
-      const link = div.querySelector('.home-cert-link');
-      link.onclick = function (e) {
-        e.preventDefault();
-        if (window.loadPage) window.loadPage("certAdd", ch.id);
-      };
     });
   }
 
@@ -116,10 +120,8 @@
       );
       item.classList.add('selected');
 
-      const textNode = Array.from(item.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-      postCategoryFilter = textNode
-        ? textNode.textContent.trim()
-        : item.textContent.replace(/\d+\s*Posts?/, '').trim();
+      const catText = item.childNodes[0].nodeValue.trim();
+      postCategoryFilter = catText;
       renderPopularPosts();
     });
   });
@@ -161,7 +163,8 @@
 
     popularList.querySelectorAll(`.${postClassPrefix}popular-post-item`).forEach(item => {
       item.addEventListener('click', () => {
-        window.loadPage('communityDetail', item.getAttribute('data-post-id'));
+        const postId = item.getAttribute('data-post-id');
+        window.location.href = `/community/${postId}/`;
       });
     });
   }
@@ -237,75 +240,67 @@
   const addBtn = document.getElementById('home-addChallengeBtn');
   if (addBtn) {
     addBtn.onclick = function () {
-      if (window.loadPage) window.loadPage("challengeAdd");
+      window.location.href = '/challenges/challenge/create/';
     };
   }
   //랜덤 챌린지 추천
-  let currentRecommendedChallenge = null;
+  let currentRecommendedChallenge = window.recommendedChallenge;
 
-  function renderRandomChallenge() {
-    const challenges = JSON.parse(localStorage.getItem('challenges') || '[]');
+  function renderRandomChallenge(challenge) {
     const container = document.querySelector('.home-suggestBox');
+    currentRecommendedChallenge = challenge || window.recommendedChallenge;
 
-    if (challenges.length > 0) {
-      const randomIndex = Math.floor(Math.random() * challenges.length);
-      const randomChallenge = challenges[randomIndex];
-      currentRecommendedChallenge = randomChallenge;
-
-      console.log(' 랜덤으로 뽑힌 도전:', randomChallenge);
-
-      const { category = '', title = '', goals = [] } = randomChallenge;
-
-      let goalsHTML = '';
-      if (goals.length === 0) {
-        goalsHTML = `<div class="home-randomDetailGoals">세부 목표가 없습니다.</div>`;
-      } else {
-        goalsHTML = goals.map(goal => `<div class="home-randomDetailGoals">${goal}</div>`).join('');
-      }
-
-      const writerName = randomChallenge.user?.username || '알 수 없음';
-      container.innerHTML = `
-         <div class="home-randomChallengeTitle">${writerName}님의 Challenge</div>
-        <div class="home-randomCategory">${category}</div>
-        <div class="home-randomChallengeTitle">${title}</div>
-        <div class="home-randomDetailTitle">세부 목표</div>
-        ${goalsHTML}
-        <button class="home-randomAddBtn">
-          <img class="home-plusImg" src="/static/assets/homePlus.svg" alt="추가" />
-
-          도전 추가하기
-        </button>
-      `;
-    } else {
-      container.innerHTML = `<div style="padding:32px;color:#666;"> 저장된 도전이 없습니다.</div>`;
+    // 데이터 없으면 안내문구
+    if (!currentRecommendedChallenge) {
+      container.innerHTML = `<div style="padding:32px;color:#666;">추천할 도전이 없습니다.</div>`;
+      return;
     }
+
+    const { category = '', title = '', goals = [], imgDataUrl, user } = currentRecommendedChallenge;
+    let goalsHTML = '';
+    if (!goals || goals.length === 0) {
+      goalsHTML = `<div class="home-randomDetailGoals">세부 목표가 없습니다.</div>`;
+    } else {
+      goalsHTML = goals.map(goal => `<div class="home-randomDetailGoals">${goal}</div>`).join('');
+    }
+    const writerName = user?.nickname || '알 수 없음';
+
+    container.innerHTML = `
+      <div class="home-randomChallengeTitle">${writerName}님의 Challenge</div>
+      <div class="home-randomCategory">${category}</div>
+      <div class="home-randomChallengeTitle">${title}</div>
+      <div class="home-randomDetailTitle">세부 목표</div>
+      ${goalsHTML}
+      <button class="home-randomAddBtn">
+        <img class="home-plusImg" src="/static/assets/homePlus.svg" alt="추가" />
+        도전 추가하기
+      </button>
+    `;
   }
 
+  // --- 추천 다시받기 버튼 ---
   document.querySelectorAll('.home-suggestBtn').forEach(btn => {
-    btn.onclick = renderRandomChallenge;
+    btn.onclick = function () {
+      fetch('/home/get_random_recommendation/')
+        .then(res => res.json())
+        .then(data => {
+          renderRandomChallenge(data.recommendedChallenge);
+        });
+    }
   });
 
+  // --- 도전 추가하기 버튼 이벤트 ---
   document.addEventListener('click', function (e) {
     if (e.target.closest('.home-randomAddBtn')) {
-      if (!currentRecommendedChallenge) {
+      if (!currentRecommendedChallenge || !currentRecommendedChallenge.id) {
         alert('추천 챌린지가 없습니다.');
         return;
       }
-
-      const myChallenges = JSON.parse(localStorage.getItem('challenges') || '[]');
-
-      const exists = myChallenges.some(ch => String(ch.id) === String(currentRecommendedChallenge.id));
-      if (exists) {
-        alert('이미 추가된 도전입니다!');
-        return;
-      }
-
-      myChallenges.push(currentRecommendedChallenge);
-      localStorage.setItem('challenges', JSON.stringify(myChallenges));
-
-      alert('도전이 내 챌린지에 추가되었습니다!');
+      // 바로 도전 복사(추가) 폼으로 이동
+      window.location.href = `/copy/${currentRecommendedChallenge.id}/`;
     }
   });
+
   // ------ 실행 ------
   renderLists();
   renderPopularPosts();
@@ -313,3 +308,5 @@
   renderRandomChallenge();
 
 })();
+
+

@@ -15,6 +15,7 @@ from django.utils.dateparse import parse_date
 from django.core.serializers import serialize
 from django.http import JsonResponse
 import json
+from django.utils.safestring import mark_safe
 
 def serialize_challenge_for_js(challenge, user):
     completed_goal_ids = GoalProgress.objects.filter(
@@ -32,12 +33,14 @@ def serialize_challenge_for_js(challenge, user):
         'imgDataUrl': challenge.image.url if challenge.image else None,
         'startDate': challenge.start_date.strftime('%Y-%m-%d'),
         'endDate': challenge.end_date.strftime('%Y-%m-%d'),
-        'goals': list(goals.values_list('content', flat=True)),
+        'goals': list(goals.values_list('content', flat=True)),  # 그대로 유지
+        'goalIdMap': {goal.content: goal.id for goal in goals},  # 추가!
         'completedGoalContents': list(
             challenge.goals.filter(id__in=completed_goal_ids).values_list('content', flat=True)
         ),
         'nextGoalContent': next_goal.content if next_goal else None,
     }
+
 
 # 로그인한 사용자 기준 list view
 @login_required
@@ -208,12 +211,14 @@ def create_challenge(request, pk=None):
                         goal.content = request.POST[key]
                         goal.save()
 
-            # 새 세부 목표 추가
+            # 새 세부 목표 추가 (기존과 중복 방지)
+            existing_goal_contents = set(goal.content.strip() for goal in Goal.objects.filter(challenge=saved))
+
             new_goals = request.POST.getlist('goals')
             for content in new_goals:
-                if content.strip():
+                content = content.strip()
+                if content and content not in existing_goal_contents:
                     Goal.objects.create(challenge=saved, content=content)
-
             return redirect('challenges:detail', pk=saved.pk)
 
     else:
@@ -260,30 +265,29 @@ def create_goal(request, challenge_id, record_id=None):
         else:
             # 생성
             progress, _ = GoalProgress.objects.update_or_create(
-            user=request.user,
-            goal=goal,
-            defaults={
-                'is_completed': True,
-                'content': content,
-                'image': image,
-                'date': date
-            }
-        )
+                user=request.user,
+                goal=goal,
+                defaults={
+                    'is_completed': True,
+                    'content': content,
+                    'image': image,
+                    'date': date
+                }
+            )
 
-        # GoalRecord 생성 후 연결
-        record = GoalRecord.objects.create(
-            user=request.user,
-            goal=goal,
-            goal_progress=progress,
-            title=title,
-            content=content,
-            date=date,
-            image=image
-        )
+            record = GoalRecord.objects.create(
+                user=request.user,
+                goal=goal,
+                goal_progress=progress,
+                title=title,
+                content=content,
+                date=date,
+                image=image
+            )
 
-        # 🔥 이게 누락되었음 → 반드시 연결 필요!
-        progress.record = record
-        progress.save()
+            # progress 객체 사용은 이 안에서만
+            progress.record = record
+            progress.save()
 
         return redirect('challenges:detail', pk=challenge.id)
 
@@ -291,6 +295,7 @@ def create_goal(request, challenge_id, record_id=None):
         'challenge': challenge,
         'record': record,
         'all_goals': all_goals,
+        'challenge_json': mark_safe(json.dumps(serialize_challenge_for_js(challenge, request.user)))
     })
 
 @login_required
@@ -395,7 +400,7 @@ def goal_records_by_date(request, challenge_id):
             'title': record.title,
             'content': record.content,
             'date': record.date.strftime('%Y-%m-%d'),
-            'goal_content': record.goal.content,
+            'goal': record.goal.content,  # goal_content로도 바꿔도 OK
             'image_url': record.image.url if record.image else None,
         })
 
@@ -467,5 +472,29 @@ def edit_challenge(request, challenge_id):
         'form': form,
         'challenge': challenge,
         'goals': goals,
-        'mode': 'edit',  # ✅ 템플릿에서 폼 action 설정을 위해 필요
+        'mode': 'edit',  # 템플릿에서 폼 action 설정을 위해 필요
     })
+def goal_record_dates(request, challenge_id):
+    year = request.GET.get("year")
+    month = request.GET.get("month")
+
+    if not (year and month):
+        return JsonResponse({"cert_dates": []})
+
+    try:
+        year = int(year)
+        month = int(month)
+    except ValueError:
+        return JsonResponse({"cert_dates": []})
+
+    records = GoalRecord.objects.filter(
+        user=request.user,
+        goal__challenge_id=challenge_id,
+        date__year=year,
+        date__month=month
+    ).values_list('date', flat=True)
+
+    cert_dates = sorted(set(date.strftime("%Y-%m-%d") for date in records))
+
+    return JsonResponse({"cert_dates": cert_dates})
+
