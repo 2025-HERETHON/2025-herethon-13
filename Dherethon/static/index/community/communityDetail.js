@@ -44,7 +44,11 @@ window.renderCommunityDetail = function (post) {
           <div class="detail-meta-date">${post.date || ''}</div>
         </div>
         <div class="detail-row">
-          <div class="profile-image"></div>
+          <div class="profile-image">
+            <img src="${post.user && post.user.profile_image ? post.user.profile_image : '/static/images/default_profile.png'}" 
+                alt="프로필 이미지" 
+                style="width:37px; height:37px; border-radius:50%;" />
+          </div>
           <span class="writer">${post.writer || '익명'}</span>
           <div class="category-challenge-block">
             <span class="category">${post.category || ''}</span>
