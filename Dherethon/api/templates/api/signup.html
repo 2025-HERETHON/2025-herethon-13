@@ -42,7 +42,7 @@
                     <!-- 프로필 사진 -->
                     <div class="mainTxt">프로필 사진</div>
                     <label class="uploadBtn" for="picBtn">사진 업로드</label>
-                    <input id="picBtn" type="file" onchange="readURL(this);">
+                    <input id="picBtn" name="profile_image" type="file" onchange="readURL(this);">
                     <img id="preview" src="{% static 'assets/previewImg.svg' %}" alt="프로필 사진" />
 
                     <!-- 비밀번호 -->

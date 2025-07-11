@@ -89,26 +89,27 @@
 
                     <div class="category-label">카테고리 선택</div>
                     <div class="category-btn-group">
-                        {% for name, label in form.category.field.choices %}
-                            {% if name %}
-                                <button type="button"
-                                        class="category-btn
-                                            {% if form.category.value == name %}
-                                                selected
-                                            {% elif not form.category.value and challenge and challenge.category and challenge.category.pk|stringformat:'s' == name|stringformat:'s' %}
-                                                selected
-                                            {% elif not form.category.value and not challenge and label == '학습 / 공부' %}
-                                                selected
-                                            {% endif %}"
-                                        data-value="{{ name }}">
-                                    {{ label }}
-                                </button>
-                            {% endif %}
-                        {% endfor %}
+                    {% for value, label in form.category.field.choices %}
+                        {% if value %}
+                            <button type="button"
+                                class="category-btn
+                                    {% if form.category.value == value|stringformat:'s' %}
+                                        selected
+                                    {% elif not form.category.value and challenge and challenge.category and challenge.category.pk|stringformat:'s' == value|stringformat:'s' %}
+                                        selected
+                                    {% elif not form.category.value and not challenge and forloop.first %}
+                                        selected
+                                    {% endif %}"
+                                data-value="{{ value }}">
+                                {{ label }}
+                            </button>
+                        {% endif %}
+                    {% endfor %}
                         <input type="hidden" name="category" id="category-hidden"
                             value="{% if form.category.value %}{{ form.category.value }}
-                                    {% elif challenge and challenge.category %}{{ challenge.category.pk }}
-                                    {% else %}학습/공부{% endif %}">
+                                {% elif challenge and challenge.category %}{{ challenge.category.pk }}
+                                {% else %}{{ form.category.field.choices.0.0 }}{% endif %}">
+
 
                     </div>
 
