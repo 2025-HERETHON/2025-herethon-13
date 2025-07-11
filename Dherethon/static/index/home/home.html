@@ -1,95 +1,219 @@
-<!-- 전체 레이아웃: 메인 콘텐츠 + 우측 사이드 -->
-<div class="layout-wrapper">
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1512, initial-scale=1.0" />
+    <title>홈</title>
+    <link rel="stylesheet" href="{% static 'index/home/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+    <div class="spa-bg">
+        <div class="app-root">
+            <!-- 사이드바 -->
+            <div class="sideBar">
+                <div class="sideBar_topSection">
+                    <div class="sideBar_profileBox">
+                        <div class="sideBar_profileImg">
+                            {% if user.profile_image and user.profile_image.url %}
+                                <img src="{{ user.profile_image.url }}" alt="프로필 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% else %}
+                                <img src="{% static 'images/default_profile.png' %}" alt="기본 이미지" style="width: 37px; height: 37px; border-radius: 50%;" />
+                            {% endif %}
+                        </div>
+                        <div class="sideBar_profileName">{{ request.user.nickname }}</div>
+                    </div>
 
-  <!-- 왼쪽: 메인 콘텐츠 -->
-  <div class="home-mainBox">
+                    <div class="sideBar_menu">
+                        <a href="{% url 'home:main' %}">
+                            <button class="sideBar_Box active">
+                                <img src="{% static 'assets/Home.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">홈</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'challenges:my_challenges' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Challenge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">나의 도전</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'community:post_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Community.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">커뮤니티</span>
+                            </button>
+                        </a>
+                        <a href="{% url 'home:badge_list' %}">
+                            <button class="sideBar_Box">
+                                <img src="{% static 'assets/Badge.svg' %}" class="sideBar_icon" />
+                                <span class="sideBar_text">뱃지</span>
+                            </button>
+                        </a>
+                    </div>
+                </div>
 
-    <!-- 상단 박스 -->
-    <div class="home-topBox">
-      <div class="home-titleBox">
-        <div class="home-challengeTitle">김수정님의 Challenges</div>
-
-        <div class="dropdown">
-          <button class="dropbtn">
-            <span class="dropbtn-text">전체</span>
-            <img class="home-Polygon" src="../assets/homePolygon.svg" alt="▼">
-          </button>
-          <ul class="dropdown-content">
-            <li data-category="전체">전체</li>
-            <li data-category="학습 / 공부">학습 / 공부</li>
-            <li data-category="커리어 / 직무">커리어 / 직무</li>
-            <li data-category="운동 / 건강">운동 / 건강</li>
-            <li data-category="마음 / 루틴">마음 / 루틴</li>
-            <li data-category="정리 / 관리">정리 / 관리</li>
-            <li data-category="취미">취미</li>
-            <li data-category="기타">기타</li>
-          </ul>
-        </div>
-
-        <button id="home-addChallengeBtn" class="home-addChallengeBtn">
-          <img class="home-plusImg" src="../assets/homePlus.svg" alt="추가" />
-          도전 추가하기
-        </button>
-      </div>
-
-      <!-- 리스트 헤더 -->
-      <div class="challenge-list-header">
-        <div>도전리스트</div>
-        <div>진행률</div>
-        <div>다음 세부 목표</div>
-      </div>
-
-      <!-- 도전 리스트 동적 삽입 -->
-      <div class="home-listBox">
-        <div class="challenge-list"></div>
-      </div>
-    </div>
-    <!-- 중간 박스: 도전 카드 슬라이드 -->
-    <div class="home-middleBox">
-      <div class="home-side-cards"></div>
-    </div>
-
-    <!-- 하단 박스: 카테고리 + 인기포스트 -->
-    <div class="home-bottomBox">
-      <div class="home-bottomInner">
-
-        <!-- 왼쪽: 카테고리 -->
-        <div class="home-bottomLeft">
-          <div class="category-box">
-            <div class="category-title">카테고리</div>
-            <div class="home-category-vertical-scroll">
-              <div class="home-category-item selected">학습 / 공부 <span class="home-category-count">15 Posts</span></div>
-              <div class="home-category-item">커리어 / 직무 <span class="home-category-count">8 Posts</span></div>
-              <div class="home-category-item">운동 / 건강 <span class="home-category-count">10 Posts</span></div>
-              <div class="home-category-item">마음 / 루틴 <span class="home-category-count">5 Posts</span></div>
-              <div class="home-category-item">정리 / 관리 <span class="home-category-count">7 Posts</span></div>
-              <div class="home-category-item">취미 <span class="home-category-count">4 Posts</span></div>
-              <div class="home-category-item">기타 <span class="home-category-count">2 Posts</span></div>
+                <form action="{% url 'api:logout' %}" method="post">
+                    {% csrf_token %}
+                    <button class="sideBar_logoutBox">
+                        <img src="{% static 'assets/Logout.svg' %}" class="sideBar_icon" />
+                        <span class="sideBar_logoutText">Log out</span>
+                    </button>
+                </form>
             </div>
-          </div>
-        </div>
 
-        <!-- 오른쪽: 인기 포스트 -->
-        <div class="home-bottomRight">
-          <div class="home-popular-posts-box">
-            <div class="home-popular-posts-title">인기 POST</div>
-            <div class="home-popular-post-list">
-              <!-- 동적으로 삽입될 인기 post 아이템들 -->
+            <!-- 메인 레이아웃 -->
+            <div class="layout-wrapper">
+
+                <!-- 왼쪽 콘텐츠 -->
+                <div class="home-mainBox">
+                    <!-- 상단: 제목 + 필터 + 버튼 -->
+                    <div class="home-topBox">
+                        <div class="home-titleBox">
+                            <h1 class="home-challengeTitle">{{ request.user.nickname }}님의 Challenges</h1>
+
+                            <div class="dropdown">
+                                <button class="dropbtn">
+                                    <span class="dropbtn-text">전체</span>
+                                    <img class="home-Polygon" src="{% static 'assets/homePolygon.svg' %}" alt="▼">
+                                </button>
+                                <ul class="dropdown-content">
+                                    <li data-category="전체">전체</li>  <!-- ✅ 이 줄을 추가! -->
+                                    {% for category in category_list %}
+                                        <li data-category="{{ category }}">{{ category }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <button id="home-addChallengeBtn" class="home-addChallengeBtn">
+                                <img class="home-plusImg" src="{% static 'assets/homePlus.svg' %}" alt="추가" /> 도전 추가하기
+                            </button>
+                        </div>
+
+                        <!-- 리스트 헤더 -->
+                        <div class="challenge-list-header">
+                            <div>도전리스트</div>
+                            <div>진행률</div>
+                            <div>다음 세부 목표</div>
+                        </div>
+
+                        <!-- 도전 리스트 영역 -->
+                        <div class="home-listBox">
+                            <div class="challenge-list">
+                                {% for challenge in challenges %}
+                                        <div class="challenge-row">
+                                            <div class="challenge-info">
+                                                <div class="challenge-icon"
+                                                    {% if challenge.image %}
+                                                        style="background-image: url('{{ challenge.image.url }}'); background-size: cover;"
+                                                    {% endif %}>
+                                                </div>
+                                                <div class="challenge-info-texts">
+                                                    <div class="challenge-date">
+                                                        {{ challenge.d_day_prefix }}{{ challenge.d_day_value }} {{ challenge.category.name }}
+                                                    </div>
+                                                    <div class="challenge-title">
+                                                        <a href="{% url 'challenges:detail' challenge.id %}">{{ challenge.title }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="challenge-progress">
+                                                <span class="progress-percent">{{ challenge.progress_percent }}%</span>
+                                                <div class="progress-bar-bg">
+                                                    <div class="progress-bar" style="width: {{ challenge.progress_percent }}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="challenge-goal">
+                                                {% if challenge.remaining_goals %}
+                                                    {{ challenge.remaining_goals.0 }}
+                                                {% else %}
+                                                    다음 세부 목표 없음
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                {% empty %}
+                                    <p style="padding: 20px;">참여 중인 도전이 없습니다.</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 중간: 인증 카드 -->
+                    <div class="home-middleBox">
+                        <div class="home-side-cards"></div>
+                    </div>
+
+                    <!-- 하단: 카테고리 + 인기 게시글 -->
+                    <div class="home-bottomBox">
+                        <div class="home-bottomInner">
+
+                            <!-- 카테고리 -->
+                            <div class="home-bottomLeft">
+                                <div class="category-box">
+                                    <div class="category-title">카테고리</div>
+                                    <div class="home-category-vertical-scroll">
+                                        {% for category in category_list %}
+                                            <div class="home-category-item {% if forloop.first %}selected{% endif %}">
+                                                {{ category }}
+                                                <span class="home-category-count"></span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 인기 게시글 -->
+                            <div class="home-bottomRight">
+                                <div class="home-popular-posts-box">
+                                    <div class="home-popular-posts-title">인기 POST</div>
+                                    <div class="home-popular-post-list"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 추천 챌린지 -->
+                <aside class="home-side-wrapper">
+                    <!-- 상단: 추천 챌린지 내용 -->
+                    <div class="home-side-content">
+                        <div class="home-sideChallengeTitle">{{ loginUserNickname }}님을 위한 추천 Challenges</div>
+                        <button class="home-suggestBtn">다시 추천받기</button>
+                        <div class="home-suggestBox">
+                            <div>추천 챌린지 작성자: {{ recommendedUserNickname|default:"알 수 없음" }}님</div>
+                            <!-- JS가 렌더링하는 나머지 추천 챌린지 내용은 여기서 진행 -->
+                        </div>
+                        <!-- 뱃지 리스트 영역도 여기 위에 둠 -->
+                        <div class="badgelayout" id="badgeLayout"></div>
+                    </div>
+
+                </aside>
+
+
             </div>
-          </div>
+
+
         </div>
 
-      </div>
     </div>
 
-  </div>
+    <script id="category-post-counts" type="application/json">
+        {{ category_post_counts|safe }}
+    </script>
 
-  <!-- 오른쪽: 추천 챌린지 카드 -->
-  <aside class="home-side-wrapper">
-    <div class="home-sideChallengeTitle">김수정님을 위한 추천 Challenges</div>
-    <button class="home-suggestBtn">다시 추천받기</button>
-    <div class="home-suggestBox">
-    </div>
-  </aside>
+    <!-- 데이터 주입 및 스크립트 -->
+    <script>
+        const myChallenges = JSON.parse('{{ my_challenges_json|escapejs }}');
+        const communityPosts = JSON.parse('{{ popular_posts_json|escapejs }}');
 
-</div>
+        localStorage.setItem('challenges', JSON.stringify(myChallenges));
+        localStorage.setItem('communityPosts', JSON.stringify(communityPosts));
+    </script>
+    <script>
+        window.recommendedChallenge = {{ recommended_challenge_json|default:"null"|safe }};
+        window.loginUserNickname = "{{ loginUserNickname|escapejs }}";
+    </script>
+    <script src="{% static 'index/index.js' %}"></script>
+    <script src="{% static 'index/home/home.js' %}"></script>
+</body>
+</html>

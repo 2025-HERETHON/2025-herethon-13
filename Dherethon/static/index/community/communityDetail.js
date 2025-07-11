@@ -32,11 +32,12 @@ window.renderCommunityDetail = function (post) {
       <div class="detail-info-block">
         <div class="detail-like-fixed">
           <div class="like like-button${post.liked ? ' liked' : ''}">
-            <div class="like-icon" style="
+              <div class="like-icon" style="
                   background-image: url('${post.liked ? heartFullSvg : heartSvg}');
                   z-index: 10;
                   position: relative;
                   height: 20px;
+                  background-size: cover;
               "></div>
             <span class="like-count">${post.like}</span>
           </div>

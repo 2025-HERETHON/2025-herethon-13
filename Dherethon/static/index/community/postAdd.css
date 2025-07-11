@@ -195,19 +195,20 @@ line-height: normal;
   text-overflow: ellipsis;
 }
 .record-content-body {
-  display: -webkit-box;
-  color: #757575;
-  font-family: Lato;
-  font-size: 12px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: normal;
-  max-width: 260px;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
+    display: -webkit-box;
+    color: #757575;
+    font-family: Lato;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    max-width: 260px;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    margin-top: 10px;
 }
 
 /* --- 게시하기 버튼 --- */
