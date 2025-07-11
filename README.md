@@ -64,11 +64,7 @@
 <br>
 <br>
 
-## 🔗 배포 링크
-👉 [Dotry](https://2025herethon13.pythonanywhere.com/)
 
-<br>
-<br>
 
 <img width="1556" height="873" alt="image" src="https://github.com/user-attachments/assets/a1409506-22b6-4c5b-8340-d3fee8a5b628" />
 
