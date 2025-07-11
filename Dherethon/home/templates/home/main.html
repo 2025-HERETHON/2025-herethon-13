@@ -98,7 +98,42 @@
 
                         <!-- 도전 리스트 영역 -->
                         <div class="home-listBox">
-                            <div class="challenge-list"></div>
+                            <div class="challenge-list">
+                                {% for challenge in challenges %}
+                                        <div class="challenge-row">
+                                            <div class="challenge-info">
+                                                <div class="challenge-icon"
+                                                    {% if challenge.image %}
+                                                        style="background-image: url('{{ challenge.image.url }}'); background-size: cover;"
+                                                    {% endif %}>
+                                                </div>
+                                                <div class="challenge-info-texts">
+                                                    <div class="challenge-date">
+                                                        {{ challenge.d_day_prefix }}{{ challenge.d_day_value }} {{ challenge.category.name }}
+                                                    </div>
+                                                    <div class="challenge-title">
+                                                        <a href="{% url 'challenges:detail' challenge.id %}">{{ challenge.title }}</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="challenge-progress">
+                                                <span class="progress-percent">{{ challenge.progress_percent }}%</span>
+                                                <div class="progress-bar-bg">
+                                                    <div class="progress-bar" style="width: {{ challenge.progress_percent }}%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="challenge-goal">
+                                                {% if challenge.remaining_goals %}
+                                                    {{ challenge.remaining_goals.0 }}
+                                                {% else %}
+                                                    다음 세부 목표 없음
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                {% empty %}
+                                    <p style="padding: 20px;">참여 중인 도전이 없습니다.</p>
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
 
@@ -151,6 +186,7 @@
 
         </div>
     </div>
+  </div>
 
     <!-- 데이터 주입 및 스크립트 -->
     <script>
@@ -161,7 +197,8 @@
         localStorage.setItem('communityPosts', JSON.stringify(communityPosts));
     </script>
     <script>
-    const loginUserNickname = "{{ loginUserNickname|escapejs }}";
+        window.recommendedChallenge = {{ recommended_challenge_json|default:"null"|safe }};
+        window.loginUserNickname = "{{ loginUserNickname|escapejs }}";
     </script>
     <script src="{% static 'index/index.js' %}"></script>
     <script src="{% static 'index/home/home.js' %}"></script>

@@ -10,19 +10,55 @@ import json
 from django.utils.html import escape
 from django.utils.timezone import localtime
 from django.utils.safestring import mark_safe
-# 인증 완료된 세부목표 목록 중에서 선택하여 게시글 작성
+from django.utils.timezone import localtime
+
+@login_required
 def post_add_page(request):
+    # 사용자의 도전 정보
     challenges = Challenge.objects.filter(user=request.user).select_related('category')
-    challenges_data = json.dumps([
+
+    challenges_data = [
         {
             "id": ch.id,
             "title": ch.title,
-            "category": ch.category.name if ch.category else "기타"  # ← null 대응
-        } for ch in challenges
-    ])
-    return render(request, 'community/post_add.html', {
-        'challenges_data': challenges_data
+            "category": ch.category.name if ch.category else "기타"
+        }
+        for ch in challenges
+    ]
+
+    # 인증 완료된 GoalProgress + GoalRecord 연결
+    progresses = GoalProgress.objects.filter(
+        user=request.user,
+        is_completed=True
+    ).select_related('goal', 'goal__challenge')
+
+    progresses_data = []
+    for p in progresses:
+        record = GoalRecord.objects.filter(
+            user=request.user,
+            goal=p.goal,
+            date=p.date
+        ).first()
+
+        if not record:
+            continue
+
+        progresses_data.append({
+            "id": p.id,
+            "progressId": p.id,  # JS에서 cert.progressId 용
+            "challenge_id": p.goal.challenge.id,
+            "goal_title": p.goal.title or p.goal.content,
+            "date": localtime(p.date).strftime('%Y-%m-%d'),
+            "content": record.content or "",
+            "image_url": record.image.url if record.image else "",
+        })
+
+    # ✅ 렌더링 시 JSON 데이터 문자열로 주입
+    return render(request, 'community/create_post.html', {
+        'challengesRaw': json.dumps(challenges_data, ensure_ascii=False),
+        'goalProgressesRaw': json.dumps(progresses_data, ensure_ascii=False),
     })
+
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -58,12 +94,46 @@ def create_post(request):
 
         return redirect('community:post_list')
 
-    # ✅ GET 요청일 때: challenge 리스트를 JSON 직렬화하여 넘기기
-    challenges = Challenge.objects.filter(user=request.user)
-    challenges_json = serialize('json', challenges)
+    # ✅ GET 요청 처리
+    challenges = Challenge.objects.filter(user=request.user).select_related('category')
+    goal_progresses = GoalProgress.objects.filter(
+        user=request.user,
+        is_completed=True
+    ).select_related('goal', 'goal__challenge')
+
+    # 카테고리와 도전 리스트
+    challenges_data = [
+        {
+            'id': ch.id,
+            'title': ch.title,
+            'category': ch.category.name if ch.category else "기타"
+        } for ch in challenges
+    ]
+
+    # 인증 완료된 목표와 기록
+    progresses_data = []
+    for p in goal_progresses:
+        record = GoalRecord.objects.filter(
+            user=request.user,
+            goal=p.goal,
+            date=p.date
+        ).first()
+
+        if not record:
+            continue
+
+        progresses_data.append({
+            'id': p.id,
+            'challenge_id': p.goal.challenge.id,
+            'goal_title': p.goal.title or '',
+            "date": p.date.strftime('%Y-%m-%d'),
+            'content': record.content or '',
+            'image_url': record.image.url if record.image else '',
+        })
 
     return render(request, 'community/create_post.html', {
-        'challenges_json': challenges_json
+        'challengesRaw': json.dumps(challenges_data, ensure_ascii=False),
+        'goalProgressesRaw': json.dumps(progresses_data, ensure_ascii=False),
     })
 
 @login_required

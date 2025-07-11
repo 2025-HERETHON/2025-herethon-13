@@ -407,6 +407,73 @@ def goal_records_by_date(request, challenge_id):
     return JsonResponse({'records': result})
 
 @login_required
+def copy_challenge(request, challenge_id):
+    original = get_object_or_404(Challenge, id=challenge_id)
+
+    # 새 도전 객체 생성 (기존 데이터를 기반으로)
+    copied = Challenge.objects.create(
+        user=request.user,
+        title=original.title,
+        category=original.category,
+        start_date=original.start_date,
+        end_date=original.end_date,
+        frequency=original.frequency,
+        is_public=False,
+        image=original.image,
+    )
+
+    # 세부목표도 복사
+    for goal in original.goals.all():
+        goal.pk = None
+        goal.challenge = copied
+        goal.save()
+
+    # 도전 생성 페이지로 리디렉션해서 수정하게
+    return redirect('challenges:update_challenge', pk=copied.id)
+
+
+
+@login_required
+def edit_challenge(request, challenge_id):
+    challenge = get_object_or_404(Challenge, id=challenge_id, user=request.user)
+
+    if request.method == 'POST':
+        form = ChallengeForm(request.POST, request.FILES, instance=challenge)
+        if form.is_valid():
+            updated_challenge = form.save()
+
+            # 기존 목표 수정
+            for key in request.POST:
+                if key.startswith('goal_'):
+                    goal_id = key.split('_')[1]
+                    try:
+                        goal = Goal.objects.get(id=goal_id, challenge=challenge)
+                        goal.content = request.POST[key]
+                        goal.save()
+                    except Goal.DoesNotExist:
+                        continue
+
+            # 새 목표 추가
+            new_goal_content = request.POST.get('goals')
+            if new_goal_content:
+                Goal.objects.create(
+                    challenge=updated_challenge,
+                    content=new_goal_content,
+                    user=request.user
+                )
+
+            return redirect('challenges:my_challenges')
+    else:
+        form = ChallengeForm(instance=challenge)
+
+    goals = Goal.objects.filter(challenge=challenge, user=request.user)
+
+    return render(request, 'challenges/create.html', {
+        'form': form,
+        'challenge': challenge,
+        'goals': goals,
+        'mode': 'edit',  # 템플릿에서 폼 action 설정을 위해 필요
+    })
 def goal_record_dates(request, challenge_id):
     year = request.GET.get("year")
     month = request.GET.get("month")

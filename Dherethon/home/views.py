@@ -41,12 +41,18 @@ def home_view(request):
             'id': ch.id,
             'title': ch.title,
             'category': ch.category.name if ch.category else "기타",
-            'goals': [next_goal.content] if next_goal else [],
+            'goals': list(goals.values_list('content', flat=True)),
+            'remaining_goals': list(
+                goals.exclude(
+                    id__in=GoalProgress.objects.filter(user=user, is_completed=True).values_list('goal_id', flat=True)
+                ).order_by('id').values_list('content', flat=True)
+            ),
             'imgDataUrl': ch.image.url if ch.image else "",
             'endDate': ch.end_date.isoformat() if ch.end_date else "",
             'user': {
                 'nickname': ch.user.nickname if ch.user and ch.user.nickname else '알 수 없음'
-            }
+            },
+            'progress_percent': progress, 
         })
 
     # 2. 인기 게시글
@@ -100,30 +106,27 @@ def home_view(request):
 @login_required
 def get_random_recommendation(request):
     others_challenges = Challenge.objects.exclude(user=request.user).filter(is_public=True, goals__isnull=False).select_related('user').distinct()
-
-    selected_challenge = None
-    goals = []
-    username = '알 수 없음'  # 기본값
+    data = None
 
     if others_challenges.exists():
-        selected_challenge = random.choice(list(others_challenges))
-        goals = selected_challenge.goals.all()
-        # 닉네임 제대로 가져오기
-        username = selected_challenge.user.nickname if selected_challenge.user and selected_challenge.user.nickname else '알 수 없음'
-
-    html = render_to_string('home/_recommendation_card.html', {
-        'challenge': selected_challenge,
-        'goals': goals,
-        'username': username,  # 템플릿에 넘김
-    }, request=request)
-
-    return JsonResponse({'html': html})
+        c = random.choice(list(others_challenges))
+        data = {
+            'id': c.id,
+            'title': c.title,
+            'category': c.category.name if c.category else "기타",
+            'goals': list(c.goals.values_list('content', flat=True)),
+            'imgDataUrl': c.image.url if c.image else "",
+            'user': {
+                'nickname': c.user.nickname if c.user and c.user.nickname else '알 수 없음'
+            }
+        }
+    return JsonResponse({'recommendedChallenge': data})
 
 @login_required
 def copy_challenge(request, challenge_id):
     original = get_object_or_404(Challenge, id=challenge_id)
 
-    # 1. 복사 생성 (저장은 하지 않음)
+    # 복사본 임시 객체 (저장 안함)
     copied_challenge = Challenge(
         user=request.user,
         category=original.category,
@@ -137,22 +140,26 @@ def copy_challenge(request, challenge_id):
 
     # 저장하지 않고 폼으로 넘길 수 있도록 객체만 생성
 
-    # 세부목표도 함께 준비
+    # 세부 목표도 함께 준비
     copied_goals = []
     for goal in original.goals.all():
         copied_goals.append(Goal(
-            challenge=copied_challenge,  # 아직 저장 안 된 Challenge
+            challenge=copied_challenge,
             title=goal.title,
             content=goal.content,
             date=goal.date,
             image=goal.image,
         ))
 
+    # 반드시 form 생성 후 같이 render
+    form = ChallengeForm(instance=copied_challenge)
+
     # 2. create.html 렌더 (challenge, goals 넘겨줌)
     return render(request, 'challenges/create.html', {
         'challenge': copied_challenge,
         'goals': copied_goals,
-        'mode': 'copy',  # 복사모드 플래그
+        'mode': 'copy',
+        'form': form,      
     })
 
 @login_required

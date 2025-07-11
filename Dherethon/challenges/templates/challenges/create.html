@@ -72,17 +72,19 @@
 
             <!-- 도전 생성/수정 폼 전체 감싸기 -->
             <form class="challenge-add-layout"
-                  method="post"
-                  enctype="multipart/form-data"
-                  action="{% if challenge %}{% url 'challenges:update_challenge' challenge.id %}{% else %}{% url 'challenges:create' %}{% endif %}">
-                {% csrf_token %}
+                method="post"
+                enctype="multipart/form-data"
+                action="{% if mode == 'copy' %}{% url 'challenges:create' %}{% elif challenge and challenge.id %}{% url 'challenges:update_challenge' challenge.id %}{% else %}{% url 'challenges:create' %}{% endif %}">
+            {% csrf_token %}
 
                 <!-- 왼쪽: 챌린지 기본 정보 입력 폼 -->
                 <div class="challenge-add-form">
                     <div class="challenge-add-title">어떤 걸 도전하시나요?</div>
                     <input type="text" name="title" class="challenge-name-input"
-                           value="{{ form.title.value|default_if_none:'' }}"
-                           placeholder="도전 이름을 입력해주세요.">
+                        value="{% if form and form.title.value %}{{ form.title.value }}
+                                {% elif challenge and challenge.title %}{{ challenge.title }}
+                                {% else %}{% endif %}"
+                        placeholder="도전 이름을 입력해주세요.">
 
                     <div class="category-label">카테고리 선택</div>
                     <div class="category-btn-group">
@@ -92,7 +94,9 @@
                                         class="category-btn
                                             {% if form.category.value == name %}
                                                 selected
-                                            {% elif not form.category.value and label == '학습 / 공부' %}
+                                            {% elif not form.category.value and challenge and challenge.category and challenge.category.pk|stringformat:'s' == name|stringformat:'s' %}
+                                                selected
+                                            {% elif not form.category.value and not challenge and label == '학습 / 공부' %}
                                                 selected
                                             {% endif %}"
                                         data-value="{{ name }}">
@@ -101,13 +105,14 @@
                             {% endif %}
                         {% endfor %}
                         <input type="hidden" name="category" id="category-hidden"
-                               value="{{ form.category.value|default_if_none:'학습 / 공부' }}">
+                            value="{% if form.category.value %}{{ form.category.value }}
+                                    {% elif challenge and challenge.category %}{{ challenge.category.pk }}
+                                    {% else %}학습 / 공부{% endif %}">
                     </div>
 
                     <div class="img-label">대표 이미지</div>
                     <label class="img-upload-box" for="imgInput">
-                        <input type="file" id="imgInput" name="image" accept="image/*"
-                            style="position: absolute; left: -9999px;" />
+                        <input type="file" id="imgInput" name="image" accept="image/*" style="display:none;" />
                         <img src="{% static 'assets/gallery-add.svg' %}" id="imgPreview" class="img-upload-icon" />
                     </label>
 
@@ -159,7 +164,11 @@
                     </ul>
 
                     <button type="submit" class="register-btn">
-                        {% if challenge %}수정하기{% else %}등록하기{% endif %}
+                        {% if mode == 'copy' or not challenge or not challenge.id %}
+                            등록하기
+                        {% else %}
+                            수정하기
+                        {% endif %}
                     </button>
                 </div>
             </form>
