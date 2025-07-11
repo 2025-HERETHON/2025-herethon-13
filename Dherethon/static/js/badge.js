@@ -2,6 +2,16 @@
     let selectedCategory = SELECTED_CATEGORY;
 
     document.addEventListener('DOMContentLoaded', () => {
+        // goTreeBtn 클릭 시 이동 (data-url 이용)
+        const goTreeBtn = document.getElementById('goTree');
+        if (goTreeBtn) {
+            goTreeBtn.addEventListener('click', function () {
+                const treeUrl = this.getAttribute('data-url');
+                window.location.href = treeUrl;
+            });
+        }
+
+        // 카테고리 탭 이벤트
         const tabs = document.querySelectorAll('.badge-btnBox .badge-btn');
         tabs.forEach(tab => {
             tab.onclick = function () {
@@ -34,9 +44,9 @@
 
         filtered.forEach(badge => {
             const badgeLink = document.createElement('a');
-            badgeLink.href = `/challenges/detail/${badge.challengeId}/`; // Django URL 패턴에 맞게 이동
-            badgeLink.style.textDecoration = 'none'; // 밑줄 제거
-            badgeLink.style.color = 'inherit'; // 기본 색상 유지
+            badgeLink.href = `/challenges/detail/${badge.challengeId}/`;
+            badgeLink.style.textDecoration = 'none';
+            badgeLink.style.color = 'inherit';
 
             const badgeBox = document.createElement('div');
             badgeBox.className = 'badge-bigBox';

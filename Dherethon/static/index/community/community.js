@@ -216,4 +216,3 @@ window.setupPostAddButton = function() {
     init();
   }
 })();
-
