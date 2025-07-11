@@ -50,6 +50,7 @@ def home_view(request):
             'imgDataUrl': ch.image.url if ch.image else "",
             'endDate': ch.end_date.isoformat() if ch.end_date else "",
             'user': {
+                'imageUrl': ch.user.profile_image.url if ch.user and ch.user.profile_image else "",
                 'nickname': ch.user.nickname if ch.user and ch.user.nickname else '알 수 없음'
             },
             'progress_percent': progress, 
